@@ -334,7 +334,6 @@ tlEvents.forEach(ev=>{
   const n=document.createElement('div'); n.className='tl-node p'+ev.ph;
   n.innerHTML='<div class="tl-year">'+ev.y+'</div><div class="tl-dot"></div><div class="tl-title">'+ev.t+'</div><div class="tl-preview">'+ev.p+'</div>';
   n.onclick=()=>{
-    clickSound();
     document.querySelectorAll('.tl-node').forEach(x=>x.classList.remove('active'));
     n.classList.add('active');
     const tmap={b:'tb',q:'tq',a:'ta',v:'tv',s:'ts'};
@@ -462,135 +461,7 @@ const plog=document.getElementById('plog');
   else plog.innerHTML+='<div class="pfrag"><div class="pt" style="color:var(--accent)">'+ev.t+'</div><div class="ps" style="color:var(--muted)">'+ev.s+'</div><div style="margin-top:4px">'+ev.b+'</div></div>';
 });
 
-// ═══════════ AUDIO ═══════════
-let audioCtx=null, droneOn=false, pulseOn=false, pulseGain=null, droneGain=null;
-
-async function initAudio(){
-  if(!audioCtx){
-    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  }
-  // Resume if suspended (happens when context was created outside user gesture)
-  if(audioCtx.state==='suspended') await audioCtx.resume();
-  if(droneOn) return; // already initialized
-
-  // Master volume
-  const master=audioCtx.createGain();
-  master.gain.value=0.18; // subtle
-  master.connect(audioCtx.destination);
-
-  // ── Ambient drone: distant, breathing ──
-  const lpf=audioCtx.createBiquadFilter();
-  lpf.type='lowpass'; lpf.frequency.value=200; lpf.Q.value=0.5;
-
-  // Slow LFO to make drone breathe (gain oscillates gently)
-  const lfo=audioCtx.createOscillator();
-  lfo.type='sine'; lfo.frequency.value=0.08; // very slow ~12 sec cycle
-  const lfoGain=audioCtx.createGain();
-  lfoGain.gain.value=0.08; // subtle amplitude modulation
-  lfo.connect(lfoGain);
-
-  const osc1=audioCtx.createOscillator();
-  osc1.type='sine'; osc1.frequency.value=98; // G2 - warm low note
-  const osc2=audioCtx.createOscillator();
-  osc2.type='sine'; osc2.frequency.value=98.6; // slight detune
-
-  droneGain=audioCtx.createGain();
-  droneGain.gain.value=0;
-  lfoGain.connect(droneGain.gain); // LFO modulates drone volume
-
-  osc1.connect(droneGain); osc2.connect(droneGain);
-  droneGain.connect(lpf); lpf.connect(master);
-  osc1.start(); osc2.start(); lfo.start();
-  droneOn=true;
-
-  // ── Void signal pulse bus ──
-  pulseGain=audioCtx.createGain();
-  pulseGain.gain.value=0;
-  pulseGain.connect(master);
-
-  // Fade drone in slowly
-  droneGain.gain.setValueAtTime(0,audioCtx.currentTime);
-  droneGain.gain.linearRampToValueAtTime(0.22,audioCtx.currentTime+3);
-
-  console.log('🔊 音频已激活 · 底噪 110Hz + 虚空脉冲待命');
-  console.log('💡 如果听不到：检查音量合成器、扬声器是否支持低频、浏览器是否静音');
-}
-
-// Activate audio on first user interaction ANYWHERE on page
-['click','touchstart','keydown'].forEach(evt=>{
-  document.addEventListener(evt,()=>{ if(!audioCtx){ console.log('🎵 initAudio triggered by',evt); initAudio(); } });
-});
-
-// Void signal pulse
-const pulseSection=document.getElementById('s-pulse');
-let pulseInterval=null;
-
-function startPulse(){
-  if(!audioCtx||pulseOn) return;
-  pulseOn=true;
-  pulseGain.gain.setValueAtTime(0,audioCtx.currentTime);
-  pulseGain.gain.linearRampToValueAtTime(0.4,audioCtx.currentTime+2);
-
-  let beat=0;
-  pulseInterval=setInterval(()=>{
-    if(!audioCtx){ clearInterval(pulseInterval); return; }
-    const t=audioCtx.currentTime;
-
-    // Main pulse: 80Hz triangle, audible on most speakers
-    const osc=audioCtx.createOscillator();
-    osc.type='triangle'; osc.frequency.value=80;
-    const env=audioCtx.createGain();
-    env.gain.setValueAtTime(0,t);
-    env.gain.linearRampToValueAtTime(0.3,t+0.06);
-    env.gain.exponentialRampToValueAtTime(0.001,t+0.6);
-    osc.connect(env); env.connect(pulseGain);
-    osc.start(t); osc.stop(t+0.7);
-
-    // Every 4th beat: deep sub
-    if(beat%4===0){
-      const sub=audioCtx.createOscillator();
-      sub.type='sine'; sub.frequency.value=55;
-      const subEnv=audioCtx.createGain();
-      subEnv.gain.setValueAtTime(0,t);
-      subEnv.gain.linearRampToValueAtTime(0.4,t+0.04);
-      subEnv.gain.exponentialRampToValueAtTime(0.001,t+1.0);
-      sub.connect(subEnv); subEnv.connect(pulseGain);
-      sub.start(t); sub.stop(t+1.1);
-    }
-    beat++;
-  },700);
-}
-
-function stopPulse(){
-  if(!audioCtx||!pulseOn) return;
-  pulseOn=false;
-  if(pulseInterval) clearInterval(pulseInterval);
-  pulseGain.gain.linearRampToValueAtTime(0,audioCtx.currentTime+1.5);
-}
-
-function watchPulse(){
-  const r=pulseSection.getBoundingClientRect();
-  const distToTop=r.top;
-  const wh=window.innerHeight;
-  if(distToTop<wh*0.6&&distToTop>-r.height*0.5){ if(!pulseOn) startPulse(); }
-  else{ if(pulseOn) stopPulse(); }
-}
-window.addEventListener('scroll',watchPulse);
-
-// Click sound for timeline
-function clickSound(){
-  if(!audioCtx) return;
-  const t=audioCtx.currentTime;
-  const osc=audioCtx.createOscillator();
-  osc.type='sine'; osc.frequency.value=1200;
-  const env=audioCtx.createGain();
-  env.gain.setValueAtTime(0.15,t);
-  env.gain.exponentialRampToValueAtTime(0.001,t+0.12);
-  osc.connect(env); env.connect(audioCtx.destination);
-  osc.start(t); osc.stop(t+0.15);
-}
-
-console.log('🌌 虚空·门槛 数字展品 - 7章已就绪 · 点击页面任意处激活音频');
+console.log('🌌 虚空·门槛 数字展品 - 7章已就绪');
 </script>
 </body>
 </html>
