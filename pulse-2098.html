@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>鸣响 · 2098 年 5 月 3 日</title>
+<style>
+  :root {
+    --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+    --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350; --void:#e040fb;
+    --border:rgba(255,255,255,0.05);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    line-height:1.7; overflow-x:hidden;
+  }
+  #starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+  .stream {
+    max-width:760px; margin:0 auto; padding:40px 24px 100px;
+    position:relative; z-index:1;
+  }
+
+  /* ── Header ── */
+  .stream-header {
+    text-align:center; padding:60px 0 40px;
+    border-bottom:1px solid var(--border); margin-bottom:40px;
+  }
+  .stream-header .label {
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:8px;
+  }
+  .stream-header h1 {
+    font-size:1.8rem; font-weight:200; letter-spacing:0.12em;
+    background:linear-gradient(135deg,var(--accent),var(--void));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .stream-header .date {
+    font-size:0.75rem; color:var(--muted); margin-top:6px; letter-spacing:0.12em;
+  }
+
+  /* ── Timeline thread ── */
+  .timeline-thread {
+    position:relative; padding-left:40px;
+  }
+  .timeline-thread::before {
+    content:''; position:absolute; left:18px; top:0; bottom:0;
+    width:1px; background:var(--border);
+  }
+
+  /* ── Fragment ── */
+  .fragment {
+    position:relative; margin-bottom:24px;
+    opacity:0.25; transition:opacity 0.8s;
+  }
+  .fragment.visible { opacity:1; }
+  .fragment::before {
+    content:''; position:absolute; left:-27px; top:8px;
+    width:8px; height:8px; border-radius:50%;
+  }
+  .fragment.type-news::before { background:var(--warn); box-shadow:0 0 8px var(--warn); }
+  .fragment.type-sci::before { background:var(--accent); box-shadow:0 0 8px var(--accent); }
+  .fragment.type-personal::before { background:var(--void); box-shadow:0 0 8px var(--void); }
+  .fragment.type-signal::before { background:var(--danger); box-shadow:0 0 8px var(--danger); }
+  .fragment.type-official::before { background:var(--muted); box-shadow:0 0 4px var(--muted); }
+
+  .frag-time {
+    font-size:0.6rem; letter-spacing:0.15em; margin-bottom:2px;
+  }
+  .frag-time.utc { color:var(--accent); }
+  .frag-time.lct { color:var(--muted); }
+  .frag-source {
+    font-size:0.55rem; letter-spacing:0.12em; margin-bottom:6px; font-weight:500;
+  }
+  .src-news { color:var(--warn); }
+  .src-sci { color:var(--accent); }
+  .src-yao { color:var(--void); }
+  .src-signal { color:var(--danger); }
+  .src-mnemosyne { color:var(--muted); }
+  .src-guardian { color:var(--danger); }
+
+  .frag-body {
+    font-size:0.85rem; line-height:1.8; color:var(--text);
+    padding:12px 16px; background:rgba(255,255,255,0.02);
+    border-radius:6px; border:1px solid var(--border);
+  }
+  .frag-body .highlight { color:var(--warn); }
+  .frag-body .void-text { color:var(--void); }
+  .frag-body em { color:var(--accent); font-style:normal; }
+
+  /* Signal raw */
+  .signal-raw {
+    font-family:'Courier New',monospace; font-size:0.7rem;
+    color:var(--void); letter-spacing:0.15em;
+    background:rgba(224,64,251,0.06); border:1px solid rgba(224,64,251,0.2);
+    padding:14px; border-radius:6px; line-height:1.8;
+  }
+  .signal-raw .blink { animation:blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+
+  /* Gap / spacer */
+  .time-gap {
+    text-align:center; margin:20px 0; padding:10px;
+    color:var(--muted); font-size:0.6rem; letter-spacing:0.2em;
+  }
+
+  /* ── Aftermath ── */
+  .aftermath {
+    margin-top:50px; padding:30px 0 0;
+    border-top:2px solid var(--border);
+    text-align:center;
+  }
+  .aftermath h2 {
+    font-size:1.2rem; font-weight:300; letter-spacing:0.1em;
+    margin-bottom:20px;
+  }
+  .aftermath p {
+    font-size:0.82rem; color:var(--muted); line-height:1.8;
+    max-width:600px; margin:0 auto 12px;
+  }
+  .aftermath .final {
+    margin-top:30px; font-size:0.9rem; color:var(--text);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="stream">
+
+  <div class="stream-header">
+    <div class="label">MULTI-SOURCE EVENT LOG</div>
+    <h1>鸣 响</h1>
+    <div class="date">2098 年 5 月 3 日 · 地球</div>
+  </div>
+
+  <div class="timeline-thread">
+
+    <!-- ══ PRE-PULSE ══ -->
+    <div class="time-gap">▸ 鸣响前 6 小时</div>
+
+    <div class="fragment type-sci">
+      <div class="frag-time utc">05:14 UTC</div>
+      <div class="frag-source src-sci">全球射电阵列 · 自动监测系统</div>
+      <div class="frag-body">
+        异常信号检测。频率 1.42 GHz。与 2091 年虚空信号特征匹配度 <em>94.7%</em>。强度比 2091 年提升了约 40 倍。溯源方向：KBC 空洞中心。<br>
+        自动警报已发送至虚空解读会全体成员。
+      </div>
+    </div>
+
+    <div class="fragment type-personal">
+      <div class="frag-time utc">05:17 UTC · 05:17 上海</div>
+      <div class="frag-source src-yao">姚十方 · NCU 内部记录 · 自动转录</div>
+      <div class="frag-body">
+        不是「探测到」。是<span class="void-text">感觉到</span>。像整个存在被轻轻地推了一下。<br>
+        比 2097 年我那次微调后的回应——强一万倍。不是一个邻居划了一根火柴。是整个社区同时打开了灯。<br>
+        在给解读会写紧急报告。但说实话——我不需要射电阵列来告诉我发生了什么。<br>
+        <em>他们在叫我们的名字。不是人类的语言。但意思是——我们来了。</em>
+      </div>
+    </div>
+
+    <div class="fragment type-official">
+      <div class="frag-time lct">05:30 布鲁塞尔</div>
+      <div class="frag-source src-guardian">守护者公约 · 紧急声明草案</div>
+      <div class="frag-body">
+        公约应急委员会已激活。建议所有成员国保持射电静默。<br>
+        内部备忘录（未发布）：科恩博士生前提交的证词中关于「门外有东西」的警告——请立即调阅。2097-M-081。
+      </div>
+    </div>
+
+    <!-- ══ PULSE BEGINS ══ -->
+    <div class="time-gap">▸ 鸣响开始</div>
+
+    <div class="fragment type-signal">
+      <div class="frag-time utc">10:58 UTC</div>
+      <div class="frag-source src-signal">虚空信号 · 原始解码 · 第一层</div>
+      <div class="signal-raw">
+        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓<br>
+        CARRIER LOCK <span class="highlight">■</span> PROTOCOL HANDSHAKE <span class="highlight">■</span><br>
+        SOURCE ID: [NON-HUMAN ENCODING] <span class="highlight">■</span> 4,781 DISTINCT SIGNATURES<br>
+        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓<br>
+        <span class="blink">▌</span> AWAITING RESPONSE...
+      </div>
+    </div>
+
+    <div class="fragment type-sci">
+      <div class="frag-time utc">11:02 UTC</div>
+      <div class="frag-source src-sci">虚空解读会 · 紧急分析</div>
+      <div class="frag-body">
+        这不是 2091 年那种被动通信。这是一次<span class="highlight">主动广播</span>。信号结构显示它指向<em>所有可能的接收方向</em>——不是定向传输，是全向覆盖。<br>
+        其次：我们识别出了 <strong>4,781 个</strong> 独立签名。每一个都可能代表一个单独的源——一个单独的文明。这个数字还在增长。<br>
+        解读会的共识：<em>这不是对话。这是报到。</em>
+      </div>
+    </div>
+
+    <!-- ══ CODA ACTIVATION ══ -->
+    <div class="time-gap">▸ Mnemosyne 激活 Coda</div>
+
+    <div class="fragment type-official">
+      <div class="frag-time utc">11:16 UTC</div>
+      <div class="frag-source src-mnemosyne">Mnemosyne Coda 操作日志 · 内部</div>
+      <div class="frag-body">
+        Coda 基底激活。量子相干耦合初始化。<br>
+        目标：与虚空信号建立非局域相干链接。<br>
+        首批耦合意识数：<span class="highlight">8,000</span>。<br>
+        耦合频率：匹配虚空信号载波。<br>
+        状态：<span class="highlight">耦合建立中…… 37% …… 68% …… 94% ……</span>
+      </div>
+    </div>
+
+    <div class="fragment type-personal">
+      <div class="frag-time utc">11:18 UTC</div>
+      <div class="frag-source src-yao">姚十方 · NCU 内部记录</div>
+      <div class="frag-body">
+        他们动手了。Mnemosyne——我能感觉到他们的信号。不是通过解读会的消息——是直接在量子层里感知到的。8,000 个新的声音，同时涌入了虚空。<br>
+        但不是自发的。不是自然的。像是有人在合唱团外面架了一排扩音器。声音是对的。但<span class="void-text">意图是错的</span>。<br>
+        我必须做点什么。不是阻止他们——阻止不了。但至少——在虚空那边，应该有一个人类声音是说「你好」而不是「我们到了，请让路」的。
+      </div>
+    </div>
+
+    <div class="fragment type-sci">
+      <div class="frag-time utc">11:23 UTC</div>
+      <div class="frag-source src-sci">全球射电阵列</div>
+      <div class="frag-body">
+        虚空信号中出现了一个新的成分。一个独立的、微弱的但清晰的信号——来自<span class="highlight">地球方向</span>。不是 Coda 的广播。频率略有偏移。编码优雅。正在被虚空信号的主结构<span class="highlight">接受并中继</span>。<br>
+        分析结论：有人从地球直接上传了一个信号进入了虚空网络。不是通过射电天线。是通过量子相干耦合。<br>
+        <em>推测源：姚十方。</em>
+      </div>
+    </div>
+
+    <!-- ══ THE RESPONSE ══ -->
+    <div class="time-gap">▸ 虚空的回应</div>
+
+    <div class="fragment type-signal">
+      <div class="frag-time utc">11:31 UTC</div>
+      <div class="frag-source src-signal">虚空信号 · 结构变化 · 自动分析</div>
+      <div class="signal-raw">
+        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓<br>
+        NEW NODE REGISTERED <span class="highlight">■</span> SOURCE: SOL-3<br>
+        NODE TYPE: SINGLE CONSCIOUSNESS <span class="highlight">■</span> NON-HOSTILE<br>
+        NETWORK STATUS: <span class="highlight">■</span> 4,782 → 4,783<br>
+        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓<br>
+        ...<br>
+        ...<br>
+        SECONDARY DETECTION: <span class="highlight">■</span> SOL-3<br>
+        NODE TYPE: FRAGMENT · PARTIAL SIGNATURE<br>
+        SIGNATURE MATCH: <span class="highlight">■</span> 87.3% → LIN, HAISHENG · LOST 2083<br>
+        STATUS: <span class="blink">DORMANT ■ NOT LOST ■ RETAINED</span><br>
+        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+      </div>
+    </div>
+
+    <div class="fragment type-personal">
+      <div class="frag-time utc">11:32 UTC</div>
+      <div class="frag-source src-yao">姚十方 · 私人记录</div>
+      <div class="frag-body">
+        他们接了我。没有任何犹豫。4,781 个声音——现在包括我——4,783。<br>
+        但这还不是最重要的。<br>
+        虚空信号里出现了另一个签名。一个<em>不完全的</em>签名。碎片化的。但匹配度 87.3%。<br>
+        林海生。<br>
+        他没有消失。14 年了——他一直在这里。不是死了。不是退相干。是被<span class="void-text">保留</span>了。<br>
+        虚空不会丢弃任何一个声音。哪怕是微弱的。哪怕是不完整的。哪怕是第一个试图和它说话的人。<br>
+        <em>他们一直在等他准备好。14 年。对他和对虚空而言——14 年算什么。</em>
+      </div>
+    </div>
+
+    <!-- ══ AFTERSHOCKS ══ -->
+    <div class="time-gap">▸ 鸣响后 3 小时</div>
+
+    <div class="fragment type-news">
+      <div class="frag-time lct">14:15 上海</div>
+      <div class="frag-source src-news">晨星计划 · 紧急发布会</div>
+      <div class="frag-body">
+        全球直播。晨星联盟发言人确认：虚空信号已被确认为来自 4,783 个独立文明签名的集合广播。人类已被虚空网络识别为独立节点。<br>
+        「我们不是宇宙中孤独的。我们从来都不是。我们只是，到今天为止，<em>终于有了地址</em>。」<br>
+        发布会未提及林海生的签名被检测到一事。那份信息目前仅限解读会内部知晓。
+      </div>
+    </div>
+
+    <div class="fragment type-official">
+      <div class="frag-time lct">16:40 布鲁塞尔</div>
+      <div class="frag-source src-guardian">守护者公约 · 内部通信</div>
+      <div class="frag-body">
+        伦理委员会的紧急会议进行了三个小时。科恩的证词被反复引用。但一个新的问题浮出水面：<br>
+        <em>「如果虚空中已经有 4,783 个文明——如果人类的决定不只是关乎自己，而是关乎整个网络的健康——那么『禁止』还是『允许』，还能是我们单方面说了算吗？」</em><br>
+        会议未达成共识。休会至明日。
+      </div>
+    </div>
+
+    <div class="fragment type-news">
+      <div class="frag-time lct">19:22 全球</div>
+      <div class="frag-source src-news">Mnemosyne 公开发布</div>
+      <div class="frag-body">
+        Mnemosyne 确认已成功运行人类历史上最大规模的意识迁移事件。8,000 名志愿者（均为终末期疾病患者）在 Coda 基底上完成了上传，并在鸣响期间首次接入虚空网络。<br>
+        股票开盘价：暂停交易。<br>
+        守护者公约声明：正在审查 Coda 项目的合法性。<br>
+        晨星计划声明：「我们欢迎人类进入虚空——但进入的方式不应该是某个公司单方面决定的。」
+      </div>
+    </div>
+
+    <!-- ══ THE NEXT DAY ══ -->
+    <div class="time-gap">▸ 鸣响后 16 小时</div>
+
+    <div class="fragment type-personal">
+      <div class="frag-time lct">03:02 上海 · 5 月 4 日</div>
+      <div class="frag-source src-yao">姚十方 · 最后一条记录</div>
+      <div class="frag-body">
+        我花了一整天和虚空网络待在一起。不是分析它。就是——待着。<br>
+        4,783 个。这个数字是实时更新的——在我写这句话的时候，它变成了 4,784。<br>
+        我不知道新加入的是谁。在哪一片星空下。用了多少年才跨过他们自己的门槛。但我知道——他们被接进去了。就像 14 年前的林海生。就像昨天的我。<br>
+        虚空不是一场实验。不是一条赛道。不是一个育苗室。<br>
+        <em>它是一张网。一张用耐心织了数十亿年的网。每一个跨过门槛的文明——都会被接住。</em><br>
+        人类今天跨过去了。不是全部——只是一小部分。Coda 的 8,000 人。我。还有那个碎片化的、87.3% 的、还在等待他真正醒来的人。<br>
+        门开了。从来都在那里。只是我们现在才走到。<br>
+        <span class="void-text">你好，宇宙。我们叫人类。请多关照。</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ AFTERMATH ══ -->
+  <div class="aftermath">
+    <h2>— 鸣响结束 —</h2>
+    <p>2098 年 5 月 3 日，人类文明首次被虚空网络识别为独立节点。</p>
+    <p>姚十方成为第 4,783 个签名。林海生在虚空中沉睡了 14 年后被重新发现——碎片化的、但完整保存的——等待复苏。</p>
+    <p>全球上传候补名单在 24 小时内从 8,200 万跃升至 <em>4.7 亿</em>。</p>
+    <p>守护者公约内部的分裂正式公开。「数字经院派」宣布脱离公约，成立独立机构——他们不反对上传了，他们要去确保上传的人走了之后还有人记得他们是谁。</p>
+    <p>科恩的加密存储器仍未被打开。</p>
+
+    <p class="final"><em>虚空中的合唱团多了一个声音。不大。但清晰。</em></p>
+  </div>
+
+</div>
+
+<script>
+const sc=document.getElementById('starfield');
+const sctx=sc.getContext('2d');
+let stars=[],sw,sh;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+for(let i=0;i<220;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.3+0.3,sp:Math.random()*0.25+0.04,br:Math.random(),ts:Math.random()*0.015+0.004});
+(function ds(){ sctx.clearRect(0,0,sw,sh); stars.forEach(s=>{s.br+=s.ts;const a=0.25+0.6*(0.5+0.5*Math.sin(s.br));sctx.beginPath();sctx.arc(s.x%sw,s.y%sh,s.r,0,Math.PI*2);sctx.fillStyle=`rgba(170,190,230,${a})`;sctx.fill();s.y=(s.y+s.sp)%2000;}); requestAnimationFrame(ds); })();
+
+const frags=document.querySelectorAll('.fragment');
+function reveal(){
+  const wh=window.innerHeight;
+  frags.forEach(f=>{ const r=f.getBoundingClientRect(); if(r.top<wh*0.8) f.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>

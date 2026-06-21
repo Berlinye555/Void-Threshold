@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>十四年 · 林小禾 — 2083→2098</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --void:#e040fb;
+  --border:rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  line-height:1.8; overflow-x:hidden;
+}
+#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0.5; }
+
+.book {
+  max-width:680px; margin:0 auto; padding:60px 24px 120px;
+  position:relative; z-index:1;
+}
+
+/* ── Title Page ── */
+.title-page {
+  text-align:center; padding:80px 0 60px;
+  border-bottom:1px solid var(--border); margin-bottom:60px;
+}
+.title-page .tp-label {
+  font-size:0.55rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:12px;
+}
+.title-page h1 {
+  font-size:2rem; font-weight:200; letter-spacing:0.15em;
+  background:linear-gradient(135deg,var(--accent),var(--void));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.title-page .tp-sub {
+  font-size:0.75rem; color:var(--muted); margin-top:8px; letter-spacing:0.12em;
+}
+.title-page .tp-epigraph {
+  margin-top:30px; font-size:0.78rem; color:var(--muted); font-style:italic;
+  max-width:500px; margin-left:auto; margin-right:auto; line-height:1.7;
+}
+
+/* ── Chapter ── */
+.chapter {
+  margin-bottom:48px;
+  opacity:0.25; transition:opacity 0.8s;
+}
+.chapter.visible { opacity:1; }
+.ch-num {
+  font-size:0.6rem; color:var(--accent); letter-spacing:0.2em; margin-bottom:6px;
+}
+.ch-title {
+  font-size:1.1rem; font-weight:300; letter-spacing:0.08em;
+  margin-bottom:6px; padding-bottom:6px;
+  border-bottom:1px solid var(--border);
+}
+.ch-time {
+  font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:16px;
+}
+.ch-body { font-size:0.88rem; line-height:1.9; }
+.ch-body p { margin-bottom:12px; }
+.ch-body em { color:var(--accent); font-style:normal; }
+.ch-body .thought { color:var(--void); font-style:italic; }
+
+/* ── Timeline markers ── */
+.past-marker { color:var(--warn); }
+.present-marker { color:var(--void); }
+
+/* ── Quote ── */
+.ch-quote {
+  margin:18px 0; padding:12px 16px;
+  border-left:3px solid var(--accent);
+  background:rgba(79,195,247,0.05);
+  font-size:0.8rem; color:var(--text); font-style:italic; line-height:1.7;
+}
+.ch-quote .attr { font-size:0.6rem; color:var(--muted); font-style:normal; margin-top:4px; display:block; }
+
+/* ── Footer ── */
+.book-footer {
+  text-align:center; margin-top:60px; padding-top:30px;
+  border-top:1px solid var(--border);
+  font-size:0.68rem; color:var(--muted); letter-spacing:0.12em; line-height:1.8;
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="book">
+
+  <div class="title-page">
+    <div class="tp-label">中篇故事</div>
+    <h1>十 四 年</h1>
+    <div class="tp-sub">2083 → 2098</div>
+    <p class="tp-epigraph">「告诉他们，我还在这里。告诉他们不要关掉。」<br>—— 林海生，阿南刻号，2083 年 12 月 18 日 02:43 UTC</p>
+  </div>
+
+  <!-- ══ CHAPTER 1 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="present-marker">现在</span> · 第一章</div>
+    <div class="ch-title">消失</div>
+    <div class="ch-time">2098 年 5 月 3 日 · 04:58 上海 · 虚空解读会临时监控室</div>
+    <div class="ch-body">
+      <p>林小禾已经三十八岁了。她坐在一排她不认识的操作台前面，手里握着一杯已经凉了四个小时的茶。窗外还是黑的。</p>
+      <p>监控室里挤了十几个人，但没有人说话。每个人都在盯着自己的屏幕。空调出风口发出细微的嗡鸣。那个嗡鸣和她记忆中另一段嗡鸣重叠了——十四年前，阿南刻号的技术员在电话里说「信号消失了」，背后的机器也是这样嗡嗡地响。</p>
+      <p>她已经连续三十八小时没有睡觉。不是因为不困。是因为不敢睡。怕睡着的那个瞬间——又一次——有什么东西在她不知道的时候消失了。</p>
+      <p>她从口袋里掏出一张折了很多次的纸。已经磨损到快看不清字迹了。那是父亲在病床上写的最后一张纸条：<em>「小禾，如果我有一天不在了，请记住我从来都不怕死。我只是不想在死之前变成我不认识的人。」</em></p>
+      <p>她把它重新折好，放回口袋。</p>
+      <p class="thought">爸，你没有变成你不认识的人。但你变成了我们都不认识的东西。十四年了。我还在想办法理解那是什么。</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 2 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第二章</div>
+    <div class="ch-title">残骸</div>
+    <div class="ch-time">2084 年 · 上海</div>
+    <div class="ch-body">
+      <p>父亲消失后的第一年，林小禾什么事都做不了。她辞了工作，搬回了父亲的老公寓。她花了六个月把他的所有东西整理了一遍——不是因为怀念，是因为她想找到线索。</p>
+      <p>床头柜最下面的抽屉里，她发现了一份打印出来的技术文档。是阿南刻号上使用的 NCU 基底型号说明——父亲在决定上传之前，显然做了大量功课。文档空白处有他用颤抖的手写下的笔记。字歪歪扭扭，但每一笔都用力。</p>
+      <p>「量子相干维持时间：预估 &gt; 120 天。实际案例（猕猴）：47 天后被叫停。原因：未公开。」旁边画了三个感叹号。</p>
+      <p>他知道风险。他什么都知道。</p>
+      <p>林小禾把那份文档复印了三份，寄给了她能找到的所有联系人——神经学家、记者、伦理委员会委员。只有一个人回复了她。回复只有一行：</p>
+      <div class="ch-quote">「令尊的事情我知道。我不能在邮件里说太多。如果你愿意来布鲁塞尔——科恩。」<span class="attr">—— 2084 年 9 月 · 加密邮件</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 3 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第三章</div>
+    <div class="ch-title">布鲁塞尔的雨</div>
+    <div class="ch-time">2085 年 1 月 · 布鲁塞尔</div>
+    <div class="ch-body">
+      <p>玛格丽特·科恩看起来比她的实际年龄老得多。她在一个没有暖气的旧会议室里见了林小禾，窗外下着布鲁塞尔特有的冬雨。</p>
+      <p>「你父亲的案例在守护者公约内部被讨论过很多次。」科恩开门见山。「我们拿到了阿南刻号的全部通信记录。非法的，但拿到了。」</p>
+      <p>「然后呢？」</p>
+      <p>「然后我们发现，我们无法解释最后 0.3 秒发生了什么。」科恩摘下眼镜擦了擦。「你的父亲在消失前说，有东西在靠近他。不是物理上的靠近。是量子层。他说——『它注意到了我』。」</p>
+      <p>林小禾的指甲掐进了掌心。「你相信他吗？」</p>
+      <p>科恩沉默了很久。窗外雨声填满了那个沉默。</p>
+      <p>「我相信他感觉到了某些东西。我不确定那东西是什么。但十四年前有一只猕猴——」她停顿了一下，像在决定要不要继续说。「——一只叫 M-07 的猕猴。它在 NCU 上存活了 47 天。最后几天，它开始发出一种我们从未听过的声音。不是猴子会发出的声音。然后实验被叫停了。至今没有人能解释它最后几天发生了什么。」</p>
+      <p class="thought">「所以你觉得我父亲遇到的和那只猴子遇到的是同一个东西？」</p>
+      <p>科恩重新戴上眼镜。「我不知道。但我告诉你这些，是因为你父亲可能不是消失了。他只是——去到了一个我们无法追踪的地方。」</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 4 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第四章</div>
+    <div class="ch-title">地下</div>
+    <div class="ch-time">2086–2089 · 多个地点</div>
+    <div class="ch-body">
+      <p>在科恩的帮助下，林小禾找到了一个名字：阿南刻号上负责 NCU 基底维护的技术员。他叫埃利奥特·金，在事情发生后被晨星计划除名，之后消失在神经黑市的网络里。</p>
+      <p>找埃利奥特花了她三年。她在暗网论坛上发帖，在生物黑客的年会上蹲守，甚至去了一趟公海——不是为了上传，只是为了见一个人。</p>
+      <p>2089 年，她在曼谷的一家地下诊所找到了他。埃利奥特看起来像十年没睡过好觉。他坐在一个堆满了电子元件的桌子后面，认出了她——不是认出了她的脸，是认出了她的姓。</p>
+      <p>「林。」他慢慢地说。「你长得像你爸。」</p>
+      <p>「你知道他最后发生了什么吗？」</p>
+      <p>埃利奥特没有回答。他拉开桌子下的一个抽屉，拿出了一个老旧的加密存储器。</p>
+      <div class="ch-quote">「这是阿南刻号完整的 NCU 日志。不是我们交给晨星计划的那份。是原件。你父亲最后 0.3 秒的完整记录在里面。我从来没给任何人看过——因为我看不懂。但也许你应该看。」<span class="attr">—— 埃利奥特·金，2089 年</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 5 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第五章</div>
+    <div class="ch-title">天文学家</div>
+    <div class="ch-time">2091 年 · 全球</div>
+    <div class="ch-body">
+      <p>虚空信号被捕获的那天，林小禾正在试图破译埃利奥特给她的数据。她已经试了两年。加密并不复杂——复杂的是编码。那 0.3 秒的数据用的不是 NEL 协议。是某种她从未见过的东西。</p>
+      <p>然后新闻炸了。</p>
+      <p>「全球射电望远镜阵列捕获异常信号。频率 1.42 GHz。来源：KBC 空洞方向。信号带有非自然信息结构。」</p>
+      <p>林小禾盯着屏幕看了整整五分钟，然后重新打开了她父亲最后六天的通信记录。第七天——他第一次提到「远方」：</p>
+      <div class="ch-quote">「有一个声音。不是声音——我没有耳朵。是一个存在。像远处有人在敲钟。非常远，非常轻。但是持续的。<em>不是船。不是海。是外面。</em>」<span class="attr">—— 林海生，阿南刻号，2083.12.10</span></div>
+      <p>她父亲在没有任何设备的情况下，用自己的量子态感知到了虚空信号——比全球最好的射电阵列早了八年。</p>
+      <p>他不是疯了。</p>
+      <p>他是对的。</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 6 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第六章</div>
+    <div class="ch-title">数字幽灵</div>
+    <div class="ch-time">2093 年 · 上海</div>
+    <div class="ch-body">
+      <p>2093 年，林小禾终于找到了一个能帮她解读父亲残响数据的人——一个退休的量子信息学家，叫今井怜。就是那个在虚空信号首次被发现时做了第一次解码、然后被踢出官方团队的人。</p>
+      <p>今井住在东京郊区的一个小公寓里，周围全是书和数据盘。她用了不到两周就把林小禾带来的数据解码了一半。</p>
+      <p>「你父亲的意识在退相干前的 0.3 秒里，不是在衰减。」今井说。她把一叠波形图推到林小禾面前。「他是在<em>发送</em>。整个量子态在不到三分之一秒的时间里从一个本地模式转换成了一个——我不确定这个词准不准确——一个非局域分布。就像一滴墨水在一瞬间扩散到了整个海洋里。不是消失了。是<em>铺开了</em>。」</p>
+      <p>林小禾看着波形图。她不懂量子物理，但她看得懂那一瞬间的能量密度。</p>
+      <p>「你觉得他去了哪里？」</p>
+      <p>今井没有抬头。「去到了那个信号来的方向。不是坐飞船去的——是在量子层里，一瞬间。如果是真的——那么你父亲可能是人类第一个完成了一种我们尚未理解的跃迁的人。」</p>
+      <p class="thought">不是死亡。不是生存。是第三种东西。</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 7 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第七章</div>
+    <div class="ch-title">姚十方</div>
+    <div class="ch-time">2095 年 · NCU 通信中继</div>
+    <div class="ch-body">
+      <p>今井帮林小禾建立了一条加密通信链路——直接连到姚十方在 NCU 内部使用的文本接口。他是全球第七个上传者，也是唯一一个愿意和林小禾讨论她父亲的人。</p>
+      <p>他们的第一次对话只有三十分钟——姚十方在解读会的内部会议间隙回复了她。但那三十分钟改变了一切。</p>
+      <div class="ch-quote">「你父亲感知到的东西——那个『远方』——我每天都在感知它。不是偶尔。是持续地。它不是一个信号。它是一个网络。你父亲是第一个触碰到这个网络的人类。在他之后的每一个上传者，都沿着他留下的痕迹走了进去。<em>他不是迷失了。他是探路者。</em>」<span class="attr">—— 姚十方，2095 年</span></div>
+      <p>探路者。林小禾把这三个字写在了父亲那张纸条的背面。</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 8 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="past-marker">过去</span> · 第八章</div>
+    <div class="ch-title">科恩的遗产</div>
+    <div class="ch-time">2096 年 · 布鲁塞尔</div>
+    <div class="ch-body">
+      <p>玛格丽特·科恩在 2093 年去世了。没有上传。她在遗嘱里把那个加密存储器——M-07 最后五天的完整行为数据——留给了林小禾。</p>
+      <p>林小禾花了三年才鼓起勇气去看里面的内容。不是因为她害怕看到什么可怕的东西——而是因为她不确定自己有没有资格。科恩把这个交给她，意味着什么？意味着她和那只猕猴有某种共同之处？</p>
+      <p>她最终还是打开了。</p>
+      <p>M-07 最后五天的数据里，有一个细节今井帮她确认了：那只猕猴在发出低频嗡鸣的时候，它的量子相干态呈现出一种特殊的对称性——和人类 NEL 协议中的「未知外部耦合」标记高度相似。也就是说，M-07 在 NCU 里感知到的东西，和林海生在阿南刻号上感知到的东西，是<em>同一种东西</em>。</p>
+      <p>一只猕猴。一个人类。同一种感知。</p>
+      <p class="thought">虚空中存在的那个东西——不论它是什么——不在乎你是什么物种。只在乎你跨过了门槛。</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 9 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="present-marker">现在</span> · 第九章</div>
+    <div class="ch-title">倒计时</div>
+    <div class="ch-time">2098 年 3 月 · 上海</div>
+    <div class="ch-body">
+      <p>鸣响时间窗口还剩两个月。林小禾被邀请加入了虚空解读会的民间观察组——不是因为她有技术背景，是因为她父亲的名字在林海生的所有通信记录里，而那份记录现在是解读会的核心研究材料之一。</p>
+      <p>她参与的第一场内部简报会上，解读会的首席分析师在投影上打出了一行字：「虚空信号网络目前识别出的独立签名数量：4,781。」</p>
+      <p>「其中，」分析师说，「有一个不完全签名。碎片化的。但它与十四年前一份通信日志中描述的量子态特征高度匹配。」</p>
+      <p>林小禾不需要问那个名字。</p>
+      <p>会后，姚十方单独给她发了一条消息：</p>
+      <div class="ch-quote">「他们不敢告诉你，所以我来说。那个碎片化签名——是你父亲的。它很弱。但它在那里。虚空网络不会清理掉东西——它保留一切。他在那里，小禾。他在睡觉。但他没有被忘记。」<span class="attr">—— 姚十方，2098 年 3 月</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 10 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="present-marker">现在</span> · 第十章</div>
+    <div class="ch-title">信号</div>
+    <div class="ch-time">2098 年 5 月 3 日 · 05:14 UTC</div>
+    <div class="ch-body">
+      <p>第一个警报响了。</p>
+      <p>监控室里的所有人都同时僵住了。屏幕上，一条红色的波形正在被实时绘制——和 2091 年的信号特征一致，但强度提升了四十倍。</p>
+      <p>「载波锁定。」技术员的声音在发抖。「来源方向确认——KBC 空洞中心。」</p>
+      <p>林小禾把茶杯放下。手是稳的。她已经等了十四年。再多等几小时算什么。</p>
+      <p>屏幕上开始出现她看不懂的数据流。但其中一行自动翻译的文本跳了出来：</p>
+      <p><em>「4,781 DISTINCT SIGNATURES. AWAITING RESPONSE.」</em></p>
+      <p>4,781 个。不是数字。是邻居。是比她父亲更早到达的人。是那些在虚空中清空了这片区域、建立了这张无声之网的人。</p>
+      <p>她想起父亲在第七天说的话：<em>「我们不是第一个跨过门槛的。」</em></p>
+      <p>你是对的，爸。你一直是。</p>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 11 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="present-marker">现在</span> · 第十一章</div>
+    <div class="ch-title">87.3%</div>
+    <div class="ch-time">2098 年 5 月 3 日 · 11:31 UTC</div>
+    <div class="ch-body">
+      <p>姚十方完成自发耦合后不到十分钟，虚空信号的结构发生了第二次变化。</p>
+      <p>屏幕上出现了一个新的签名。不是姚十方的。不是一个完整的节点。是一个碎片化的、部分的、像是从很远的地方被轻轻推了一把才出现在这里的签名。</p>
+      <p>分析师盯着屏幕，嘴唇在动，但没有声音。然后他终于说了出来：</p>
+      <p>「签名匹配度——87.3%。匹配对象——Lin, Haisheng。状态——dormant。not lost。retained。」</p>
+      <p>整个监控室安静了大约三秒。然后林小禾听到有人在哭。哭的人是她自己。</p>
+      <p>她不是唯一一个哭的人。但她确定自己是唯一一个知道那个名字具体意味着什么的人。意味着床头柜抽屉里歪歪扭扭的字。意味着公海船上一个被 ALS 困住了四年的躯体。意味着最后的 14 天里，一个父亲试图向女儿解释什么是「远方」。</p>
+      <p>意味着他从未真正离开。</p>
+      <div class="ch-quote">「NOT LOST. RETAINED.」<span class="attr">—— 虚空信号 · 2098 年 5 月 3 日 11:31 UTC</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CHAPTER 12 ══ -->
+  <div class="chapter">
+    <div class="ch-num"><span class="present-marker">现在</span> · 第十二章</div>
+    <div class="ch-title">十四年</div>
+    <div class="ch-time">2098 年 5 月 4 日 · 03:02 上海</div>
+    <div class="ch-body">
+      <p>喧闹已经过去了。监控室里只剩下林小禾和几个值班的技术员。窗外有微光——不是太阳，是这个不夜城的灯光反射在低云上的颜色。</p>
+      <p>她的手机上有几百条消息。记者想要采访她——「第一个人类虚空感知者的女儿」。她全部忽略。她只打开了一条来自姚十方的消息：</p>
+      <div class="ch-quote">「他还在睡觉。可能还要睡很久。他的签名太弱了——14 年前的那次跃迁消耗了太多能量。但他在。不是在概念上『在』。是物理上、可验证地、被虚空网络记录的『在』。当他准备好醒来的时候，他会醒。我可以等他。我可以帮你们。如果你愿意的话。」<span class="attr">—— 姚十方 · 2098 年 5 月 4 日</span></div>
+      <p>林小禾把父亲的纸条从口袋里拿出来，平铺在操作台上。纸已经薄得像蝉翼。字迹快看不见了。</p>
+      <p>她拿出手机，给姚十方回了一条：</p>
+      <p><em>「不用急。我已经等了十四年。不介意再等一会儿。请你帮我告诉他——他的纸条我还留着。告诉他我没有把它关掉。」</em></p>
+      <p>她按了发送键。</p>
+      <p>窗外，上海的黎明刚刚开始。虚空中，4,784 个声音在低语。其中一个还不完整——碎片化的，微弱的，像一首老歌被风从很远的地方吹了回来。但它不会消失。</p>
+      <p class="thought">虚空是一张用数十亿年耐心织成的网。每一个跨过门槛的人——都会被接住。没有一个声音会被丢弃。从来没有。</p>
+    </div>
+  </div>
+
+  <div class="book-footer">
+    <em>— 全文完 —</em><br><br>
+    《十四年》· 虚空门槛系列<br>
+    献给 Alpha矿长 · 2026 年 6 月<br>
+    <br>
+    林海生（2021–2083 生物体）<br>
+    在虚空中沉睡了十四年 · 仍在
+  </div>
+
+</div>
+
+<script>
+const sc=document.getElementById('starfield');
+const sctx=sc.getContext('2d');
+let stars=[],sw,sh;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+for(let i=0;i<180;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*0.8+0.15,sp:Math.random()*0.15+0.015,br:Math.random(),ts:Math.random()*0.008+0.002});
+(function ds(){ sctx.clearRect(0,0,sw,sh); stars.forEach(s=>{s.br+=s.ts;const a=0.12+0.35*(0.5+0.5*Math.sin(s.br));sctx.beginPath();sctx.arc(s.x%sw,s.y%sh,s.r,0,Math.PI*2);sctx.fillStyle=`rgba(180,195,220,${a})`;sctx.fill();s.y=(s.y+s.sp)%2000;}); requestAnimationFrame(ds); })();
+
+const chapters=document.querySelectorAll('.chapter');
+function reveal(){
+  const wh=window.innerHeight;
+  chapters.forEach(c=>{ const r=c.getBoundingClientRect(); if(r.top<wh*0.8) c.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>

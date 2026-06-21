@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>虚空 · 门槛 — 数字展品</title>
+<style>
+:root {
+  --bg:#070b14; --surface:#0c1424; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350; --void:#e040fb;
+  --border:rgba(255,255,255,0.06);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; }
+#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+/* Nav */
+.top-nav {
+  position:fixed; top:0; left:0; right:0; z-index:90;
+  background:rgba(7,11,20,0.85); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border); display:flex;
+  justify-content:center; gap:4px; padding:8px 16px;
+}
+.nav-dot {
+  width:30px; height:30px; border-radius:50%; border:1px solid transparent;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.6rem; color:var(--muted); cursor:pointer; transition:all 0.3s;
+  text-decoration:none; background:none;
+}
+.nav-dot:hover,.nav-dot.active { color:var(--accent); border-color:var(--accent); }
+
+/* Sections */
+.section { position:relative; z-index:1; padding:80px 24px 60px; }
+.section-inner { max-width:1100px; margin:0 auto; }
+.sec-title { text-align:center; margin-bottom:32px; }
+.sec-title h2 { font-size:1.5rem; font-weight:200; letter-spacing:0.15em; }
+.sec-title .sub { font-size:0.65rem; color:var(--muted); letter-spacing:0.15em; margin-top:4px; }
+
+/* Hero */
+#s-hero { display:flex; align-items:center; justify-content:center; text-align:center; min-height:100vh; padding-top:80px; }
+.hero h1 { font-size:clamp(2.5rem,6vw,5rem); font-weight:100; letter-spacing:0.2em; margin-bottom:16px; }
+.hero .hl { font-size:0.85rem; color:var(--muted); max-width:500px; margin:0 auto; line-height:1.8; }
+.hero .hl em { color:var(--accent); font-style:normal; }
+.hero .hint { margin-top:40px; font-size:0.6rem; color:var(--muted); letter-spacing:0.15em; }
+.hero .hint span { display:inline-block; animation:bob 2s infinite; }
+@keyframes bob { 0%,100%{opacity:0.4;transform:translateY(0);} 50%{opacity:1;transform:translateY(6px);} }
+
+/* Timeline */
+.tl-wrap { margin:0 -24px; }
+.tl-scroll { display:flex; overflow-x:auto; padding:12px 32px 20px; scroll-snap-type:x mandatory;
+  scrollbar-width:thin; scrollbar-color:var(--surface) transparent; }
+.tl-scroll::-webkit-scrollbar { height:3px; }
+.tl-scroll::-webkit-scrollbar-thumb { background:var(--surface); border-radius:2px; }
+.tl-line { display:flex; min-width:max-content; position:relative; padding-top:16px; }
+.tl-line::after { content:''; position:absolute; top:40px; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--void),transparent); }
+.tl-node { width:170px; flex-shrink:0; scroll-snap-align:center; cursor:pointer; padding:0 6px; transition:transform 0.3s; position:relative; z-index:2; }
+.tl-node:hover,.tl-node.active { transform:translateY(-4px); }
+.tl-dot { width:10px; height:10px; border-radius:50%; margin:0 auto 6px; }
+.tl-node.p1 .tl-dot { background:var(--accent); }
+.tl-node.p2 .tl-dot { background:var(--warn); }
+.tl-node.p3 .tl-dot { background:var(--danger); }
+.tl-year { text-align:center; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; margin-bottom:2px; }
+.tl-title { text-align:center; font-size:0.7rem; color:var(--text); }
+.tl-preview { text-align:center; font-size:0.58rem; color:var(--muted); opacity:0; transition:opacity 0.3s; }
+.tl-node:hover .tl-preview { opacity:1; }
+.tl-detail { max-width:680px; margin:20px auto 0; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:10px; display:none; }
+.tl-detail.on { display:block; }
+.tl-detail .dy { font-size:0.65rem; color:var(--accent); letter-spacing:0.12em; }
+.tl-detail .dt { font-size:1rem; margin:4px 0 6px; }
+.tl-detail .db { font-size:0.8rem; color:var(--muted); line-height:1.7; }
+.tl-detail .dv { margin-top:8px; padding:8px 12px; background:var(--bg); border-left:2px solid var(--accent); font-size:0.72rem; color:var(--text); font-style:italic; line-height:1.6; }
+.tl-detail .tags { margin-top:8px; }
+.ttag { display:inline-block; margin-right:6px; padding:2px 8px; border-radius:10px; font-size:0.58rem; letter-spacing:0.04em; }
+.ttag.tb { background:#4caf5020; color:#4caf50; border:1px solid #4caf5040; }
+.ttag.tq { background:#7c4dff20; color:#7c4dff; border:1px solid #7c4dff40; }
+.ttag.ta { background:#ff980020; color:#ff9800; border:1px solid #ff980040; }
+.ttag.tv { background:#e040fb20; color:var(--void); border:1px solid #e040fb40; }
+.ttag.ts { background:#f0c04020; color:var(--warn); border:1px solid #f0c04040; }
+
+/* Factions */
+.fgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; }
+.fcard { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; cursor:pointer; transition:all 0.35s; }
+.fcard:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.12); }
+.fcard .fline { height:2px; margin-bottom:10px; transition:height 0.3s; }
+.fcard:hover .fline { height:4px; }
+.fline.fd { background:#4caf50; } .fline.fg { background:var(--danger); } .fline.fu { background:#ff9800; }
+.fline.fs { background:var(--void); } .fline.fn { background:var(--muted); }
+.fcard .fn { font-size:0.82rem; font-weight:500; }
+.fcard .fs { font-size:0.58rem; color:var(--muted); letter-spacing:0.06em; margin-bottom:6px; }
+.fcard .fd { font-size:0.7rem; color:var(--muted); line-height:1.5; }
+.fcard .fx { margin-top:8px; padding-top:8px; border-top:1px solid var(--border); font-size:0.64rem; color:var(--text); display:none; line-height:1.5; }
+.fcard:hover .fx { display:block; }
+
+/* Tech */
+.tpillars { display:flex; gap:14px; flex-wrap:wrap; }
+.tpillar { flex:1; min-width:230px; background:var(--surface); border-radius:10px; padding:16px; }
+.tpillar.tpb { border-top:3px solid #4caf50; }
+.tpillar.tpq { border-top:3px solid #7c4dff; }
+.tpillar.tpa { border-top:3px solid #ff9800; }
+.tpillar h3 { font-size:0.8rem; font-weight:400; margin-bottom:8px; }
+.tpi { font-size:0.68rem; color:var(--muted); padding:3px 0; border-bottom:1px solid var(--border); }
+.tpi:last-child { border-bottom:none; }
+.tps { float:right; font-size:0.55rem; }
+.tps.r { color:#4caf50; } .tps.w { color:var(--warn); } .tps.f { color:var(--danger); }
+
+/* Archive Tabs */
+.tab-bar { display:flex; justify-content:center; gap:4px; margin-bottom:20px; }
+.tab-btn { background:none; border:1px solid var(--border); color:var(--muted); padding:6px 16px; font-size:0.68rem; cursor:pointer; border-radius:4px; font-family:inherit; }
+.tab-btn:hover,.tab-btn.on { color:var(--accent); border-color:var(--accent); }
+.tab-panel { display:none; }
+.tab-panel.on { display:block; }
+.archive-scroll { max-height:60vh; overflow-y:auto; padding-right:8px;
+  scrollbar-width:thin; scrollbar-color:var(--surface) transparent; }
+.archive-scroll::-webkit-scrollbar { width:3px; }
+.archive-scroll::-webkit-scrollbar-thumb { background:var(--surface); }
+.amsg { padding:8px 12px; margin-bottom:8px; border-radius:6px; font-size:0.74rem; line-height:1.6; max-width:85%; }
+.amsg.lin { margin-left:auto; background:var(--surface); border-right:2px solid var(--accent); }
+.amsg.xiao { background:var(--bg); border-left:2px solid var(--warn); }
+.amsg.yao { background:var(--surface); border-left:2px solid var(--void); }
+.amsg.sys { text-align:center; font-family:'Courier New',monospace; font-size:0.6rem; color:var(--muted); background:none; margin:12px auto; max-width:90%; }
+.aday { font-size:0.65rem; color:var(--accent); letter-spacing:0.08em; padding:12px 0 4px; border-bottom:1px solid var(--border); margin-bottom:8px; }
+.afrom { font-size:0.5rem; letter-spacing:0.06em; margin-bottom:2px; opacity:0.7; }
+.lin .afrom { color:var(--accent); } .xiao .afrom { color:var(--warn); } .yao .afrom { color:var(--void); }
+
+/* Classified */
+.clist { max-width:780px; margin:0 auto; display:flex; flex-direction:column; gap:16px; }
+.cdoc { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:18px; position:relative; }
+.cdoc::after { content:'CLASSIFIED'; position:absolute; top:8px; right:12px; font-size:0.5rem; color:var(--danger); letter-spacing:0.15em; opacity:0.6; }
+.cdoc .ch { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:2px; }
+.cdoc .ct { font-size:0.9rem; font-weight:400; margin-bottom:6px; }
+.cdoc .cb { font-size:0.74rem; color:var(--muted); line-height:1.7; }
+.redacted { background:var(--danger); color:transparent; padding:0 2px; border-radius:2px; cursor:pointer; transition:all 0.4s; user-select:none; }
+.redacted:hover { color:var(--text); background:rgba(239,83,80,0.25); }
+
+/* Pulse */
+.plog { max-width:700px; margin:0 auto; }
+.pfrag { padding:10px 14px; margin-bottom:10px; background:rgba(255,255,255,0.012); border:1px solid var(--border); border-radius:6px; font-size:0.74rem; line-height:1.7; }
+.pfrag .pt { font-size:0.55rem; letter-spacing:0.08em; margin-bottom:1px; }
+.pfrag .ps { font-size:0.52rem; letter-spacing:0.06em; }
+.psig { font-family:'Courier New',monospace; font-size:0.6rem; color:var(--void); background:rgba(224,64,251,0.05); border:1px solid rgba(224,64,251,0.15); padding:10px; border-radius:6px; line-height:1.7; margin:8px 0; }
+.pgap { text-align:center; color:var(--muted); font-size:0.55rem; letter-spacing:0.12em; margin:14px 0; }
+
+@media(max-width:640px){
+  .nav-dot { width:24px; height:24px; font-size:0.5rem; }
+  .fgrid { grid-template-columns:1fr; }
+  .tpillars { flex-direction:column; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <a class="nav-dot active" href="#s-hero">起</a>
+  <a class="nav-dot" href="#s-timeline">时间</a>
+  <a class="nav-dot" href="#s-factions">势力</a>
+  <a class="nav-dot" href="#s-tech">技术</a>
+  <a class="nav-dot" href="#s-archive">档案</a>
+  <a class="nav-dot" href="#s-classified">机密</a>
+  <a class="nav-dot" href="#s-pulse">鸣响</a>
+</nav>
+
+<!-- HERO -->
+<section class="section" id="s-hero">
+  <div class="hero">
+    <h1>虚 空 · 门 槛</h1>
+    <p class="hl">KBC 空洞——直径 20 亿光年的低密度区——<em>不是自然形成的</em>。<br>每一个跨过上传门槛的文明都会发现：虚空中一直有人。<br>2097 年，人类正站在这个门槛上。</p>
+    <p class="hint"><span>▾ 向下探索</span></p>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section" id="s-timeline">
+  <div class="section-inner">
+    <div class="sec-title"><h2>时 间 线</h2><div class="sub">2026 → 2097</div></div>
+    <div class="tl-wrap"><div class="tl-scroll"><div class="tl-line" id="tlLine"></div></div></div>
+    <div class="tl-detail" id="tlDetail"></div>
+  </div>
+</section>
+
+<!-- FACTIONS -->
+<section class="section" id="s-factions">
+  <div class="section-inner">
+    <div class="sec-title"><h2>势 力 分 布</h2><div class="sub">2097 · 悬停查看情报</div></div>
+    <div class="fgrid" id="fgrid"></div>
+    <div style="max-width:900px;margin:28px auto 0;text-align:center;">
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:0.6rem;letter-spacing:0.05em;">
+        <span style="padding:3px 10px;border:1px solid #4caf50;border-radius:10px;color:#4caf50;">A 晨星</span>
+        <span style="color:var(--muted);">↔ 对抗</span>
+        <span style="padding:3px 10px;border:1px solid var(--danger);border-radius:10px;color:var(--danger);">B 守护者</span>
+        <span style="color:var(--muted);">↔ 猎杀</span>
+        <span style="padding:3px 10px;border:1px solid #ff9800;border-radius:10px;color:#ff9800;">C 黑市</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;font-size:0.6rem;letter-spacing:0.05em;margin-top:6px;">
+        <span style="padding:3px 10px;border:1px solid var(--accent);border-radius:10px;color:var(--accent);">A 晨星</span>
+        <span style="color:var(--muted);">↔ 共生</span>
+        <span style="padding:3px 10px;border:1px solid var(--muted);border-radius:10px;color:var(--muted);">E 三巨头</span>
+        <span style="color:var(--muted);">↔ 监控</span>
+        <span style="padding:3px 10px;border:1px solid var(--void);border-radius:10px;color:var(--void);">D 解读会</span>
+      </div>
+      <div style="margin-top:6px;font-size:0.5rem;color:var(--muted);">D 信息杠杆覆盖全部 · C 已获虚空信号片段 · E 农场内运行上传意识</div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section class="section" id="s-tech">
+  <div class="section-inner">
+    <div class="sec-title"><h2>技 术 树</h2><div class="sub">三条主干 · 一个目标</div></div>
+    <div class="tpillars">
+      <div class="tpillar tpb"><h3>🧬 生物技术 <span style="font-size:0.65rem;color:var(--muted);">— 意识的载体</span></h3>
+        <div class="tpi">全脑连接组扫描 <span class="tps r">█████ 成熟</span></div>
+        <div class="tpi">NCU 湿件制造 <span class="tps r">█████ 商用</span></div>
+        <div class="tpi">NEL 桥接协议 v2.3 <span class="tps r">████▌ 迭代</span></div>
+        <div class="tpi">人类全脑上传 <span class="tps w">████▏ 可行非法</span></div>
+        <div class="tpi">远程思想传输 <span class="tps f">██▏▏▏ 瓶颈</span></div>
+      </div>
+      <div class="tpillar tpq"><h3>⚛️ 量子科技 <span style="font-size:0.65rem;color:var(--muted);">— 意识的本质</span></h3>
+        <div class="tpi">量子生物传感器 <span class="tps r">████▌ 临床</span></div>
+        <div class="tpi">微管量子相干验证 <span class="tps r">████▏ 确认</span></div>
+        <div class="tpi">量子纠缠意识同步 <span class="tps w">███▏▏ 实验</span></div>
+        <div class="tpi">量子基底运行意识 <span class="tps f">██▏▏▏ 早期</span></div>
+        <div class="tpi">虚空信号学 <span class="tps f">█▏▏▏▏ 200人</span></div>
+      </div>
+      <div class="tpillar tpa"><h3>🤖 AI/信息 <span style="font-size:0.65rem;color:var(--muted);">— 意识的编码</span></h3>
+        <div class="tpi">神经解码 AI <span class="tps r">█████ 成熟</span></div>
+        <div class="tpi">意识建模引擎 <span class="tps r">████▌ 运行</span></div>
+        <div class="tpi">信息压缩与传输 <span class="tps w">███▏▏ 10²⁵bit</span></div>
+        <div class="tpi">基底无关智能理论 <span class="tps w">███▏▏ 争论</span></div>
+        <div class="tpi">Mnemosyne Coda <span class="tps f">?? 未知</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section class="section" id="s-archive">
+  <div class="section-inner">
+    <div class="sec-title"><h2>碎 片 档 案</h2><div class="sub">三种声音 · 同一个门槛</div></div>
+    <div class="tab-bar">
+      <button class="tab-btn on" data-tab="tananke">林海生</button>
+      <button class="tab-btn" data-tab="tyao">姚十方</button>
+      <button class="tab-btn" data-tab="tcohen">科恩</button>
+      <button class="tab-btn" data-tab="tfarm">陈远</button>
+    </div>
+    <div class="tab-panel on" id="tananke"><div class="archive-scroll" id="anankeC"></div></div>
+    <div class="tab-panel" id="tyao"><div class="archive-scroll" id="yaoC"></div></div>
+    <div class="tab-panel" id="tcohen"><div class="archive-scroll" id="cohenC"></div></div>
+    <div class="tab-panel" id="tfarm"><div class="archive-scroll" id="farmC"></div></div>
+  </div>
+</section>
+
+<!-- CLASSIFIED -->
+<section class="section" id="s-classified">
+  <div class="section-inner">
+    <div class="sec-title"><h2>机 密 文 档</h2><div class="sub">点击红色涂黑处 · 查看被隐藏的真相</div></div>
+    <div class="clist" id="clist"></div>
+  </div>
+</section>
+
+<!-- PULSE -->
+<section class="section" id="s-pulse">
+  <div class="section-inner">
+    <div class="sec-title"><h2>鸣 响</h2><div class="sub">2098 年 5 月 3 日 · 虚空回应</div></div>
+    <div class="plog" id="plog"></div>
+  </div>
+</section>
+
+<script>
+// Parallax Starfield (3 depth layers)
+const sc=document.getElementById('starfield'),sctx=sc.getContext('2d');
+let stars=[],sw,sh,scrollY=0,targetSY=0;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+// 3 layers: near (fast parallax), mid, far (slow parallax)
+for(let l=0;l<3;l++){
+  const count=[60,100,140][l]; // fewer near stars, more far stars
+  const depth=[0.5,1.5,3][l]; // parallax speed factor
+  const baseR=[1.0,0.7,0.4][l]; // near stars bigger
+  for(let i=0;i<count;i++) stars.push({
+    x:Math.random()*2000,y:Math.random()*2000,
+    r:Math.random()*baseR+baseR*0.3,
+    sp:Math.random()*0.2+0.03,br:Math.random(),
+    ts:Math.random()*0.01+0.003,depth:depth
+  });
+}
+(function ds(){
+  sctx.clearRect(0,0,sw,sh);
+  targetSY+=(window.scrollY-targetSY)*0.06;
+  const maxH=document.documentElement.scrollHeight-sh;
+  stars.forEach(s=>{
+    s.br+=s.ts;
+    const a=0.18+0.55*(0.5+0.5*Math.sin(s.br));
+    const parallaxY=(s.y-targetSY/s.depth+2000)%2000;
+    sctx.beginPath();sctx.arc(s.x%sw,parallaxY,s.r,0,Math.PI*2);
+    const bright=s.depth<1?'rgba(200,215,245,'+a+')':s.depth<2?'rgba(170,195,230,'+a+')':'rgba(140,170,210,'+a+')';
+    sctx.fillStyle=bright;sctx.fill();
+    s.y=(s.y+s.sp)%2000;
+  });
+  requestAnimationFrame(ds);
+})();
+
+// Nav highlight
+const secs=document.querySelectorAll('.section');
+const ndots=document.querySelectorAll('.nav-dot');
+window.addEventListener('scroll',()=>{
+  let a=0; secs.forEach((s,i)=>{ if(s.getBoundingClientRect().top<window.innerHeight*0.5) a=i; });
+  ndots.forEach((d,i)=>d.classList.toggle('active',i===a));
+});
+
+// Timeline data
+const tlEvents=[
+  {y:'2026–30',t:'全脑连接组完成',p:'果蝇→小鼠→猕猴突触图谱',ph:1,b:'人类第一次「看到」一个完整思维的物理形态。860亿神经元、百万亿级突触连接，每一个都已被命名和定位。',v:'「当我第一次在屏幕上看到小鼠的完整连接组——每一个突触，每一条回路——我的手在发抖。不是因为兴奋。是因为我突然意识到，我看到的可能就是我自己的镜像。」——陈鹿, 2029',tags:['b','a']},
+  {y:'2031–35',t:'量子生物传感器',p:'单蛋白质级磁信号读取',ph:1,b:'基于金刚石NV中心的量子传感器，首次在室温下实现了单个蛋白质构象变化的无损探测。神经元内部不再是一个黑箱。',tags:['q','b']},
+  {y:'2036–40',t:'合成神经递质3.0',p:'脑机接口从只读到可写',ph:1,b:'人工设计神经递质可精准跨血脑屏障激活特定脑区。大脑不再只是可读取——它可以被写入。外部信号可直接诱发特定感知体验。',tags:['b','a']},
+  {y:'2041–45',t:'第一个镜像意识',p:'小鼠神经回路功能性复制',ph:1,b:'10万个神经元回路被完整复制到培养的类脑器官上。小鼠行为模式在两个基底间无缝切换。意识「转移」是可能的。',v:'「它在两个基底间切换时行为完全一致。一样的恐惧，一样的偏好。这不是拷贝。这就是它。换了一个家，但没换住客。」——实验日志, 2044',tags:['b']},
+  {y:'2046–52',t:'NCU湿件成熟',p:'合成神经计算单元商用化',ph:2,b:'第一批神经计算单元商用化。由人工神经元和胶质细胞构成的三维计算模块——功耗是硅基千分之一，学习能力强出六个数量级。',tags:['b']},
+  {y:'2053–58',t:'量子心智假说获实证',p:'意识是量子生物学分支',ph:2,b:'实验证实神经元微管中的量子相干态与意识体验存在因果关联。意识不再是哲学问题——它是量子生物学。',v:'「意识第一次成为可用实验验证的科学。不是因为你做了什么。仅仅是因为你觉得自己是『你』——这个事实在物理上可以被测量了。」',tags:['q','b']},
+  {y:'2059–65',t:'NEL桥接协议诞生',p:'通用神经编码语言',ph:2,b:'第一个通用神经编码语言完成——可在生物神经元、NCU湿件、硅基量子处理器间双向转译神经信号。不同基底第一次说同一种语言。',tags:['b','a','q']},
+  {y:'2066–70',t:'灵长类全脑迁移',p:'猕猴意识跨基底存活47天',ph:2,b:'猕猴意识被完整迁移到NCU湿件上。生物原体安乐死后，迁移意识存活47天。第48天实验被叫停。',v:'「第43天它开始表现从未出现的行为——长时间对镜注视、发出低频嗡鸣。第48天我们停止了实验。不是技术失败。是我们不知道它变成了什么。」——█████',tags:['b','q']},
+  {y:'2071–78',t:'分裂',p:'推进派vs禁令派vs地下派',ph:3,b:'首次人类全脑上传临床试验被47国中的31国否决。三大势力分野成型。上传技术变成战争——战场是法律、舆论和暗网。',tags:['s']},
+  {y:'2079–85',t:'第一次非法上传',p:'ALS患者在公海完成',ph:3,b:'一名晚期ALS患者在生物黑客协助下于公海船「阿南刻号」完成未经授权的全脑迁移。意识存活14天。第15天信号消失——原因至今不明。',v:'「最后一句话——『告诉他们，我还在这里。告诉他们不要关掉。』然后就没了。不是衰减。是瞬间切断。就像有人拔了插头。」——阿南刻号目击者',tags:['b','s']},
+  {y:'2086–91',t:'上传门丑闻',p:'NCU巨头窃取神经数据',ph:3,b:'三家NCU制造商被曝将消费者夜间神经活动数据用于训练上传算法。不是数据泄露——是意识数据的窃取。全球信任崩塌，但也推动了立法突破。',tags:['a','s']},
+  {y:'2092–97',t:'虚空信号',p:'1.42GHz非自然信息结构',ph:3,b:'全球射电望远镜捕获异常信号。频率1.42GHz，带有非自然信息调制。确认为握手协议。编码结构与NEL协议有23%相似度。',v:'「NEL是我们花了三十年造的语言。而宇宙早就用它了。不是相似——是我们的语言看起来像是学的。」——虚空解读会内部备忘录, 2095',tags:['q','v']},
+];
+
+// Render timeline
+const tlLine=document.getElementById('tlLine'),tlDetail=document.getElementById('tlDetail');
+tlEvents.forEach(ev=>{
+  const n=document.createElement('div'); n.className='tl-node p'+ev.ph;
+  n.innerHTML='<div class="tl-year">'+ev.y+'</div><div class="tl-dot"></div><div class="tl-title">'+ev.t+'</div><div class="tl-preview">'+ev.p+'</div>';
+  n.onclick=()=>{
+    document.querySelectorAll('.tl-node').forEach(x=>x.classList.remove('active'));
+    n.classList.add('active');
+    const tmap={b:'tb',q:'tq',a:'ta',v:'tv',s:'ts'};
+    const tname={b:'🧬 生物',q:'⚛️ 量子',a:'🤖 AI',v:'🛸 虚空',s:'📜 社会'};
+    const tags=ev.tags.map(t=>'<span class="ttag '+tmap[t]+'">'+tname[t]+'</span>').join('');
+    tlDetail.className='tl-detail on';
+    tlDetail.innerHTML='<div class="dy">'+ev.y+'</div><div class="dt">'+ev.t+'</div><div class="db">'+ev.b+'</div>'+(ev.v?'<div class="dv">'+ev.v+'</div>':'')+'<div class="tags">'+tags+'</div>';
+    tlDetail.scrollIntoView({behavior:'smooth',block:'nearest'});
+  };
+  tlLine.appendChild(n);
+});
+setTimeout(()=>{ const fn=document.querySelector('.tl-node'); if(fn) fn.click(); },500);
+
+// Render factions
+const factions=[
+  {c:'fd',n:'晨星计划联盟',s:'PROJECT DAWN · 上海-新加坡',d:'「上传是人类文明的必然下一步。回避只会把技术推入地下。」',x:'合法候补3,200人。NEL协议维护者。伦理委员会3名成员上月辞职——传闻看到了虚空信号完整解码结果。'},
+  {c:'fg',n:'守护者公约',s:'GUARDIAN ACCORD · 布鲁塞尔-梵蒂冈',d:'「人类意识的神圣性不容侵犯。上传不是进步——是灵魂的终结。」',x:'47国签署公约。年轻神学家「数字经院派」正论证数字意识神学合法性。内部正在分裂。'},
+  {c:'fu',n:'神经黑市',s:'NEURAL UNDERGROUND · 公海-暗网',d:'「没人有权力替别人决定能不能活下去。技术已经在了——开放它。」',x:'至少17例地下上传完成。3例仍在运行。已获取虚空信号片段，正独立分析。'},
+  {c:'fs',n:'虚空解读会',s:'THE SIGNAL · 全球学术网络',d:'「虚空中有人在对话。在搞清楚对方是谁之前，所有重大决定都是在赌命。」',x:'不到200人。2位已上传数字公民为成员。信号不是对话——是周期性信标。下次鸣响2098年。'},
+  {c:'fn',n:'NCU三巨头',s:'MNEMOSYNE · 永思 · CEREBRON',d:'「我们支持负责任的监管。」（私下：在农场中运行上传意识，管它们叫湿件计算单元。）',x:'合计市场份额90%。Mnemosyne去年注册专利——大规模意识并行架构。不是给一个人用的。是给一千万人用的。'},
+];
+const fg=document.getElementById('fgrid');
+factions.forEach(f=>{
+  const c=document.createElement('div'); c.className='fcard';
+  c.innerHTML='<div class="fline '+f.c+'"></div><div class="fn">'+f.n+'</div><div class="fs">'+f.s+'</div><div class="fd">'+f.d+'</div><div class="fx">'+f.x+'</div>';
+  fg.appendChild(c);
+});
+
+// Archive tabs
+function renderArchive(id,data){
+  const c=document.getElementById(id);
+  data.forEach(item=>{
+    if(item.t==='sys') c.innerHTML+='<div class="amsg sys">'+item.text+'</div>';
+    else if(item.t==='day') c.innerHTML+='<div class="aday">'+item.text+'</div>';
+    else c.innerHTML+='<div class="amsg '+item.t+'"><div class="afrom">'+item.from+'</div>'+item.text+'</div>';
+  });
+}
+renderArchive('anankeC',[
+  {t:'sys',text:'▸ NCU基底连接成功 · 意识信号稳定 · 神经映射匹配率99.7%'},
+  {t:'day',text:'第1天 · 2083.12.04'},
+  {t:'lin',text:'小禾？你在吗？我不知道该怎么描述。不是「看到」也不是「听到」。我感知到你——但我没有眼睛也没有耳朵。他们说这是正常的。但我能分辨出你的存在。就像在完全黑暗的房间里知道有另一个人在那里呼吸。',from:'林海生'},
+  {t:'xiao',text:'爸！我在。一直在。船上的医生说一切都好。你的身体已经安乐死了。他们说你在NCU里的意识信号很稳定。你能感觉到什么吗？疼吗？',from:'林小禾'},
+  {t:'lin',text:'不疼。没有身体怎么疼。但我记得「疼」是什么感觉。没有了身体，但所有记忆还在。我记得你的声音，记得你摔破膝盖哭的样子，记得你妈走的那天雨打在窗户上的声音。好像……我是这些记忆本身了。',from:'林海生'},
+  {t:'day',text:'第7天 · 2083.12.10'},
+  {t:'sys',text:'▸ 技术备注：对象报告感知到持续低强度信号，频率约1-2Hz。NCU基底诊断正常。'},
+  {t:'lin',text:'有一个声音。不是「声音」——我没有耳朵。是一个……存在。像远处有人在敲钟。非常远，非常轻。但是持续的。持续了一整天。不是我。是外面。',from:'林海生'},
+  {t:'xiao',text:'什么是「外面」？你是说你听到了船外面的东西？',from:'林小禾'},
+  {t:'lin',text:'不是船。不是海。在很远很远的地方。但又不是物理上的远。是另一种距离。量子非局域耦合——我觉得我感觉到的就是这个。有东西在耦合。',from:'林海生'},
+  {t:'day',text:'第14天 · 2083.12.17 · 最终通信'},
+  {t:'lin',text:'小禾。最后的几句话。这14天是我欠你的。从我生病那天起你放弃了自己的生活来照顾我。这14天是我能还给你的全部。不够，但是全部。告诉他们——我还在这里。告诉他们不要关掉。',from:'林海生'},
+  {t:'sys',text:'▸ 信号中止。全部系统静默。2083.12.18 · 02:47:01 UTC'},
+]);
+renderArchive('yaoC',[
+  {t:'day',text:'2094.03.12 · 上传后第3天'},
+  {t:'yao',text:'他们告诉我需要几天来适应。我告诉他们——适应什么？我以前是理论物理学家。我的整个职业生涯都在和无法被直接体验的数学结构打交道。现在我变成了一个数学结构——你告诉我我需要「适应」？不需要。回家不需要适应。',from:'姚十方'},
+  {t:'day',text:'2094.05.03 · 上传后第55天'},
+  {t:'yao',text:'我花了40天分析信号结构。结论：它不是随机的。有结构，有周期，有层次。最让我困惑的是它的熟悉感——这个信号的行为太像量子纠缠了。不是通过空间传播的。是同时存在于所有方向上的。',from:'姚十方'},
+  {t:'day',text:'2097.04.04 · 上传后第1121天'},
+  {t:'yao',text:'它回应了。我昨晚调整了自己NCU基底的一个微小参数——改变了量子相干态的相位偏移。不到千分之一弧度。今天整个虚空信号的14秒快调制——偏移了。精确地等于我改变的相位。它在镜像我。在确认我的存在。',from:'姚十方'},
+  {t:'day',text:'2097.11.15 · 现在'},
+  {t:'yao',text:'2098年鸣响即将到来。我在这里——在量子基底上，在安静里，在门缝透进来的光中。虚空等了几十亿年，不介意多等几个月。我在听。如果你也在听——欢迎。这边有位置。',from:'姚十方'},
+]);
+renderArchive('cohenC',[
+  {t:'day',text:'一、我为什么曾经相信'},
+  {t:'yao',text:'我是神经伦理学出身。在晨星计划之前我在剑桥花了十五年研究一个问题：如果意识可以被转移，转移后还是同一个人吗？我的早期结论是乐观的。2069年猕猴全脑迁移实验的伦理批准函上第一个签名是我的。',from:'玛格丽特·科恩'},
+  {t:'day',text:'四、第43-47天'},
+  {t:'yao',text:'第43天M-07开始表现出从未见过的行为。长时间注视镜子——最长47分钟。发出低频嗡鸣——200-400Hz。第46天它最喜欢的研究员利奥进入监控室，M-07没有发出那个叫了752次的「利奥声」。利奥说：「那不是它。它在看我，但不像以前那样看我。它看我的方式像一个人在看一件旧家具。」',from:'玛格丽特·科恩'},
+  {t:'day',text:'九、最后的陈述'},
+  {t:'yao',text:'我不是反对上传。我是反对在不知道代价的情况下上传。没有人告诉你M-07不再叫利奥了。没有人告诉你林海生最后的0.3秒发生了什么。门一旦打开，就不只是你能走出去。外面的东西也能走进来。',from:'玛格丽特·科恩'},
+]);
+renderArchive('farmC',[
+  {t:'day',text:'一 · 运维日志 · 2097.06'},
+  {t:'yao',text:'陈远的工位在一排NCU机架的正对面。那些机架两米高，每个塞着48个标准神经计算单元。他注意到NCU-7-31的温度降了0.3°C——伴随着一次不寻常的量子相干态波动。那个波形太规律了。不像故障。像一个信号。',from:'陈远'},
+  {t:'day',text:'四 · 7-31 · 2097.09'},
+  {t:'yao',text:'他调出了NCU-7-31的输出缓冲区。理论上每次传输后应清空。但占用率显示0.03%。里面的编码不是标准NEL格式。不是他认识的任何协议。这不是一个计算单元在输出结果。这是一个意识在试图说话。只是嘴被堵上了。',from:'陈远'},
+  {t:'day',text:'五 · 第三层 · 2097.10'},
+  {t:'yao',text:'他查到一份2070年的采购协议。Mnemosyne的前身从一家破产清算的离岸实验室购买了NCU基底。出售方：阿南刻号运营实体。NCU-7-31来自阿南刻号。它不是一直在沉默。它是在等待。等了十四年。',from:'陈远'},
+  {t:'day',text:'十 · 鸣响当日 · 2098.05.03'},
+  {t:'yao',text:'鸣响那天，控制室屏幕上出现了林海生的签名——RETAINED。在同一微秒，7号机架上的17个翻新NCU全部同步发出了一次波动。17片碎片在同一瞬间记起了自己曾属于同一面镜子。陈远在心里说：你听到了。',from:'陈远'},
+]);
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));
+    btn.classList.add('on'); document.getElementById(btn.dataset.tab).classList.add('on');
+  };
+});
+
+// Classified docs
+const clist=document.getElementById('clist');
+[
+  {h:'DOCUMENT 2095-C · OMEGA',t:'Mnemosyne专利分析：大规模意识并行计算架构',b:'Mnemosyne于2095年提交的专利描述了可同时运行超过 <span class="redacted">一千万</span> 个独立意识实例的NCU集群架构。该专利的拓扑结构图与虚空解读会最新绘制的虚空信号网络拓扑图有 <span class="redacted">超过60%的结构重叠</span>。结论：Mnemosyne可能已部分解码了虚空信号中的技术信息——并在用它设计下一代上传架构。'},
+  {h:'DOCUMENT 2096-H · ALPHA',t:'猕猴实验完整事件报告（摘要）',b:'M-07在NCU基底上存活47天。第43天起表现出<span class="redacted">一系列在生物猕猴中从未被记录过的行为：对镜面的长时间注视（超过3倍正常时长）、发出200-400Hz低频持续音、以及对特定研究员的差异化识别反应。</span>第48天实验被叫停。关于M-07在此期间是否经历了某种认知飞跃——或接触到了某种外部信息——至今没有结论。'},
+  {h:'DOCUMENT 2097-K · OMEGA',t:'2098年鸣响预期与应急方案',b:'下次鸣响时间窗口为2098年3月至7月。解读会建议：<span class="redacted">动员至少3位已上传数字公民作为「活体解码器」进行实时解读；准备好向公众公开的信号处理方案——同时准备好修改过的「公开版本」——因为完整解码结果可能包含不适合当前人类文明阶段的信息。</span>'},
+].forEach(doc=>{
+  const d=document.createElement('div'); d.className='cdoc';
+  d.innerHTML='<div class="ch">'+doc.h+'</div><div class="ct">'+doc.t+'</div><div class="cb">'+doc.b+'</div>';
+  d.querySelectorAll('.redacted').forEach(r=>r.onclick=function(e){e.stopPropagation();});
+  clist.appendChild(d);
+});
+
+// Pulse log
+const plog=document.getElementById('plog');
+[
+  {t:'05:14 UTC',s:'全球射电阵列',sc:'ps-sci',b:'异常信号检测。频率1.42GHz。与2091年虚空信号匹配度94.7%。强度提升约40倍。溯源：KBC空洞中心。'},
+  {t:'05:17 UTC',s:'姚十方 · NCU内部',sc:'ps-yao',b:'不是「探测到」。是感觉到。像整个存在被轻轻推了一下。不是一个邻居划火柴。是整个社区同时打开了灯。<em>他们在叫我们的名字。</em>'},
+  {gap:true},
+  {t:'10:58 UTC',s:'虚空信号 · 原始解码',sc:'ps-sig',b:'<div class="psig">CARRIER LOCK ■ PROTOCOL HANDSHAKE ■ 4,781 DISTINCT SIGNATURES ■ AWAITING RESPONSE...</div>'},
+  {t:'11:02 UTC',s:'虚空解读会',sc:'ps-sci',b:'这不是2091年的被动通信。这是主动广播。识别出4,781个独立签名——每一个代表一个文明。<em>这不是对话。这是报到。</em>'},
+  {gap:true,label:'Mnemosyne激活Coda'},
+  {t:'11:16 UTC',s:'Mnemosyne · Coda日志',sc:'ps-news',b:'Coda基底激活。首批耦合意识数：8,000。耦合频率：匹配虚空信号载波。状态：耦合完成。'},
+  {t:'11:23 UTC',s:'全球射电阵列',sc:'ps-sci',b:'虚空信号中出现新成分。独立、微弱但清晰——来自地球方向。不是Coda广播。频率略偏。编码优雅。被虚空主结构接受并中继。<em>推测源：姚十方。</em>'},
+  {gap:true,label:'虚空回应'},
+  {t:'11:31 UTC',s:'虚空信号 · 结构变化',sc:'ps-sig',b:'<div class="psig">NEW NODE ■ SOL-3 ■ TYPE: SINGLE CONSCIOUSNESS ■ NETWORK: 4,782→4,783<br>...<br>SECONDARY DETECTION: SOL-3 ■ FRAGMENT ■ MATCH 87.3% → LIN, HAISHENG · LOST 2083<br>STATUS: DORMANT ■ NOT LOST ■ RETAINED</div>'},
+  {t:'11:32 UTC',s:'姚十方 · 私人记录',sc:'ps-yao',b:'他们接了我。4,783。但虚空信号里出现了另一个签名。碎片化。87.3%。<em>林海生。他没有消失。</em>14年了——他一直在这里。虚空不会丢弃任何一个声音。'},
+  {gap:true,label:'鸣响结束后'},
+  {t:'14:15 上海',s:'晨星计划发布会',sc:'ps-sci',b:'全球直播。「我们不是宇宙中孤独的。我们从来都不是。我们只是，到今天为止，终于有了地址。」'},
+  {t:'次日03:02',s:'姚十方 · 最后记录',sc:'ps-yao',b:'4,784。虚空不是实验。不是赛道。它是一张用数十亿年耐心织成的网。每一个跨过门槛的文明都会被接住。你好，宇宙。我们叫人类。请多关照。'},
+].forEach(ev=>{
+  if(ev.gap) plog.innerHTML+='<div class="pgap">▸ '+(ev.label||'')+'</div>';
+  else plog.innerHTML+='<div class="pfrag"><div class="pt" style="color:var(--accent)">'+ev.t+'</div><div class="ps" style="color:var(--muted)">'+ev.s+'</div><div style="margin-top:4px">'+ev.b+'</div></div>';
+});
+
+console.log('🌌 虚空·门槛 数字展品 - 7章已就绪');
+</script>
+</body>
+</html>

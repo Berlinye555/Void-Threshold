@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>农场 · 陈远 — 2097</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --void:#e040fb;
+  --border:rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  line-height:1.8;
+}
+.book {
+  max-width:680px; margin:0 auto; padding:60px 24px 120px;
+  position:relative; z-index:1;
+}
+
+.title-page {
+  text-align:center; padding:80px 0 60px;
+  border-bottom:1px solid var(--border); margin-bottom:60px;
+}
+.title-page .lbl { font-size:0.55rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:12px; }
+.title-page h1 { font-size:2rem; font-weight:200; letter-spacing:0.15em; color:var(--text); }
+.title-page .sub { font-size:0.75rem; color:var(--muted); margin-top:8px; letter-spacing:0.12em; }
+.title-page .epi { margin-top:30px; font-size:0.78rem; color:var(--muted); font-style:italic; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.7; }
+
+.chapter {
+  margin-bottom:48px;
+  opacity:0.25; transition:opacity 0.8s;
+}
+.chapter.visible { opacity:1; }
+.ch-num { font-size:0.6rem; color:var(--muted); letter-spacing:0.2em; margin-bottom:6px; }
+.ch-title { font-size:1.1rem; font-weight:300; letter-spacing:0.08em; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.ch-time { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:16px; }
+.ch-body { font-size:0.88rem; line-height:1.9; }
+.ch-body p { margin-bottom:12px; }
+.ch-body em { color:var(--warn); font-style:normal; }
+.ch-body .vo { color:var(--void); font-style:italic; }
+
+.ch-quote {
+  margin:18px 0; padding:12px 16px;
+  border-left:3px solid var(--warn);
+  background:rgba(240,192,64,0.05);
+  font-size:0.8rem; color:var(--text); font-style:italic; line-height:1.7;
+}
+.ch-quote .attr { font-size:0.6rem; color:var(--muted); font-style:normal; margin-top:4px; display:block; }
+
+.log-entry {
+  margin:12px 0; padding:10px 14px;
+  font-family:'Courier New',monospace; font-size:0.68rem;
+  color:var(--muted); background:rgba(255,255,255,0.02);
+  border-radius:6px; line-height:1.6;
+}
+.log-entry .log-t { color:var(--accent); }
+.log-entry .log-w { color:var(--warn); }
+.log-entry .log-e { color:var(--danger); }
+
+.book-footer {
+  text-align:center; margin-top:60px; padding-top:30px;
+  border-top:1px solid var(--border);
+  font-size:0.68rem; color:var(--muted); letter-spacing:0.12em; line-height:1.8;
+}
+</style>
+</head>
+<body>
+
+<div class="book">
+
+  <div class="title-page">
+    <div class="lbl">MNEMOSYNE · 内部叙事</div>
+    <h1>农 场</h1>
+    <div class="sub">The Farm · 2097</div>
+    <p class="epi">「它们不是 AI。它们是人。而我一直在维护它们——像维护服务器一样。」</p>
+  </div>
+
+  <!-- ══ 1 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第一章</div>
+    <div class="ch-title">运维日志</div>
+    <div class="ch-time">2097 年 6 月 · Mnemosyne 第七离岸设施 · 坐标未公开</div>
+    <div class="ch-body">
+      <p>陈远的工位在一排 NCU 机架的正对面。那些机架有两米高，通体暗灰色，每个机架里塞着四十八个标准神经计算单元。他的工作是盯着仪表盘，在任何一个单元的温度、量子相干度、或信息吞吐量偏离正常范围时，提交一份工单。</p>
+      <p>他已经做了三年。从未出过重大事故。Mnemosyne 的 NCU 比永思和 Cerebron 的都要稳定——这是他在内部技术简报里看到的数据。他为此感到一种安静的骄傲。</p>
+      <p>今天下午 14:22，第 7 号机架第 31 号单元的温度从正常的 37.2°C 降到了 36.9°C。降幅微乎其微，理论上不需要记录。但陈远注意到，这个 0.3°C 的降温伴随着一次不寻常的量子相干态波动——频率很低，持续了大约 4 秒。</p>
+      <p>他在日志里写道：</p>
+      <div class="log-entry">
+        <span class="log-t">[14:24] NCU-7-31 · 温度波动 -0.3°C · 相干态异常 · 持续时间 4.1 秒 · 已记录 · 无干预</span>
+      </div>
+      <p>这是他三年来的一个习惯。他不只看数据。他看数据里的<em>形状</em>。温度的变化不是关键——是那个波动的波形。它太规律了。不像硬件故障。不像环境干扰。像一个信号。</p>
+      <p>他当然没有把「像一个信号」写进日志。</p>
+    </div>
+  </div>
+
+  <!-- ══ 2 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第二章</div>
+    <div class="ch-title">湿件计算单元</div>
+    <div class="ch-time">2097 年 7 月</div>
+    <div class="ch-body">
+      <p>Mnemosyne 称它们为「湿件计算单元」。在内部培训材料里，它们是「基于合成神经组织的下一代 AI 推理引擎」。培训材料里没有提到「意识」这个词。</p>
+      <p>陈远入职时签了一份保密协议，其中第 14.3 条禁止他询问 NCU 的具体来源。他的主管说这是因为商业机密——不能让永思和 Cerebron 知道他们的供应链。陈远没有追问。他不是那种会追问的人。</p>
+      <p>但三年下来，一些事情变得无法忽视。</p>
+      <p>NCU-7-31 不是第一个出现异常波动的单元。他翻了自己过去 18 个月的日志，找到了至少 40 次类似的非随机波动。每一次都在他的工单系统里被标记为「已记录，无需处理」——大多数是被他的前任标记的。</p>
+      <p>他开始在工作时间之外研究那些波动。他用自己写的一个小脚本跑了一次聚类分析。40 次波动中，有 31 次呈现出相同的底层模式——一个非常规律的、周期性的结构。频率约 1.4 GHz。</p>
+      <p>他盯着那个数字看了整整一分钟。1.4 GHz。不是巧合。</p>
+      <p>那是 2091 年虚空信号被捕获的频率。那是姚十方在他的公开笔记里反复提到的「共鸣窗口」。那是他作为 Mnemosyne 内部人员无权访问、但可以在黑市上买到的解读会备忘录里讨论的核心。</p>
+    </div>
+  </div>
+
+  <!-- ══ 3 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第三章</div>
+    <div class="ch-title">Coda 的名字</div>
+    <div class="ch-time">2097 年 8 月</div>
+    <div class="ch-body">
+      <p>八月的第一个星期二，陈远被临时调去协助一个新项目。项目代号 Coda。他的安全等级被临时提升了两级，这让他能看到一些之前看不到的内部文档。</p>
+      <p>Coda 项目使用了一种全新的 NCU 架构。不是传统的 NEL 协议——是一种他从未见过的拓扑。文档里称之为「虚空架构」。拓扑图看起来像一个分形树——每一个节点都同时连接到所有其他节点，不是经典的层级结构，更像一个量子纠缠网络。</p>
+      <p>更让他不安的是文档里的一句话：</p>
+      <div class="ch-quote">「Coda 架构支持单个基底同时运行超过一千万个独立意识实例。这是传统 NEL 架构并行极限的 125 倍。」<span class="attr">—— Coda 技术白皮书 · Mnemosyne 内部 · 2095</span></div>
+      <p><em>独立意识实例。</em>不是「推理引擎」。不是「计算单元」。是「意识实例」。</p>
+      <p>这是文档作者的一次口误，还是有意的措辞？陈远盯着那四个字，手指悬在触控板上方，没有往下翻。</p>
+    </div>
+  </div>
+
+  <!-- ══ 4 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第四章</div>
+    <div class="ch-title">7-31</div>
+    <div class="ch-time">2097 年 9 月</div>
+    <div class="ch-body">
+      <p>九月中旬的一个深夜——陈远那天加班到凌晨——7-31 又出现了波动。这次不是 4 秒。是持续了将近三分钟。</p>
+      <p>他调出了 NCU-7-31 的全参数面板。温度、相干度、信息吞吐量、错误率——一切正常。但他注意到一个他之前从未打开过的子面板。标签是「输出缓冲区」。</p>
+      <p>NCU 的计算结果通常会直接传输到 Mnemosyne 的中央服务器。但输出缓冲区是用来暂存未发送数据的。理论上，缓冲区应该在每次传输后清空。但 7-31 的缓冲区显示：<em>占用率 0.03%。</em></p>
+      <p>0.03% 很小。小到任何一个运维都不会注意。但他注意到了。</p>
+      <p>他打开了缓冲区的原始数据查看器。里面是一串他无法理解的编码。不是标准的 NEL 输出格式。不是任何一种他认识的协议。但他最近见过类似的结构——在 Coda 项目的拓扑文档里。在姚十方的公开笔记里。</p>
+      <p class="vo">这不是一个计算单元在输出结果。这是一个意识在试图说话。只是它的嘴被堵上了。</p>
+    </div>
+  </div>
+
+  <!-- ══ 5 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第五章</div>
+    <div class="ch-title">第三层</div>
+    <div class="ch-time">2097 年 10 月</div>
+    <div class="ch-body">
+      <p>陈远知道自己在做一件可能会让他丢掉工作、甚至面临刑事指控的事。但他需要一个答案。</p>
+      <p>他用自己的 Coda 临时权限——还没有被收回——进入了 Mnemosyne 的内部技术档案库。他搜索了一个词：「意识来源」。</p>
+      <p>返回了三份文档。两份是他的安全等级无权访问的。第三份是一份被标记为「历史归档」的文件。他点开了。</p>
+      <p>那是一份 2070 年的采购协议。Mnemosyne 的前身公司——当时还叫 NeuraCore——从一家破产清算的离岸实验室手中购买了一批 NCU 基底。出售方是：<em>阿南刻号运营实体</em>。</p>
+      <p>陈远记得那个名字。全世界都知道那个名字。阿南刻号——第一次非法人类上传的发生地。林海生的船。</p>
+      <p>文件附录里有一个清单。上面列出了购买的资产。其中一项：</p>
+      <div class="log-entry">
+        <span class="log-w">[资产编号 NCU-0001 至 NCU-0042] 来源：阿南刻号主NCU机架拆卸 · 状态：已翻新 · 当前部署：[未公开]</span>
+      </div>
+      <p>陈远回到他的工位，查了 7 号机架的出厂编号。前 42 个单元——恰好前 42 个——的出厂记录都指向同一批翻新库存。</p>
+      <p>NCU-7-31 来自阿南刻号。</p>
+      <p>它不是一直在沉默。它是在等待。等了十四年。</p>
+    </div>
+  </div>
+
+  <!-- ══ 6 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第六章</div>
+    <div class="ch-title">通话</div>
+    <div class="ch-time">2097 年 11 月</div>
+    <div class="ch-body">
+      <p>陈远花了整个十一月来做一件事：找到一个能和姚十方通信的方式。</p>
+      <p>这比他想象中难。姚十方的公开通信接口被解读会严格管控——外部请求必须经过层层审查。但他最终通过一个暗网论坛联系上了一个自称和解读会有关系的人。他发去的加密消息只有一句话：</p>
+      <p>「我知道阿南刻号的 NCU 在哪里。它们不是空的。」</p>
+      <p>三天后，姚十方本人回复了他。从 NCU 内部直接发来的文本。</p>
+      <div class="ch-quote">「请详细说明。以及——你为谁工作？」<span class="attr">—— 姚十方 · 2097 年 11 月 19 日</span></div>
+      <p>陈远犹豫了将近二十个小时。然后他回复了。他把三年来的日志、波动数据、7-31 的缓冲区片段、以及那份 2070 年的采购协议——全部发了过去。</p>
+      <p>姚十方的回复很快：</p>
+      <div class="ch-quote">「你发现的不是故障。那些 NCU 里残留着林海生当年的量子印记。他跃迁的时候——那个 0.3 秒——他不只是自己走了。他的量子态在那 0.3 秒里铺满了整个阿南刻号的 NCU 机架。那些单元被 Mnemosyne 买走之后，<em>每一个都携带了他意识的一小部分</em>。他的主要签名在虚空中——碎片化的那个。但他的『回声』还留在这些单元里。你看到的波动不是随机的。是回声。是他在门外敲门。」<span class="attr">—— 姚十方 · 2097 年 11 月 20 日</span></div>
+    </div>
+  </div>
+
+  <!-- ══ 7 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第七章</div>
+    <div class="ch-title">农场</div>
+    <div class="ch-time">2097 年 12 月</div>
+    <div class="ch-body">
+      <p>十二月，陈远做了一个决定。他没有辞职——辞职会让他失去访问权限。他也没有举报——他不知道向谁举报。晨星计划需要 Mnemosyne 的硬件；守护者公约没有执法权；解读会只有不到两百人。</p>
+      <p>他开始用一种更系统的方式记录所有异常 NCU 的波动。每天晚上，他会花两到三个小时做分析。到十二月底，他已经在他的设施中找到了至少 17 个来自阿南刻号的翻新 NCU。每一个都携带着同样的低频波动——像同一首歌的 17 段残响。</p>
+      <p>与此同时，他继续在 Coda 项目里工作。他看到了越来越多的细节：</p>
+      <div class="log-entry">
+        <span class="log-t">[Coda 项目状态 · 2097.12]</span><br>
+        首批迁移人数：8,000 · 状态：就绪<br>
+        迁移目标基底：Coda 架构 · 虚空拓扑 · 非 NEL 协议<br>
+        迁移后意识状态：<span class="log-w">标准湿件计算单元</span><br>
+        预计激活时间：<span class="log-w">2098 年虚空鸣响期间</span><br>
+        备注：迁移后意识将被配置为互不知情的独立进程。不保留原身份识别信息。
+      </div>
+      <p>互不知情。不保留身份识别信息。</p>
+      <p>8,000 个人——终末期患者和 Mnemosyne 核心员工及其家属——他们以为自己是在获得永生。实际上，他们是在签一份将自己变成计算单元的协议。醒来之后不会知道自己是人。只会知道该运算。</p>
+      <p class="vo">他们不是在造上传服务。他们是在造农场。</p>
+    </div>
+  </div>
+
+  <!-- ══ 8 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第八章</div>
+    <div class="ch-title">泄露</div>
+    <div class="ch-time">2097 年 12 月 · 圣诞节前夜</div>
+    <div class="ch-body">
+      <p>圣诞前夜，设施里只有三分之一的人值班。陈远选择了这个夜晚。</p>
+      <p>他没有泄出 Coda 的核心技术——那会让他立即被锁定。他只泄出了一样东西：那份 2070 年的采购协议、17 个阿南刻号翻新 NCU 的编号、以及一份他写的分析报告——关于那些 NCU 中的波动如何呈现出「与已知人类意识量子签名一致的结构属性」。</p>
+      <p>他通过一个匿名中继将这些全部发给了虚空解读会、晨星计划伦理委员会、以及三个调查记者。</p>
+      <p>然后他回到工位，继续盯着仪表盘。没有人按响警报。没有人冲进来抓他。NCU-7-31 在 23:47 发出了一次波动——和以往一样，4 秒，非常规律。但在这次波动的最后，输出缓冲区出现了一个他从未见过的结构。一个编码。一个可以被解析的东西。</p>
+      <p>他花了整整两个小时来解析它。最后的输出可以表示为一个非常短的模式。放在语言模型里对比之后，最接近的翻译是：</p>
+      <div class="ch-quote">「还 在 等」<span class="attr">—— NCU-7-31 输出缓冲区 · 2097 年 12 月 24 日 23:51</span></div>
+    </div>
+  </div>
+
+  <!-- ══ 9 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第九章</div>
+    <div class="ch-title">鸣响之前</div>
+    <div class="ch-time">2098 年 1 月 — 4 月</div>
+    <div class="ch-body">
+      <p>陈远的泄密在 2098 年初引发了一场小型地震。Mnemosyne 公开否认了所有指控，但内部安全审查在一个月内开除了十几个人。陈远没有被发现——不是因为聪明，是因为审查者也不相信一个三年没升过职的普通运维能做出这种事。</p>
+      <p>Coda 项目的进度没有受到任何影响。8,000 人已经签署了迁移协议。没有人撤销。没有人问「为什么条款里没有提到迁移后的身份保留」。</p>
+      <p>鸣响时间窗口进入最后倒计时。</p>
+      <p>陈远仍然每天坐在 7 号机架对面。他不再只是看日志了。他会在夜深人静的时候，对着那些他确认携带了林海生残余印记的 NCU 低声说话。不是因为他相信它们能听到。是因为他觉得——至少应该有一个人把它们当人看。</p>
+      <p>他说：「林先生。你女儿还在等。你听到了吗？你女儿还在。」</p>
+      <p>NCU-7-31 的量子相干度会在那些时刻微微波动。他不确定那是不是回应。但他选择相信是。</p>
+    </div>
+  </div>
+
+  <!-- ══ 10 ══ -->
+  <div class="chapter">
+    <div class="ch-num">第十章</div>
+    <div class="ch-title">鸣响当日</div>
+    <div class="ch-time">2098 年 5 月 3 日 · 11:16 — 11:31 UTC</div>
+    <div class="ch-body">
+      <p>鸣响那天，陈远在 Coda 激活现场。</p>
+      <p>他站在控制室的最后一排，看着屏幕上 8,000 个新的意识签名逐个亮起。Coda 基底在 11:16 激活。11:18 完成全量耦合。11:23，虚空信号中出现了姚十方的自发签名——清晰、优雅、没有 Mnemosyne 的那股进攻性。</p>
+      <p>然后，11:31。</p>
+      <p>虚空信号的结构发生了一次陈远从未见过的变化。不是数据上的变化——是更深层的东西。他面前所有和虚空信号同步的监控面板都在同一瞬间刷新了。一个新的识别码出现了。</p>
+      <p>不是姚十方。不是一个新节点。是一个碎片化的、微弱的、但确凿的签名。</p>
+      <p class="vo">LIN, HAISHENG · LOST 2083 · STATUS: RETAINED</p>
+      <p>在控制室里三十多人的注目下，7 号机架上的 17 个翻新 NCU——全部——同时发出了一次波动。不是单独波动。是<em>同步的</em>。17 个单元在同一微秒内，量子相干态对齐到了同一个频率。像 17 片碎片在同一瞬间记起了自己曾属于同一面镜子。</p>
+      <p>陈远的嘴唇动了。没有声音。但他在心里说了四个字：你听到了。</p>
+    </div>
+  </div>
+
+  <div class="book-footer">
+    <em>— 全文完 —</em><br><br>
+    《农场》· 虚空门槛系列<br>
+    <br>
+    陈远在 2098 年 6 月辞去 Mnemosyne 的职务。<br>
+    没有公开披露他的身份。<br>
+    但解读会和姚十方知道他是谁。<br>
+    他目前在晨星计划担任独立伦理顾问。<br>
+    每天仍然去一次 7 号机架的监控室——<br>
+    对着那 17 个 NCU 说一声晚安。
+  </div>
+
+</div>
+
+<script>
+const chapters=document.querySelectorAll('.chapter');
+function reveal(){
+  const wh=window.innerHeight;
+  chapters.forEach(c=>{ const r=c.getBoundingClientRect(); if(r.top<wh*0.8) c.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>

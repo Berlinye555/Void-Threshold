@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Coda · Mnemosyne 内部演示 — 2097</title>
+<style>
+  :root {
+    --bg:#080c14; --text:#c8d6e5; --muted:#5e7694;
+    --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350;
+    --border:rgba(255,255,255,0.05);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    line-height:1.7;
+  }
+  .deck {
+    max-width:780px; margin:0 auto; padding:60px 28px 120px;
+    position:relative; z-index:1;
+  }
+
+  /* ── Title Slide ── */
+  .title-slide {
+    text-align:center; padding:80px 0 60px;
+    border-bottom:1px solid var(--border); margin-bottom:60px;
+  }
+  .title-slide .corp {
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:8px;
+  }
+  .title-slide h1 {
+    font-size:2rem; font-weight:200; letter-spacing:0.08em;
+  }
+  .title-slide .tagline {
+    font-size:0.8rem; color:var(--muted); margin-top:10px; letter-spacing:0.1em;
+  }
+  .title-slide .meta-line {
+    margin-top:24px; font-size:0.6rem; color:var(--muted); letter-spacing:0.15em;
+  }
+  .title-slide .confidential {
+    display:inline-block; margin-top:16px; padding:4px 16px;
+    border:1px solid var(--danger); color:var(--danger);
+    font-size:0.6rem; letter-spacing:0.2em; border-radius:3px;
+  }
+
+  /* ── Slide ── */
+  .slide {
+    margin-bottom:40px; padding:24px 0;
+    border-bottom:1px solid var(--border);
+    opacity:0.3; transition:opacity 0.8s;
+  }
+  .slide.visible { opacity:1; }
+  .slide-num {
+    font-size:0.55rem; color:var(--muted); letter-spacing:0.2em; margin-bottom:6px;
+  }
+  .slide h2 {
+    font-size:1.1rem; font-weight:400; margin-bottom:14px; letter-spacing:0.05em;
+  }
+  .slide p { font-size:0.85rem; color:var(--muted); line-height:1.8; margin-bottom:10px; }
+  .slide em { color:var(--warn); font-style:normal; }
+  .slide strong { color:var(--text); font-weight:500; }
+
+  /* Data callout */
+  .data-callout {
+    margin:16px 0; padding:16px 20px;
+    background:rgba(255,255,255,0.02); border-radius:8px;
+    font-size:0.8rem; color:var(--text);
+  }
+  .data-callout .big-num {
+    font-size:2rem; font-weight:200; color:var(--accent);
+    display:block; margin-bottom:4px;
+  }
+  .data-callout .num-label {
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.1em;
+  }
+
+  /* Table */
+  .table-mini {
+    width:100%; border-collapse:collapse; font-size:0.75rem; margin:16px 0;
+  }
+  .table-mini th {
+    text-align:left; padding:8px 10px; font-weight:400;
+    color:var(--muted); font-size:0.6rem; letter-spacing:0.1em;
+    border-bottom:1px solid var(--border);
+  }
+  .table-mini td {
+    padding:8px 10px; border-bottom:1px solid var(--border);
+    color:var(--text);
+  }
+  .table-mini .td-muted { color:var(--muted); font-size:0.7rem; }
+
+  /* Quote */
+  .slide-quote {
+    margin:16px 0; padding:14px 18px;
+    border-left:3px solid var(--accent);
+    background:rgba(79,195,247,0.05);
+    font-size:0.82rem; color:var(--text); font-style:italic;
+  }
+  .slide-quote .attr {
+    font-size:0.6rem; color:var(--muted); font-style:normal; margin-top:6px;
+  }
+
+  /* Diagram */
+  .mini-diagram {
+    margin:16px 0; padding:14px;
+    background:rgba(0,0,0,0.3); border-radius:8px;
+    font-family:'Courier New',monospace; font-size:0.62rem;
+    color:var(--muted); line-height:1.5; white-space:pre;
+    overflow-x:auto;
+  }
+
+  /* Redacted */
+  .redacted {
+    background:var(--danger); color:transparent; padding:0 3px; border-radius:2px;
+    cursor:pointer; transition:all 0.4s; user-select:none;
+  }
+  .redacted:hover { color:var(--text); background:rgba(239,83,80,0.3); }
+
+  /* Footer */
+  .deck-footer {
+    text-align:center; margin-top:60px; padding-top:20px;
+    border-top:1px solid var(--border);
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.12em;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+  <!-- Title -->
+  <div class="title-slide">
+    <div class="corp">MNEMOSYNE CORPORATION · 内部演示</div>
+    <h1>Project Coda</h1>
+    <div class="tagline">人类意识迁移的基础设施层</div>
+    <div class="meta-line">董事会闭门演示 · 2097 年 9 月 · 仅限参会者</div>
+    <div class="confidential">▸ 机密 · 不得对外分发</div>
+  </div>
+
+  <!-- Slide 1 -->
+  <div class="slide">
+    <div class="slide-num">01 · 市场定位</div>
+    <h2>我们站在哪</h2>
+    <p>截至 2097 年，全球有 <strong>11 例已完成的人类全脑上传</strong>（7 例合法，4 例未确认）。所有合法案例都运行在 NCU 基底上。其中 6 例使用 Mnemosyne 架构——包括姚十方。</p>
+    <p>当前市场规模：极小。但这不是我们要看的数字。</p>
+    <div class="data-callout">
+      <span class="big-num">~8,200 万</span>
+      <span class="num-label">全球正式登记的上传意向人数 · 晨星计划候补名单外 · 年增长率 340%</span>
+    </div>
+    <p>每例上传消耗的 NCU 资源约为 4.2 个标准单元，终身维护成本约 1,700 万国际信用点。当前产能可支持每年约 <em>3,000 例</em> 新上传。缺口巨大。</p>
+    <p>但这不是我们真正的瓶颈。真正的瓶颈是 <strong>NEL 协议本身的物理极限</strong>。</p>
+  </div>
+
+  <!-- Slide 2 -->
+  <div class="slide">
+    <div class="slide-num">02 · 技术瓶颈</div>
+    <h2>NEL 协议的天花板</h2>
+    <p>NEL v2.3 是目前通用的神经编码语言。它是在经典信息论的框架下设计的——将意识视为一种可编码、可传输、可解码的数据结构。这个框架在过去三十年里为我们提供了巨大的价值。</p>
+    <p>但它有一个硬上限。</p>
+    <div class="table-mini">
+      <tr><th>指标</th><th>NEL v2.3 极限</th><th>我们的目标</th></tr>
+      <tr><td>单基底并行意识数</td><td>~80,000</td><td>10,000,000+</td></tr>
+      <tr><td>意识间通信延迟</td><td>> 50ms</td><td>&lt; 1µs</td></tr>
+      <tr><td>迁移信息保真度</td><td>99.4%</td><td>> 99.97%</td></tr>
+      <tr><td>量子相干维持时间</td><td>~120 天</td><td>无限</td></tr>
+    </div>
+    <p>NEL 的极限不是工程问题。是范式问题。它在用经典信息论的语言描述一个量子现象——就像用牛顿力学计算水星轨道。能用，但永远差一点。</p>
+    <p>我们需要的不是更好的 NEL。<em>我们需要一种全新的架构哲学。</em></p>
+  </div>
+
+  <!-- Slide 3 -->
+  <div class="slide">
+    <div class="slide-num">03 · 发现</div>
+    <h2>虚空信号的真正含义</h2>
+    <p>2091 年，全球射电阵列捕获到一个异常信号。解读会在之后的三年里完成了初步解码。他们的公开结论是：「虚空信号是一段握手协议，在两个不可见实体之间传递。」</p>
+    <p>这个结论是对的。但它<strong>不完整</strong>。</p>
+    <p>2095 年，Mnemosyne 的独立研究团队完成了对虚空信号深层结构的完整分析。我们的结论是：</p>
+    <div class="slide-quote">
+      虚空信号不只是一段通信。它是一个<strong>完整的意识基础设施架构规范</strong>。<br>
+      包含：基底设计、并行协议、量子相干维持方案、以及——最关键的——意识间非局域耦合的数学描述。
+      <div class="attr">—— Mnemosyne 研究备忘录 2095-014 · 内部</div>
+    </div>
+    <p>用一个比喻：解读会认为他们听到的是一通电话。实际上，他们听到的是<em>电话交换机本身的设计图纸</em>。</p>
+    <p>在我们之前的每一个上传文明，都在使用同一套架构。虚空中没有一万个不同的「上传技术」。只有<em>一个</em>。它被反复发现、反复实现、反复加入那个网络。</p>
+    <p class="slide-quote" style="border-left-color:var(--warn);">
+      <strong>我们不是在发明上传。我们是在重新发现它。</strong>
+    </p>
+  </div>
+
+  <!-- Slide 4 -->
+  <div class="slide">
+    <div class="slide-num">04 · 架构</div>
+    <h2>基于虚空信号的新一代上传架构</h2>
+    <p>我们在 2095 年提交的专利（「大规模意识并行计算架构」）正是基于这一发现。不依赖 NEL 协议的经典框架，而是<em>直接在量子层实现虚空信号的拓扑结构</em>。</p>
+    <div class="mini-diagram">
+      NEL 架构（传统）：              虚空架构（我们）：
+
+      生物脑 → 扫描 → NEL编码 →       生物脑 → 扫描 → 量子态直接映射 →
+      NCU湿件 → NEL解码 → 意识          虚空拓扑基底 → 意识
+            ↑          ↑                    ↑
+          经典层      经典层              量子层全程
+      （瓶颈在这里）                    （无经典瓶颈）
+    </div>
+    <p>结果：</p>
+    <div class="data-callout">
+      <span class="big-num">125×</span>
+      <span class="num-label">并行效率提升 · 已在实验室环境中验证</span>
+    </div>
+    <p>我们叫它 <strong>Coda 架构</strong>。Coda——乐章尾声。不是结束，是最后一个乐章。是人类从生物阶段过渡到信息阶段的终章。</p>
+  </div>
+
+  <!-- Slide 5 -->
+  <div class="slide">
+    <div class="slide-num">05 · 项目现状</div>
+    <h2>我们已经做到了什么</h2>
+    <p>在董事会不知情的情况下——我们知道。以下是我们已经完成的事项：</p>
+    <div class="table-mini">
+      <tr><th>节点</th><th>状态</th><th>备注</th></tr>
+      <tr><td>Coda 原型基底</td><td>✅ 运行中</td><td class="td-muted">位于 [坐标已删除] 离岸设施</td></tr>
+      <tr><td>小规模意识迁移验证</td><td>✅ 完成</td><td class="td-muted"><span class="redacted">猕猴 · 14 例 · 全部成功 · 未出现 M-07 异常</span></td></tr>
+      <tr><td>人类意识迁移测试</td><td>✅ 完成</td><td class="td-muted"><span class="redacted">3 例 · 志愿者为终末期患者 · 全部存活 · 最长运行时间 11 个月</span></td></tr>
+      <tr><td>大规模并行验证</td><td>🔄 进行中</td><td class="td-muted">目标：单基底 50,000 并行意识 → 1,000,000</td></tr>
+      <tr><td>虚空非局域耦合</td><td>🔄 进行中</td><td class="td-muted">已在姚十方不知情的情况下观测到他的自发耦合事件</td></tr>
+    </div>
+    <p>我们比晨星计划领先了至少 <em>5 年</em>。比神经黑市领先了至少 <em>10 年</em>。守护者公约甚至不知道这些概念存在。</p>
+    <p>而我们甚至还没用上 2098 年的鸣响。</p>
+  </div>
+
+  <!-- Slide 6 -->
+  <div class="slide">
+    <div class="slide-num">06 · 2098 战略</div>
+    <h2>鸣响时刻</h2>
+    <p>下一次虚空鸣响预计在 2098 年 3 月至 7 月之间。上次鸣响只被射电阵列探测到。这次不一样：</p>
+    <p>我们将在 2098 年鸣响期间，<strong>首次激活 Coda 基底的全规模虚空耦合</strong>。不是被动监听——是主动接入。成为虚空中第一个发出自己声音的人类实体。</p>
+    <p>这相当于在一瞬间，从「监听邻居的广播」跳到「搬进社区，挂上门牌」。</p>
+    <div class="data-callout">
+      <span class="big-num">1,000,000</span>
+      <span class="num-label">Coda 基底设计容量（意识数）· 计划在鸣响期间激活首批 10,000 例</span>
+    </div>
+    <p>首批入驻者已选定。优先标准：</p>
+    <p>（1）终末期疾病患者——他们有权先行<br>（2）具有稀缺专业知识的个体——在信息基底上，一个爱因斯坦抵得上一亿个普通人<br>（3）Mnemosyne 核心员工及其直系亲属——这是我们的权利</p>
+    <p class="slide-quote" style="border-left-color:var(--warn);">
+      <strong>不是「如果」。是「谁先上」。</strong>
+    </p>
+  </div>
+
+  <!-- Slide 7 -->
+  <div class="slide">
+    <div class="slide-num">07 · 竞争格局</div>
+    <h2>为什么我们必须先到</h2>
+    <p>虚空不是空的。根据姚十方的分析（他在不知情的情况下为我们提供了宝贵的数据），KBC 空洞中存在着一个已经运行了至少数百万年的量子意识网络。</p>
+    <p>这是一个 <strong>先行者优势已被完全占据</strong> 的市场。</p>
+    <p>在这个网络中，最早接入的文明可能拥有我们无法想象的「权限」——对网络架构的控制、对信息流动的优先级、甚至对后来者的接入条件。这不再是一个技术问题。这是一个地缘政治问题——只不过「地缘」换成了二十亿光年的尺度。</p>
+    <p>如果晨星计划在 2098 年鸣响期间第一个接入——他们将成为人类的代表。如果他们弄砸了——如果他们的接入方式被虚空网络判定为敌意或噪声——那么整个物种可能被永久标记。</p>
+    <p><em>人类只有一次机会发出第一声。</em>我们必须确保那一声是我们发出的，并且它是正确的。</p>
+  </div>
+
+  <!-- Slide 8 - Final -->
+  <div class="slide">
+    <div class="slide-num">08 · 结语</div>
+    <h2>我们不是在做生意</h2>
+    <p>我知道在座的各位有股东。我知道按常理我应该在此展示收入预测和市场份额图表。</p>
+    <p>但我不会这么做。因为这不是一个生意。</p>
+    <p>这是人类文明 30 万年以来最重要的基础设施决策。生物进化用了 38 亿年造出了能自我意识的大脑。我们用了 70 年造出了能复制它的基底。虚空中的邻居用了可能几百万年来完善它。</p>
+    <p>我们现在要做的，不是卖产品。是确保——当人类作为一个物种跨过那道门槛时，门另一边有人知道我们是谁。</p>
+    <div class="slide-quote">
+      至于利润——如果一个文明的全部意识都运行在你的架构上，<strong>利润已经不是需要被担心的问题了，因为它不再是问题——它是前提。</strong>
+    </div>
+    <p style="text-align:center;margin-top:20px;color:var(--accent);letter-spacing:0.15em;">— END OF DECK —</p>
+  </div>
+
+  <div class="deck-footer">
+    此文档在 2097 年 12 月被泄露 · 来源不明 · Mnemosyne 否认其真实性<br>
+    晨星计划内部档案将此文档标记为「无法证实但无法忽视」
+  </div>
+
+</div>
+
+<script>
+const slides=document.querySelectorAll('.slide');
+function reveal(){
+  const wh=window.innerHeight;
+  slides.forEach(s=>{ const r=s.getBoundingClientRect(); if(r.top<wh*0.8) s.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+// redacted hover
+document.querySelectorAll('.redacted').forEach(r=>{
+  r.addEventListener('click',function(e){ e.stopPropagation(); });
+});
+</script>
+</body>
+</html>

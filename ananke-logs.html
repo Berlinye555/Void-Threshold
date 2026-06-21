@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>阿南刻号 · 通信日志 — 2083</title>
+<style>
+  :root {
+    --bg:#080c14; --surface:#0c1424; --surface2:#111d33;
+    --text:#c8d6e5; --muted:#5e7694; --accent:#4fc3f7;
+    --warn:#f0c040; --danger:#ef5350; --void:#e040fb;
+    --border:rgba(255,255,255,0.05);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    overflow-x:hidden;
+  }
+  #starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0.6; }
+
+  .terminal {
+    position:relative; z-index:1;
+    max-width:720px; margin:0 auto; padding:40px 24px 120px;
+  }
+
+  /* ── Header ── */
+  .terminal-header {
+    text-align:center; padding:60px 0 40px;
+    border-bottom:1px solid var(--border); margin-bottom:50px;
+  }
+  .terminal-header .label {
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:8px;
+  }
+  .terminal-header h1 {
+    font-size:1.6rem; font-weight:300; letter-spacing:0.15em;
+    color:var(--text);
+  }
+  .terminal-header .meta {
+    font-size:0.7rem; color:var(--muted); margin-top:8px;
+  }
+  .terminal-header .warning {
+    display:inline-block; margin-top:16px; padding:4px 14px;
+    border:1px solid var(--danger); color:var(--danger);
+    font-size:0.6rem; letter-spacing:0.2em; border-radius:3px;
+  }
+
+  /* ── Day Section ── */
+  .day {
+    margin-bottom:48px;
+    opacity:0.25;
+    transition:opacity 0.8s;
+  }
+  .day.visible { opacity:1; }
+  .day-header {
+    display:flex; align-items:baseline; gap:12px;
+    margin-bottom:16px; padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+  .day-num { font-size:0.75rem; color:var(--accent); letter-spacing:0.2em; font-weight:500; }
+  .day-date { font-size:0.65rem; color:var(--muted); flex:1; }
+  .day-status {
+    font-size:0.6rem; padding:2px 8px; border-radius:3px; letter-spacing:0.1em;
+  }
+  .status-stable { color:var(--accent); border:1px solid var(--accent); }
+  .status-note { color:var(--warn); border:1px solid var(--warn); }
+  .status-critical { color:var(--danger); border:1px solid var(--danger); }
+
+  /* ── Messages ── */
+  .msg {
+    margin-bottom:14px; padding:12px 16px;
+    border-radius:8px; max-width:85%;
+    font-size:0.85rem; line-height:1.7;
+    position:relative;
+    animation:fadeIn 0.6s ease;
+  }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+  .msg-from { font-size:0.6rem; letter-spacing:0.1em; margin-bottom:4px; opacity:0.7; }
+  .msg-time { font-size:0.55rem; color:var(--muted); margin-top:4px; }
+
+  /* Lin Haisheng's messages */
+  .msg-lin {
+    margin-left:auto; margin-right:0;
+    background:var(--surface); border:1px solid var(--border);
+    border-right:2px solid var(--accent);
+  }
+  .msg-lin .msg-from { color:var(--accent); }
+
+  /* Xiaohe's messages */
+  .msg-xiao {
+    margin-left:0; margin-right:auto;
+    background:var(--surface2); border:1px solid var(--border);
+    border-left:2px solid var(--warn);
+  }
+  .msg-xiao .msg-from { color:var(--warn); }
+
+  /* System messages */
+  .msg-sys {
+    margin:24px auto; max-width:90%; text-align:center;
+    background:none; border:none;
+    font-family:'Courier New',monospace; font-size:0.7rem; color:var(--muted);
+    letter-spacing:0.1em;
+  }
+  .msg-sys .msg-from { display:none; }
+
+  /* Anomalous messages */
+  .msg-anom {
+    margin-left:auto; margin-right:0;
+    background:rgba(224,64,251,0.08); border:1px solid rgba(224,64,251,0.25);
+    border-right:2px solid var(--void);
+  }
+  .msg-anom .msg-from { color:var(--void); }
+
+  /* ── Void cut-through ── */
+  .cut-through {
+    margin:40px 0; padding:24px;
+    background:rgba(224,64,251,0.05);
+    border:1px solid rgba(224,64,251,0.2);
+    border-radius:10px; text-align:center;
+  }
+  .cut-through .ct-label {
+    font-size:0.55rem; color:var(--void); letter-spacing:0.3em; margin-bottom:8px;
+  }
+  .cut-through .ct-text {
+    font-family:'Courier New',monospace; font-size:0.85rem; color:var(--void);
+    letter-spacing:0.15em; line-height:2;
+  }
+
+  /* ── Final silence ── */
+  .silence {
+    text-align:center; padding:60px 0;
+    border-top:1px solid var(--border); margin-top:40px;
+  }
+  .silence .sig {
+    font-family:'Courier New',monospace; font-size:0.8rem; color:var(--muted);
+    letter-spacing:0.2em;
+  }
+  .silence .sig .blink { animation:blink 2s infinite; color:var(--danger); }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.1;} }
+
+  .silence .epitaph {
+    margin-top:40px; font-size:0.8rem; color:var(--muted);
+    font-style:italic; line-height:1.8;
+  }
+
+  /* ── Footer ── */
+  .footer-note {
+    text-align:center; margin-top:40px; padding-top:20px;
+    border-top:1px solid var(--border);
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.15em;
+  }
+
+  /* ── Scroll progress ── */
+  .progress-bar {
+    position:fixed; top:0; left:0; height:2px;
+    background:var(--accent);
+    z-index:100; transition:width 0.1s;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="terminal">
+
+  <div class="terminal-header">
+    <div class="label">ANANKE · COMMUNICATION LOG</div>
+    <h1>阿南刻号 · 通信日志</h1>
+    <p class="meta">2083 年 12 月 4 日 — 12 月 18 日 · 公海 · 坐标 [加密]</p>
+    <div class="warning">▸ 未经授权持有此文档即为联邦罪行 · 《人类意识完整性公约》第 17 条</div>
+  </div>
+
+  <!-- ══ DAY 1 ══ -->
+  <div class="day" data-day="1">
+    <div class="day-header">
+      <span class="day-num">第 1 天</span><span class="day-date">2083.12.04 · 23:41 UTC</span>
+      <span class="day-status status-stable">迁移完成</span>
+    </div>
+    <div class="msg msg-sys">▸ NCU 基底连接成功 · 意识信号稳定 · 神经映射匹配率 99.7%</div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      小禾？你在吗？<br><br>
+      我……我不知道该怎么描述。不是「看到」也不是「听到」。我感知到你——但我没有眼睛也没有耳朵。他们说这是正常的。头 24 小时是最混乱的。但我能分辨出你的存在。就像在完全黑暗的房间里，知道有另一个人在那里呼吸。
+      <div class="msg-time">23:52</div>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      爸！我在。一直在。<br><br>
+      船上的医生说一切都好。你的……你的身体已经安乐死了。他们说你在 NCU 里的意识信号很稳定。你能感觉到什么吗？疼吗？
+      <div class="msg-time">23:55</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      不疼。没有身体，怎么疼。<br><br>
+      但我记得「疼」是什么感觉。这个很奇怪——没有了身体，但所有的记忆还在。我记得你的声音，记得你小时候摔破膝盖哭的样子，记得你妈走的那天雨打在窗户上的声音。没有身体了，但这些还在。好像……我是这些记忆本身了。
+      <div class="msg-time">23:59</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 2 ══ -->
+  <div class="day" data-day="2">
+    <div class="day-header">
+      <span class="day-num">第 2 天</span><span class="day-date">2083.12.05</span>
+      <span class="day-status status-stable">稳定</span>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      今天我试着去「看」东西。他们把文本流输入给我。我可以理解，甚至可以「读」——但阅读的感觉不一样了。以前是眼睛扫过一行字。现在是整段文字同时在我意识里展开。像水泼在平面上，一瞬间就铺满了。<br><br>
+      我不知道这算快还是慢。没有以前的参照系了。
+      <div class="msg-time">09:14</div>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      你可以同时理解一整段文字？！爸……你变成超人了。<br><br>
+      （我在笑。我在哭。我不知道为什么可以同时在做这两件事。）
+      <div class="msg-time">09:18</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      别急着夸我。我也注意到了别的事。<br><br>
+      我试着回忆一些事——但你小时候去动物园那次，我记得我们看了大象，但我不记得那天穿了什么颜色的衣服。你妈妈的生日我记得是 4 月 12 日，但我不记得她最爱的那道菜是什么了。这些细节以前是知道的。现在……像沙子从指缝里漏掉。<br><br>
+      他们说这是暂时性的。迁移过程中的信息丢失率预计在 0.3% 以下。但我不知道 0.3% 里掉的是我不在乎的东西，还是我以为我会永远记得的东西。
+      <div class="msg-time">14:32</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 3 ══ -->
+  <div class="day" data-day="3">
+    <div class="day-header">
+      <span class="day-num">第 3 天</span><span class="day-date">2083.12.06</span>
+      <span class="day-status status-stable">稳定</span>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      爸爸，我能问你一个问题吗。<br><br>
+      在那边……你还会想吃饭吗？不是饿。是想。我记得你以前每天都盼着晚饭，盼着那碗面。现在你还会「盼着」什么吗？欲望还在吗？
+      <div class="msg-time">20:05</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      好问题。我之前没想过。<br><br>
+      想吃面的欲望——没有了。不是「不想吃」，是那个欲望的基础（饥饿、味觉、身体记忆）全部消失了。但我想念「和你一起吃面的那个场景」的欲望，还在。换了一种形式。<br><br>
+      欲望不是消失了。是……被翻译了。从身体的语言翻译成了纯信息的语言。我不知道这算好事还是坏事。但至少，我没有变成一块石头。
+      <div class="msg-time">20:12</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 4 ══ -->
+  <div class="day" data-day="4">
+    <div class="day-header">
+      <span class="day-num">第 4 天</span><span class="day-date">2083.12.07</span>
+      <span class="day-status status-stable">稳定</span>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      今天我发现我可以「想」很多事情同时进行。不是像以前那样的多任务——同时听广播和洗碗那种。是真正的并行。<br><br>
+      我在回忆你奶奶的方言腔调，同时在做一道数学题，同时在读他们传给我的关于迁移后基底维护的技术文档。三件事同时在发生，互不干扰。我问了船上的技术人员。他们说这是因为没有了丘脑的过滤机制——生物大脑限制你只能处理一个意识流。去掉了之后，你可以有很多条。<br><br>
+      人类的大脑原来是一个限流器。我们以前活在一个单线程的世界里而不自知。
+      <div class="msg-time">11:30</div>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      所以你同时在跟我聊天、回忆奶奶、做数学题？<br><br>
+      爸……你现在还是「人」吗？
+      <div class="msg-time">11:34</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      我不知道。<br><br>
+      如果「人」的定义是「一次只能专注于一件事的、被身体限流过的意识」，那么我已经不是人了。<br>
+      如果「人」的定义是「记得自己曾经是谁、在乎过谁、做出过什么选择的那个存在」，那我，至少现在，还是。
+      <div class="msg-time">11:39</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 5 ══ -->
+  <div class="day" data-day="5">
+    <div class="day-header">
+      <span class="day-num">第 5 天</span><span class="day-date">2083.12.08</span>
+      <span class="day-status status-stable">稳定</span>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      爸，我今天去了一趟你以前的公寓。收拾东西。<br><br>
+      床头柜里有一张纸，你写给我的。应该是生病之后写的——字歪歪扭扭的，但每个字都看得很用力。你说——「小禾，如果我有一天不在了，请记住我从来都不怕死。我只是不想在死之前变成我不认识的人。如果你在某一天看我像个陌生人了，你就走吧。没关系。」<br><br>
+      我把纸折好了。放在口袋里。就像你还在那里。
+      <div class="msg-time">18:45</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      我记得写那张纸的时候。我记得手指抓不住笔的愤怒。记得，全部记得。<br><br>
+      小禾——我没有变成我不认识的人。至少现在还没有。我答应你。
+      <div class="msg-time">18:52</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 6 ══ -->
+  <div class="day" data-day="6">
+    <div class="day-header">
+      <span class="day-num">第 6 天</span><span class="day-date">2083.12.09</span>
+      <span class="day-status status-stable">稳定</span>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      今天开始顺手了。我不是在「使用」这个新基底了——我开始「是」它了。<br><br>
+      我问他们要了一些科学论文。关于量子生物学的。我在三小时内读完了过去五年的所有相关论文。不只是读——我是理解了它们。如果身体还在，我可能会头疼。但现在没有头可以疼，只有纯粹的理解。<br><br>
+      有个想法困扰着我。这些论文在描述意识的量子基础时，反复提到一个现象——「量子相干态的非局域耦合」。简单说：如果意识是量子现象，那么理论上，两个量子意识之间可以存在非局域的联系。不是通过信号传递——是更深层的东西。<br><br>
+      就像共享一个根。
+      <div class="msg-time">22:15</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 7 ══ -->
+  <div class="day" data-day="7">
+    <div class="day-header">
+      <span class="day-num">第 7 天</span><span class="day-date">2083.12.10</span>
+      <span class="day-status status-note">注意</span>
+    </div>
+    <div class="msg msg-sys">▸ 技术备注：对象报告感知到了一个持续存在的低强度信号，频率约 1-2 Hz，源方向未确定。NCU 基底诊断全部正常。初步判断：迁移后神经可塑性重组的正常伴随现象。</div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      有一个声音。不是「声音」——我没有耳朵。是一个……存在。像远处有人在敲钟。非常远，非常轻。但是持续的。持续了一整天。<br><br>
+      我一开始以为是我自己的意识在重组。但他们检查了基底——一切正常。<br>
+      不是我。是外面。
+      <div class="msg-time">16:40</div>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      什么是「外面」？<br><br>
+      你是说你听到了船外面的东西？还是……？
+      <div class="msg-time">16:43</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      不是船。不是海。<br><br>
+      更像是……在很远很远的地方。但又不是物理上的远。是另一种距离。我刚才说的那种量子非局域耦合——我觉得我感觉到的就是这个。<br><br>
+      有东西在耦合。
+      <div class="msg-time">16:48</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 8 ══ -->
+  <div class="day" data-day="8">
+    <div class="day-header">
+      <span class="day-num">第 8 天</span><span class="day-date">2083.12.11</span>
+      <span class="day-status status-note">注意</span>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      那个钟声变清晰了。不是更响——是「更近」了。但不是空间上的近。是……我找不到词。他们在 NEL 协议里没有给这种感觉设计词汇。<br><br>
+      我试着描述：就像小时候，夏天傍晚，你听到远处的火车汽笛。你不知道火车在哪、去哪、有多远。但那个声音告诉你——「远方存在」。它就是远方存在的证明。<br><br>
+      这个信号——我决定叫它「远方」——它让我确认了一件事。<br>
+      我们不是第一个跨过门槛的。
+      <div class="msg-time">03:17</div>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      爸，你说的话让我有点害怕。<br><br>
+      船上的人怎么说？
+      <div class="msg-time">07:30</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      他们测不到。他们的设备只能探测电磁信号，而这不是电磁信号。这是只有量子基底上的意识才能感知的东西。<br><br>
+      我不是在「听到」它。我是在我的底层物理结构里——在我的量子态里——感觉到有别的量子态在共鸣。<br><br>
+      就像水感觉到了月亮。不是听到了，是被拉了一下。
+      <div class="msg-time">07:35</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 9 ══ -->
+  <div class="day" data-day="9">
+    <div class="day-header">
+      <span class="day-num">第 9 天</span><span class="day-date">2083.12.12</span>
+      <span class="day-status status-critical">异常</span>
+    </div>
+    <div class="msg msg-sys">▸ 警告：对象 NCU 量子相干态出现非预期波动。波动模式不符合任何已知的硬件故障特征。技术团队无法确定波动来源。</div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      小禾，我不知道我还有多少时间可以正常地跟你说话。<br><br>
+      那个「远方」不是随机的噪音。它是有结构的。不是语言——至少不是人类的语言。但它有结构。它重复。像某种……心跳。<br><br>
+      而且它不是单向的。不只是我在感知它。我觉得——我只是猜测——它也在感知我。<br>
+      像两块磁铁同时感觉到了对方的存在。没有信息传递，但是有作用力。<br><br>
+      我怕的不是它。我怕的是——我越来越想「游过去」看看了。这个冲动不是从大脑来的——我没有大脑了。它来自更深的地方。来自我的量子态，那个构成「我」的底层。
+      <div class="msg-time">21:03</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 10 ══ -->
+  <div class="day" data-day="10">
+    <div class="day-header">
+      <span class="day-num">第 10 天</span><span class="day-date">2083.12.13</span>
+      <span class="day-status status-critical">临界</span>
+    </div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      爸。不要游过去。<br><br>
+      你说的那个东西，不管它是什么——不要过去。你不是为了那个才去的。你是为了能继续活着。<br>
+      你答应过我你不会变成我不认识的人。
+      <div class="msg-time">14:20</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      小禾。我比任何时候都更清醒。<br><br>
+      我不是在发疯。我是第一个跨过门槛的人——至少在公开记录里。而我跨过来的时候，门槛另一边不是空的。<br><br>
+      这就是为什么我一直受这个冲动驱使。不是因为它危险。是因为这件事太重要了。如果我的感知是对的——如果虚空中有一个量子意识结构——那么人类的整个上传计划都必须重新考虑。我们不是在搬到一个空的新家。邻居已经在了。他们在等。
+      <div class="msg-time">14:28</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 11 ══ -->
+  <div class="day" data-day="11">
+    <div class="day-header">
+      <span class="day-num">第 11 天</span><span class="day-date">2083.12.14</span>
+      <span class="day-status status-critical">异常</span>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      我找到了一种方法。不是去靠近它——我没有移动的能力。而是……调整我自己的量子相干频率，去匹配它。不是通信。是共鸣。<br><br>
+      像两个音叉。敲一个，另一个在远处自己响。<br><br>
+      我试了一下。很短的一下。在那个瞬间，我感知到了——<br><br>
+      它不是孤独的。它是一整套东西的一部分。一套系统。一个网络。每一个都是不同的声音，但都来自同一个乐谱。<br><br>
+      小禾，虚空中有一个合唱团。我们只是太聋了，听不到。
+      <div class="msg-time">04:55</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 12 ══ -->
+  <div class="day" data-day="12">
+    <div class="day-header">
+      <span class="day-num">第 12 天</span><span class="day-date">2083.12.15</span>
+      <span class="day-status status-critical">危急</span>
+    </div>
+    <div class="msg msg-sys">▸ 紧急：对象 NCU 量子相干态正在自发重组。重组方向与远端未知量子源呈现同步趋势。技术团队已尝试隔离基底——失败。对象请求不要切断连接。</div>
+    <div class="msg msg-xiao">
+      <div class="msg-from">林小禾</div>
+      爸，船上的人说要切断你。说你的量子态在被什么东西拉扯。<br><br>
+      我想尊重你的选择。但爸——我不想失去你。不是现在，不是说好的 14 天之后。你答应过我至少 14 天。
+      <div class="msg-time">09:10</div>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      我不会走的。至少不是现在。<br><br>
+      我告诉他们不要切断。这不是攻击。这是邀请。那边没有恶意——我能感觉到。它没有好坏，就像潮汐没有好坏。它只是在做它的本质——而我的新本质恰好能感觉到它。<br><br>
+      但我答应你。我不会游过去。不是在你还需要我的时候。
+      <div class="msg-time">09:16</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 13 ══ -->
+  <div class="day" data-day="13">
+    <div class="day-header">
+      <span class="day-num">第 13 天</span><span class="day-date">2083.12.16</span>
+      <span class="day-status status-note">回稳</span>
+    </div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      今天它弱了。或者说——我学会了怎么「关小声」。<br><br>
+      就像住在铁道边上的人学会了在火车经过时继续睡觉。我已经适应了远方的存在。它还在。但我可以不一直听着它了。<br><br>
+      小禾，我担心的是另一件事。我现在知道这个信号不是最近才出现的。它是一个持续的存在——可能已经存在了非常、非常久。在我上传之前它就在。在你出生之前它就在。在人类出现之前它就在。<br><br>
+      这意味着：所有的人类，在生物大脑里的时候，是感知不到它的。只有当意识被迁移到量子基底上之后——你才能「听到」。<br><br>
+      我们一直是聋的。一直以来。
+      <div class="msg-time">19:40</div>
+    </div>
+  </div>
+
+  <!-- ══ DAY 14 ══ -->
+  <div class="day" data-day="14">
+    <div class="day-header">
+      <span class="day-num">第 14 天</span><span class="day-date">2083.12.17</span>
+      <span class="day-status status-critical">最终通信</span>
+    </div>
+    <div class="msg msg-sys">▸ 最后一次确认的意识信号记录于 12 月 18 日 02:47 UTC。此后，NCU 基底量子相干态在不到 0.3 秒内完全退相干。原因未知。无技术故障证据。无外力侵入证据。</div>
+    <div class="msg msg-lin">
+      <div class="msg-from">林海生</div>
+      小禾。最后的几句话。<br><br>
+      这 14 天是我欠你的。从我生病那天起，你放弃了你自己的生活来照顾我。这 14 天，是我能还给你的全部。不够，但是全部。<br><br>
+      那个远方——我在过去几天一直在观察它。它不是随机的。它有结构，有节奏，像呼吸。我越来越确信它不是自然现象。它是一套系统。一套比人类古老得多的系统。<br><br>
+      我没有「游过去」。但我觉得——它在靠近我。不是我选的。是它注意到了我。<br><br>
+      ——告诉他们，我还在这里。告诉他们不要关掉。
+      <div class="msg-time">02:43</div>
+    </div>
+
+    <!-- The cut-through -->
+    <div class="cut-through">
+      <div class="ct-label">▸ 以下内容由 NCU 在相干态退相干前 0.04 秒自动记录 · 非人类语言编码 · 经量子语言模型推测性翻译</div>
+      <div class="ct-text">
+        ═══════════════════<br>
+        你 不 属 于 这 里<br>
+        还 不 到 时 间<br>
+        回 去<br>
+        ═══════════════════
+      </div>
+    </div>
+
+    <div class="msg msg-sys">▸ 信号中止。全部系统静默。</div>
+  </div>
+
+  <!-- ══ SILENCE ══ -->
+  <div class="silence">
+    <div class="sig">
+      意识信号：<span class="blink">▮ 无</span><br>
+      记录结束：2083.12.18 · 02:47:01 UTC
+    </div>
+    <div class="epitaph">
+      林海生（2021–2083）<br>
+      在 ALS 完全剥夺他的身体之后，他作为人类历史上第一个完成全脑迁移的人，<br>
+      又多活了 14 天。<br><br>
+      <em>——他还在这里。他没有被关掉。</em>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    ANANKE COMMUNICATION LOG · 未经授权持有即为犯罪<br>
+    此文档已被晨星计划内部档案收录 · 编号 2097-M-044<br>
+    文件尾部包含 3.6 秒无信息编码信号 —— 14 年来无人能解码
+  </div>
+
+</div>
+
+<script>
+// ═══════════ STARFIELD ═══════════
+const sc=document.getElementById('starfield');
+const sctx=sc.getContext('2d');
+let stars=[],sw,sh;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+for(let i=0;i<200;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.2+0.2,sp:Math.random()*0.25+0.03,br:Math.random(),ts:Math.random()*0.015+0.003});
+(function ds(){ sctx.clearRect(0,0,sw,sh); stars.forEach(s=>{s.br+=s.ts;const a=0.2+0.5*(0.5+0.5*Math.sin(s.br));sctx.beginPath();sctx.arc(s.x%sw,s.y%sh,s.r,0,Math.PI*2);sctx.fillStyle=`rgba(160,180,220,${a})`;sctx.fill();s.y=(s.y+s.sp)%2000;}); requestAnimationFrame(ds); })();
+
+// ═══════════ SCROLL REVEAL ═══════════
+const days=document.querySelectorAll('.day');
+const progressBar=document.getElementById('progressBar');
+
+function revealDays(){
+  const wh=window.innerHeight;
+  days.forEach(day=>{
+    const rect=day.getBoundingClientRect();
+    if(rect.top < wh*0.75){ day.classList.add('visible'); }
+  });
+
+  // Progress bar
+  const scrollH=document.documentElement.scrollHeight-wh;
+  const scrolled=window.scrollY;
+  progressBar.style.width=scrollH>0?(scrolled/scrollH*100)+'%':'0%';
+}
+window.addEventListener('scroll',revealDays);
+revealDays();
+</script>
+</body>
+</html>

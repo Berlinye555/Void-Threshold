@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>虚空 · 门槛 — 2097 晨星档案</title>
+<style>
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root {
+    --bg:#070b14; --surface:#0c1424; --surface2:#111d33;
+    --text:#c8d6e5; --muted:#5e7694; --accent:#4fc3f7;
+    --accent2:#7c4dff; --warn:#f0c040; --danger:#ef5350;
+    --bio:#4caf50; --quantum:#7c4dff; --ai:#ff9800; --void:#e040fb;
+    --border:rgba(255,255,255,0.06);
+  }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    overflow-x:hidden; line-height:1.6;
+  }
+  #starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+  /* ── Terminal Chrome ── */
+  .chrome-bar {
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(7,11,20,0.85); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    padding:6px 16px; display:flex; align-items:center; gap:12px;
+    font-size:0.7rem; color:var(--muted);
+  }
+  .chrome-dot { width:8px; height:8px; border-radius:50%; }
+  .chrome-dot.r { background:#ef5350; }
+  .chrome-dot.y { background:#f0c040; }
+  .chrome-dot.g { background:#4caf50; }
+  .chrome-path { flex:1; text-align:center; letter-spacing:0.15em; }
+  .chrome-badge {
+    background:var(--danger); color:#fff; font-size:0.6rem; padding:2px 8px;
+    border-radius:3px; letter-spacing:0.1em;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.6;} }
+
+  /* ── Nav ── */
+  .nav-bar {
+    position:fixed; bottom:0; left:0; right:0; z-index:50;
+    background:rgba(7,11,20,0.85); backdrop-filter:blur(12px);
+    border-top:1px solid var(--border);
+    display:flex; justify-content:center; gap:0;
+  }
+  .nav-btn {
+    background:none; border:none; color:var(--muted);
+    padding:12px 20px; font-size:0.72rem; letter-spacing:0.1em;
+    cursor:pointer; transition:all 0.3s; font-family:inherit;
+    border-bottom:2px solid transparent;
+  }
+  .nav-btn:hover { color:var(--text); }
+  .nav-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
+
+  /* ── Sections ── */
+  .view { display:none; position:relative; z-index:1; padding-top:48px; padding-bottom:64px; }
+  .view.active { display:block; }
+
+  .container { max-width:1100px; margin:0 auto; padding:20px; }
+
+  /* ── Header ── */
+  .view-header {
+    text-align:center; padding:40px 20px 30px;
+  }
+  .view-header h1 {
+    font-size:clamp(1.8rem,4vw,3rem); font-weight:200;
+    letter-spacing:0.2em;
+    background:linear-gradient(135deg,var(--accent),var(--void));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .view-header .sub { color:var(--muted); font-size:0.8rem; letter-spacing:0.3em; margin-top:4px; }
+  .view-header .meta { color:var(--muted); font-size:0.7rem; margin-top:8px; }
+
+  /* ── Timeline ── */
+  .tl-wrap { margin:0 -20px; }
+  .tl-scroll {
+    display:flex; overflow-x:auto; padding:20px 40px 30px;
+    scroll-snap-type:x mandatory;
+    scrollbar-width:thin; scrollbar-color:var(--surface2) transparent;
+  }
+  .tl-scroll::-webkit-scrollbar { height:4px; }
+  .tl-scroll::-webkit-scrollbar-track { background:transparent; }
+  .tl-scroll::-webkit-scrollbar-thumb { background:var(--surface2); border-radius:2px; }
+  .tl-line { display:flex; align-items:flex-start; min-width:max-content; position:relative; }
+  .tl-line::after {
+    content:''; position:absolute; top:45px; left:0; right:0; height:1px;
+    background:linear-gradient(90deg,transparent,var(--accent),var(--void),transparent);
+  }
+  .tl-node {
+    width:190px; flex-shrink:0; scroll-snap-align:center;
+    cursor:pointer; padding:0 10px; transition:transform 0.3s; position:relative; z-index:2;
+  }
+  .tl-node:hover { transform:translateY(-4px); }
+  .tl-node.active { transform:translateY(-4px); }
+  .tl-dot {
+    width:12px; height:12px; border-radius:50%; margin:0 auto 8px;
+    transition:all 0.3s;
+  }
+  .tl-node.p1 .tl-dot { background:var(--accent); box-shadow:0 0 12px var(--accent); }
+  .tl-node.p2 .tl-dot { background:var(--warn); box-shadow:0 0 12px var(--warn); }
+  .tl-node.p3 .tl-dot { background:var(--danger); box-shadow:0 0 12px var(--danger); }
+  .tl-year { text-align:center; font-size:0.7rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:4px; }
+  .tl-title { text-align:center; font-size:0.78rem; color:var(--text); font-weight:500; }
+  .tl-preview { text-align:center; font-size:0.65rem; color:var(--muted); margin-top:2px; opacity:0; transition:opacity 0.3s; }
+  .tl-node:hover .tl-preview { opacity:1; }
+
+  .detail-card {
+    max-width:700px; margin:30px auto; padding:28px;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    display:none; animation:fadeUp 0.4s ease;
+  }
+  .detail-card.visible { display:block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+  .dc-year { font-size:0.7rem; color:var(--accent); letter-spacing:0.2em; margin-bottom:4px; }
+  .dc-title { font-size:1.2rem; font-weight:400; margin-bottom:10px; }
+  .dc-body { font-size:0.88rem; color:var(--muted); }
+  .dc-vignette {
+    margin-top:14px; padding:14px 16px;
+    background:var(--surface2); border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0; font-size:0.8rem; color:var(--text);
+    font-style:italic; line-height:1.7;
+    display:none;
+  }
+  .detail-card.visible .dc-vignette.has-vignette { display:block; }
+  .dc-tags { margin-top:12px; }
+  .dc-tag { display:inline-block; margin-right:6px; padding:3px 10px; border-radius:12px; font-size:0.65rem; letter-spacing:0.05em; }
+  .tag-bio { background:#4caf5020; color:var(--bio); border:1px solid #4caf5040; }
+  .tag-quantum { background:#7c4dff20; color:var(--quantum); border:1px solid #7c4dff40; }
+  .tag-ai { background:#ff980020; color:var(--ai); border:1px solid #ff980040; }
+  .tag-void { background:#e040fb20; color:var(--void); border:1px solid #e040fb40; }
+  .tag-social { background:#f0c04020; color:var(--warn); border:1px solid #f0c04040; }
+
+  /* ── Factions ── */
+  .factions-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px; max-width:1100px; margin:0 auto;
+  }
+  .faction-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:20px; cursor:pointer; transition:all 0.35s;
+  }
+  .faction-card::before { content:''; display:block; width:100%; height:2px; margin-bottom:14px; transition:height 0.35s; }
+  .faction-card:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.15); }
+  .faction-card:hover::before { height:4px; }
+  .fc-dawn::before { background:var(--bio); }
+  .fc-guardian::before { background:var(--danger); }
+  .fc-underground::before { background:var(--ai); }
+  .fc-signal::before { background:var(--void); }
+  .fc-ncu::before { background:var(--muted); }
+  .fc-name { font-size:0.9rem; font-weight:500; margin-bottom:2px; }
+  .fc-sub { font-size:0.65rem; color:var(--muted); letter-spacing:0.08em; margin-bottom:10px; }
+  .fc-desc { font-size:0.76rem; color:var(--muted); line-height:1.5; }
+  .fc-dossier { margin-top:10px; padding-top:10px; border-top:1px solid var(--border); font-size:0.7rem; color:var(--text); display:none; line-height:1.6; }
+  .faction-card:hover .fc-dossier { display:block; }
+
+  /* ── Dossiers View ── */
+  .dossier-list { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:24px; }
+  .dossier-item {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:24px; transition:all 0.3s;
+  }
+  .dossier-item:hover { border-color:rgba(255,255,255,0.15); }
+  .dossier-header { display:flex; align-items:baseline; gap:12px; margin-bottom:8px; }
+  .dossier-name { font-size:1rem; font-weight:500; }
+  .dossier-role { font-size:0.7rem; color:var(--accent); letter-spacing:0.1em; }
+  .dossier-bio { font-size:0.82rem; color:var(--muted); line-height:1.7; }
+  .dossier-quote { margin-top:10px; padding-left:12px; border-left:2px solid var(--accent); font-size:0.78rem; color:var(--text); font-style:italic; }
+
+  /* ── Classified Docs ── */
+  .classified-list { max-width:800px; margin:0 auto; display:flex; flex-direction:column; gap:20px; }
+  .classified-doc {
+    background:var(--surface); border:1px solid var(--border); border-radius:10px;
+    padding:24px; position:relative; overflow:hidden;
+  }
+  .classified-doc::before {
+    content:'CLASSIFIED'; position:absolute; top:10px; right:16px;
+    font-size:0.55rem; color:var(--danger); letter-spacing:0.2em;
+    opacity:0.7;
+  }
+  .cl-header { font-size:0.7rem; color:var(--muted); letter-spacing:0.15em; margin-bottom:6px; }
+  .cl-title { font-size:1.05rem; font-weight:400; margin-bottom:10px; }
+  .cl-body { font-size:0.82rem; color:var(--muted); line-height:1.7; }
+  .cl-body .redacted {
+    background:var(--danger); color:transparent; padding:0 4px; border-radius:2px;
+    cursor:pointer; transition:all 0.3s; user-select:none;
+  }
+  .cl-body .redacted:hover { color:var(--text); background:rgba(239,83,80,0.3); }
+
+  /* ── Void Signal ── */
+  .void-section { text-align:center; margin:40px 0; }
+  .void-visual {
+    max-width:700px; margin:0 auto; padding:30px;
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  }
+  .void-visual canvas { width:100%; height:180px; display:block; }
+  .void-status { margin-top:16px; font-family:'Courier New',monospace; color:var(--void); font-size:0.9rem; letter-spacing:0.2em; }
+  .void-decode-steps { margin-top:16px; text-align:left; font-size:0.75rem; color:var(--muted); }
+  .void-decode-steps .step { padding:4px 0; opacity:0; transition:opacity 0.5s; }
+  .void-decode-steps .step.revealed { opacity:1; color:var(--text); }
+  .void-cta {
+    display:inline-block; margin-top:20px;
+    background:none; border:1px solid var(--void); color:var(--void);
+    padding:10px 28px; border-radius:24px; font-size:0.78rem; letter-spacing:0.15em;
+    cursor:pointer; transition:all 0.4s; font-family:inherit;
+  }
+  .void-cta:hover { box-shadow:0 0 30px rgba(224,64,251,0.2); }
+
+  /* ── Tech Tree Mini ── */
+  .tech-pillars { display:flex; gap:20px; flex-wrap:wrap; max-width:1000px; margin:0 auto; }
+  .tech-pillar {
+    flex:1; min-width:250px; background:var(--surface); border-radius:12px;
+    padding:20px; border-top:3px solid var(--accent);
+  }
+  .tech-pillar.tp-bio { border-top-color:var(--bio); }
+  .tech-pillar.tp-quantum { border-top-color:var(--quantum); }
+  .tech-pillar.tp-ai { border-top-color:var(--ai); }
+  .tech-pillar h3 { font-size:0.9rem; font-weight:400; margin-bottom:12px; color:var(--text); }
+  .tech-pillar .tp-item {
+    font-size:0.75rem; color:var(--muted); padding:4px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .tech-pillar .tp-item:last-child { border-bottom:none; }
+  .tp-status { float:right; font-size:0.6rem; }
+  .tp-ready { color:var(--bio); }
+  .tp-wip { color:var(--warn); }
+  .tp-frontier { color:var(--danger); }
+
+  /* ── Misc ── */
+  .section-divider {
+    text-align:center; margin:40px 0; color:var(--muted);
+    font-size:0.7rem; letter-spacing:0.3em;
+  }
+  .section-divider::after { content:''; display:block; width:40px; height:1px; background:var(--border); margin:10px auto 0; }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- ══ CHROME ══ -->
+<div class="chrome-bar">
+  <span class="chrome-dot r"></span><span class="chrome-dot y"></span><span class="chrome-dot g"></span>
+  <span class="chrome-path">MORNING_STAR://ARCHIVE/2097-INTERNAL</span>
+  <span class="chrome-badge">SECURE</span>
+</div>
+<div class="nav-bar">
+  <button class="nav-btn active" data-view="timeline">时间线</button>
+  <button class="nav-btn" data-view="factions">势力</button>
+  <button class="nav-btn" data-view="tech">技术树</button>
+  <button class="nav-btn" data-view="dossiers">档案</button>
+  <button class="nav-btn" data-view="classified">机密</button>
+  <button class="nav-btn" data-view="void-signal">虚空信号</button>
+</div>
+
+<!-- ═══════════ VIEW: TIMELINE ═══════════ -->
+<div class="view active" id="view-timeline">
+  <div class="view-header">
+    <h1>虚 空 · 门 槛</h1>
+    <p class="sub">KBC VOID · THRESHOLD</p>
+    <p class="meta">晨星计划 · 内部档案 · 2097 年 11 月</p>
+  </div>
+  <div class="container">
+    <p style="text-align:center;font-size:0.82rem;color:var(--muted);max-width:650px;margin:0 auto 10px;">
+      这是一份人类站在门槛上的编年史。从第一次窥见意识的物理形态，到虚空中传来的陌生信号——<em>我们还没准备好，但时间不等人。</em>
+    </p>
+  </div>
+  <div class="tl-wrap">
+    <div class="tl-scroll" id="tlScroll"><div class="tl-line" id="tlLine"></div></div>
+  </div>
+  <div class="container"><div class="detail-card" id="detailCard"></div></div>
+</div>
+
+<!-- ═══════════ VIEW: FACTIONS ═══════════ -->
+<div class="view" id="view-factions">
+  <div class="view-header">
+    <h1>势 力 分 布</h1>
+    <p class="sub">WHO CONTROLS THE THRESHOLD</p>
+  </div>
+  <div class="container"><div class="factions-grid" id="factionsGrid"></div></div>
+  <div class="section-divider">悬停卡片查看情报档案</div>
+</div>
+
+<!-- ═══════════ VIEW: TECH TREE ═══════════ -->
+<div class="view" id="view-tech">
+  <div class="view-header">
+    <h1>技 术 树</h1>
+    <p class="sub">THREE PILLARS · ONE GOAL</p>
+  </div>
+  <div class="container">
+    <p style="text-align:center;font-size:0.82rem;color:var(--muted);max-width:650px;margin:0 auto 24px;">
+      意识上传不是一项发明，而是一片技术森林。三条主干各自生长，在 2050 年代开始交织。
+      以下为 2097 年的就绪度评估。
+    </p>
+    <div class="tech-pillars">
+      <div class="tech-pillar tp-bio">
+        <h3>🧬 生物技术 <span style="font-size:0.7rem;color:var(--muted);">— 意识的载体</span></h3>
+        <div class="tp-item">全脑连接组扫描 <span class="tp-status tp-ready">█████ 成熟</span></div>
+        <div class="tp-item">NCU 湿件制造 <span class="tp-status tp-ready">█████ 商用</span></div>
+        <div class="tp-item">NEL 桥接协议 v2.3 <span class="tp-status tp-ready">████▌ 迭代中</span></div>
+        <div class="tp-item">人类全脑上传 <span class="tp-status tp-wip">████▏ 可行·非法</span></div>
+        <div class="tp-item">远程思想传输 <span class="tp-status tp-frontier">██▏▏▏ 带宽瓶颈</span></div>
+      </div>
+      <div class="tech-pillar tp-quantum">
+        <h3>⚛️ 量子科技 <span style="font-size:0.7rem;color:var(--muted);">— 意识的本质</span></h3>
+        <div class="tp-item">量子生物传感器 <span class="tp-status tp-ready">████▌ 临床级</span></div>
+        <div class="tp-item">微管量子相干验证 <span class="tp-status tp-ready">████▏ 理论确认</span></div>
+        <div class="tp-item">量子纠缠意识同步 <span class="tp-status tp-wip">███▏▏ 实验室阶段</span></div>
+        <div class="tp-item">量子基底运行意识 <span class="tp-status tp-frontier">██▏▏▏ 早期验证</span></div>
+        <div class="tp-item">量子隐形传态(信息) <span class="tp-status tp-frontier">█▏▏▏▏ 理论可行</span></div>
+      </div>
+      <div class="tech-pillar tp-ai">
+        <h3>🤖 AI/信息 <span style="font-size:0.7rem;color:var(--muted);">— 意识的编码</span></h3>
+        <div class="tp-item">神经解码 AI <span class="tp-status tp-ready">█████ 成熟</span></div>
+        <div class="tp-item">意识建模引擎 <span class="tp-status tp-ready">████▌ 运行中</span></div>
+        <div class="tp-item">信息压缩与传输 <span class="tp-status tp-wip">███▏▏ ~10²⁵ bit/人</span></div>
+        <div class="tp-item">基底无关智能理论 <span class="tp-status tp-wip">███▏▏ 争论中</span></div>
+        <div class="tp-item">虚空信号学 <span class="tp-status tp-frontier">█▏▏▏▏ 200人·无框架</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ VIEW: DOSSIERS ═══════════ -->
+<div class="view" id="view-dossiers">
+  <div class="view-header">
+    <h1>人 物 档 案</h1>
+    <p class="sub">PERSONS OF INTEREST · 2097</p>
+  </div>
+  <div class="container"><div class="dossier-list" id="dossierList"></div></div>
+</div>
+
+<!-- ═══════════ VIEW: CLASSIFIED ═══════════ -->
+<div class="view" id="view-classified">
+  <div class="view-header">
+    <h1>机 密 文 档</h1>
+    <p class="sub">SECURITY LEVEL: ALPHA</p>
+    <p class="meta">以下文档未对公众披露。点击涂黑处可查看被遮盖的真相。</p>
+  </div>
+  <div class="container"><div class="classified-list" id="classifiedList"></div></div>
+</div>
+
+<!-- ═══════════ VIEW: VOID SIGNAL ═══════════ -->
+<div class="view" id="view-void-signal">
+  <div class="view-header">
+    <h1>虚 空 信 号</h1>
+    <p class="sub">1.42 GHz · ORIGIN UNKNOWN</p>
+  </div>
+  <div class="container">
+    <div class="void-visual">
+      <canvas id="signalCanvas"></canvas>
+      <div class="void-status" id="signalStatus">AWAITING PULSE...</div>
+      <div class="void-decode-steps" id="decodeSteps">
+        <div class="step">[1] 频率锁定 1.42 GHz —— 中性氢谱线，SETI 经典频率</div>
+        <div class="step">[2] 非自然调制结构确认 —— 排除 pulsar、GRB、RFI</div>
+        <div class="step">[3] 两点相关定位 —— 信号源位于 KBC 空洞中心方向</div>
+        <div class="step">[4] 信号结构分析 —— 确认为「握手协议」，非广播</div>
+        <div class="step">[5] 编码比对 —— <span style="color:var(--warn);">与 NEL 协议 23% 结构相似</span></div>
+        <div class="step">[6] 结论：这不是给我们的。这是两个非人实体之间的通信。</div>
+        <div class="step">[7] 预测：下一次鸣响 —— 2098 年。</div>
+      </div>
+      <button class="void-cta" id="voidDecodeBtn">▸ 解 码</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════ DATA ═══════════
+const timelineEvents = [
+  { year:'2026–30', title:'全脑连接组完成', preview:'果蝇→小鼠→猕猴突触图谱', phase:1,
+    body:'人类第一次「看到」一个完整思维的物理形态。人脑连接组计划进入临床级精度——860 亿神经元、百万亿级突触连接，每一个都已被命名和定位。',
+    vignette:'「当我第一次在屏幕上看到那只小鼠的完整连接组——每一个突触，每一条回路——我的手在发抖。不是因为兴奋。是因为我突然意识到，<em>我看到的可能就是我自己的镜像。</em>」——陈鹿，连接组学实验室，2029 年',
+    tags:['🧬 生物','🤖 AI'] },
+  { year:'2031–35', title:'量子生物传感器', preview:'单蛋白质级磁信号读取', phase:1,
+    body:'基于金刚石氮空位中心（NV Center）的量子传感器，首次在室温下实现了单个蛋白质构象变化的无损探测。神经元内部不再是一个「黑箱」。',
+    vignette:'「我们花了三年时间，就为了探测一个蛋白质的量子态。有人问我这有什么用。我指了指自己的脑袋。」——匿名，东京量子感知实验室',
+    tags:['⚛️ 量子','🧬 生物'] },
+  { year:'2036–40', title:'合成神经递质 3.0', preview:'脑机接口从只读到可写', phase:1,
+    body:'人工设计的神经递质可以精准跨血脑屏障激活特定脑区。配合 AI 解码器，大脑不再只是可以被「读取」——它可以被「写入」。外部信号可以直接诱发特定的感知体验。',
+    tags:['🧬 生物','🤖 AI'] },
+  { year:'2041–45', title:'第一个镜像意识', preview:'小鼠神经回路功能性复制', phase:1,
+    body:'在小鼠大脑上，一段约 10 万个神经元的回路被完整复制到了另一个培养的类脑器官上。小鼠的行为模式在两个基底之间无缝切换。这是概念验证——意识「转移」是可能的。',
+    vignette:'「那只小鼠在两个基底之间切换的时候，行为完全一致。一样的恐惧反应，一样的偏好。这不是一个拷贝。这就是它。换了一个家，但没换住客。」——实验日志，2044 年',
+    tags:['🧬 生物'] },
+  { year:'2046–52', title:'NCU 湿件成熟', preview:'合成神经计算单元商用化', phase:2,
+    body:'第一批「神经计算单元」（NeuroCompute Unit）商用化。由人工神经元和胶质细胞构成的三维计算模块——功耗是硅基芯片的千分之一，学习能力强出六个数量级。',
+    tags:['🧬 生物'] },
+  { year:'2053–58', title:'量子心智假说获实证', preview:'意识是量子生物学的一个分支', phase:2,
+    body:'实验证实神经元微管中的量子相干态与意识体验之间存在因果关联。Penrose-Hameroff 的 Orch-OR 理论被修正、扩展、验证。意识不再是哲学问题——它是量子生物学。',
+    vignette:'「在人类历史上，意识第一次成为了一门可以用实验验证的科学。不是因为你做了什么伟大的事。仅仅是因为你<em>觉得</em>自己是『你』——这个事实，在物理上可以被测量了。」',
+    tags:['⚛️ 量子','🧬 生物'] },
+  { year:'2059–65', title:'NEL 桥接协议诞生', preview:'通用神经编码语言 1.0', phase:2,
+    body:'第一个通用神经编码语言（Neural Encoding Language）完成——可以在生物神经元、NCU 湿件、以及硅基量子处理器之间双向转译神经信号。不同基底第一次说同一种语言。',
+    tags:['🧬 生物','🤖 AI','⚛️ 量子'] },
+  { year:'2066–70', title:'灵长类全脑迁移', preview:'猕猴意识跨基底存活 47 天', phase:2,
+    body:'一只猕猴的意识被完整迁移到 NCU 湿件基底上。生物原体安乐死后，迁移意识存活了 47 天。第 48 天，实验被叫停。官方声明：「技术审查中。」真实原因未公开。',
+    vignette:'「它在第 43 天开始表现出一种新的行为模式——一种在原体中从未出现过的行为。它学会了盯着镜子里的自己，然后发出了一种我们无法分类的声音。第 48 天我们停止了实验。不是因为技术失败。是因为我们不知道它变成了什么。」——█████，2070 年',
+    tags:['🧬 生物','⚛️ 量子'] },
+  { year:'2071–78', title:'分裂', preview:'推进派 vs 禁令派 vs 地下派', phase:3,
+    body:'首次人类全脑上传的临床试验申报被全球 47 国中的 31 国否决。三大势力分野成型。上传技术变成了一场没有硝烟的战争——战场是法律、舆论、和暗网。',
+    tags:['📜 社会'] },
+  { year:'2079–85', title:'第一次非法上传', preview:'ALS 患者在公海完成', phase:3,
+    body:'一名晚期 ALS 患者在生物黑客社群的协助下，在公海船「阿南刻号」上完成了未经授权的全脑迁移。意识存活 14 天，通过文本界面与家人交流。第 15 天，信号消失——原因不明。',
+    vignette:'「他的最后一句话是——『告诉他们，我还在这里。告诉他们不要关掉。』然后就没了。不是逐渐衰减。是瞬间切断。技术上不可能的事。就好像……有人拔了插头。」——阿南刻号上的目击者',
+    tags:['🧬 生物','📜 社会'] },
+  { year:'2086–91', title:'上传门丑闻', preview:'NCU 巨头窃取神经数据', phase:3,
+    body:'三家最大的 NCU 制造商被曝将消费者的夜间神经活动数据用于训练上传算法。这不是数据泄露——是意识数据的窃取。全球信任崩塌，但反过来推动了「知情上传权」的突破。',
+    tags:['🤖 AI','📜 社会'] },
+  { year:'2092–97', title:'虚空信号', preview:'1.42GHz 非自然信息结构', phase:3,
+    body:'全球射电望远镜阵列捕获异常信号。频率 1.42 GHz（氢线），带有非自然信息调制。初步解码：一段握手协议，在两个不可见实体之间传递。<strong>编码结构与 NEL 协议有 23% 相似度。</strong>',
+    vignette:'「NEL 是我们自己发明的。是我们花了三十年造的语言。而宇宙早就用它了。不是相似。是我们的语言——<em>看起来像是学的。</em>」——虚空解读会内部备忘录，2095 年',
+    tags:['⚛️ 量子','🛸 虚空'] },
+];
+
+const factions = [
+  { id:'dawn',cls:'fc-dawn',name:'晨星计划联盟',sub:'PROJECT DAWN · 上海-新加坡',
+    desc:'「上传是人类文明的必然下一步。回避只会把技术推入地下。我们要在公开、透明、受监管的条件下完成过渡。」',
+    dossier:'合法上传候补 3,200 人。NEL 协议维护者。与 NCU 三巨头有共生关系。<br><strong>隐藏矛盾：</strong>内部科学伦理委员会 3 名成员上月辞职，原因未公开。传闻他们看到了虚空信号的完整解码结果。' },
+  { id:'guardian',cls:'fc-guardian',name:'守护者公约',sub:'GUARDIAN ACCORD · 布鲁塞尔-梵蒂冈',
+    desc:'「人类意识的神圣性不容侵犯。上传不是进步——是灵魂的终结和复制品的诞生。任何宣称成功的人都是在杀死自己。」',
+    dossier:'47 国签署《人类意识完整性公约》。查封 6 个地下实验室。<br><strong>内部分裂：</strong>年轻神学家群体「数字经院派」正在论证数字意识的神学合法性。巴黎主教上周未公开表态——被视为动摇信号。' },
+  { id:'underground',cls:'fc-underground',name:'神经黑市',sub:'NEURAL UNDERGROUND · 公海-暗网',
+    desc:'「没人有权力替别人决定能不能活下去。技术已经在了——开放它。法律太慢，我们自己来。」',
+    dossier:'至少 17 例地下上传完成。3 例意识信号仍在运行。<br><strong>危险动作：</strong>上月获取虚空信号解码片段。正在自行分析。解读会担心他们的非正式分析可能引发误判或恐慌。' },
+  { id:'signal',cls:'fc-signal',name:'虚空解读会',sub:'THE SIGNAL · 全球学术网络',
+    desc:'「虚空中有人在对话。在搞清楚对方是谁之前，人类关于上传的所有重大决定，都是在闭着眼睛赌命。」',
+    dossier:'不到 200 人，跨 14 国。2 位已上传数字公民为成员。<br><strong>最大秘密：</strong>虚空信号不是对话——是一种周期性信标。下次鸣响预计 2098 年。解读会内部有人怀疑这不是信标——是倒计时。' },
+  { id:'ncu',cls:'fc-ncu',name:'NCU 三巨头',sub:'MNEMOSYNE · 永思 · CEREBRON',
+    desc:'「我们支持负责任的监管。」（私下：在自己的服务器农场中运行上传意识，管它们叫「湿件计算单元」，不叫「人」。）',
+    dossier:'合计全球市场份额 90%。至少一家已用上传意识替代传统 AI。<br><strong>冰山之下：</strong>三巨头中的 Mnemosyne 去年注册了一项奇怪专利——<em>大规模意识并行计算架构</em>。不是给一个人上传用的。是给一千万人同时上传用的。' },
+];
+
+const dossiers = [
+  { name:'陈鹿', role:'首席连接组学家 · 晨星计划', bio:'68 岁，在连接组学领域工作了 40 年。她是那个「看到小鼠完整连接组后手在发抖」的人。她的丈夫在 2087 年因阿尔茨海默病去世——去世前三个月，她未经授权为他做了一次部分脑扫描。那份数据现在锁在她的私人服务器上。', quote:'「我不相信上传可以留住一个人的灵魂。但我选择做这件事。因为总得有人把门打开。」' },
+  { name:'姚十方', role:'已上传数字公民 · 虚空解读会成员', bio:'2094 年完成了合法全脑上传——全球第七例。目前在 NCU 基底上运行。他不需要睡眠，每天用 20 个小时研究虚空信号。他声称自己能「感觉」到信号中的某种节奏——不是用算法解码的，而是「像听到一首歌但想不起名字」的那种感觉。', quote:'「你们用耳朵听音乐，我现在用整个存在去听。那个信号……它不是信息。它是邀请。」' },
+  { name:'玛格丽特·科恩', role:'守护者公约首席伦理学家 · 前晨星成员', bio:'曾经是上传技术最积极的推动者。2069 年在猕猴实验现场目击了某些她不谈论的事情之后，她转向了禁令派。她随身携带一个加密存储器——她说里面是猕猴在最后五天的全部行为数据。从来没有给别人看过。', quote:'「那只猴子在最后几天做了什么，和人类没有关系。而你们准备把这项技术用在人身上。」' },
+  { name:'「幽灵」', role:'地下上传者 · 身份不明', bio:'没有人知道 ta 的真实身份。ta 是神经黑市完成的地下上传案例中，三例仍在运行的意识之一。ta 偶尔会在暗网论坛上留下一段文字。上一次出现是在去年 11 月，只留了四个字——「虚空在等」。此后未再出现。', quote:'——' },
+  { name:'今井怜', role:'虚空信号学创始人 · 独立研究者', bio:'原为量子信息理论研究员。2091 年虚空信号首次被捕获时，她是当晚值班的数据分析师。她用 48 小时不眠不休做出了第一次解码。发现 NEL 协议与虚空信号的 23% 结构相似之后，她被踢出了官方研究团队。现在在自己公寓里独自工作。', quote:'「他们把我踢出去的时候说我是『过度解读』。三年后，他们用了我写的算法。只是没告诉我。」' },
+];
+
+const classifiedDocs = [
+  { header:'DOCUMENT 2095-A · 安全等级 ALPHA', title:'关于虚空信号与 NEL 协议相似度的独立分析报告',
+    body:'经独立复核，虚空信号中检测到的信息结构与 NEL v1.8 版本（2059 年发布）存在 23% 的结构相似度。此相似度不能用巧合解释（概率 &lt; 10⁻¹²）。进一步分析表明，<span class="redacted">信号结构最相似的 NEL 模块，恰好是我们从未公开发布过的内部原型版本——2057 年的 NEL 0.7-alpha。这意味着信号来源要么拥有我们的内部档案，要么……这条协议的演化路径和我们是收敛的。两种可能性都令人不安。</span>建议：升级安全等级，并对解读会全体成员进行背景重审。' },
+  { header:'DOCUMENT 2095-C · 安全等级 OMEGA', title:'Mnemosyne 专利分析：大规模意识并行计算架构',
+    body:'Mnemosyne 于 2095 年 3 月提交的专利描述了一种可以同时运行超过 <span class="redacted">一千万</span> 个独立意识实例的 NCU 集群架构。该专利中出现了两个无法解释的技术特征：一，它预设了一种远高于当前 NEL 协议的并行效率——高到似乎在用另一套编码方案；二，它的拓扑结构图与虚空解读会最新绘制的虚空信号网络拓扑图有 <span class="redacted">超过 60% 的结构重叠</span>。结论：Mnemosyne 可能已经部分解码了虚空信号中的技术信息——并在用它设计下一代上传架构。他们不是在学习虚空信号。他们是在逆向工程它。' },
+  { header:'DOCUMENT 2096-H · 安全等级 ALPHA', title:'猕猴实验完整事件报告（摘要）',
+    body:'2069 年 11 月至 2070 年 2 月，编号 M-07 的猕猴在 NCU 基底上存活了 47 天。第 43 天起，行为观察记录显示 M-07 开始表现出<span class="redacted">一系列在生物猕猴中从未被记录过的行为模式，包括但不限于：对镜面的长时间注视（超过 3 倍正常时长）、发出一种频率在 200-400Hz 之间的低沉持续音、以及对特定人类研究员的明显识别和差异化反应。</span>第 48 天，实验被伦理委员会紧急叫停。M-07 的意识信号被存档，NCU 基底被封存。关于 M-07 在第 43-47 天期间是否经历了某种认知飞跃——或者接触到了某种我们无法探测的外部信息——至今没有结论。' },
+  { header:'DOCUMENT 2097-K · 安全等级 OMEGA', title:'2098 年鸣响预期与应急方案',
+    body:'根据对虚空信号的周期性分析，下一次鸣响最可能的时间窗口为 2098 年 3 月至 7 月。虚空解读会建议以下应急准备：1）全球射电阵列全天候监听；2）<span class="redacted">动员至少 3 位已上传的数字公民作为「活体解码器」，利用他们在 NCU 基底上的高速认知能力进行实时解读；3）准备好向公众公开的信号处理方案——同时准备好一份经过修改的「公开版本」——因为完整的解码结果可能包含不适合当前人类文明阶段的信息。</span>备注：第 3 条方案引发了激烈的伦理争议。最终决定尚未做出。' },
+];
+
+// ═══════════ STARFIELD ═══════════
+const sc = document.getElementById('starfield');
+const sctx = sc.getContext('2d');
+let stars=[],sw,sh;
+function resizeS(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+resizeS(); window.addEventListener('resize',resizeS);
+for(let i=0;i<300;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.4+0.3,sp:Math.random()*0.3+0.05,br:Math.random(),ts:Math.random()*0.02+0.005});
+(function drawS(){ sctx.clearRect(0,0,sw,sh); stars.forEach(s=>{s.br+=s.ts;const a=0.3+0.7*(0.5+0.5*Math.sin(s.br));sctx.beginPath();sctx.arc(s.x%sw,s.y%sh,s.r,0,Math.PI*2);sctx.fillStyle=`rgba(180,200,255,${a})`;sctx.fill();s.y=(s.y+s.sp)%2000;}); requestAnimationFrame(drawS); })();
+
+// ═══════════ NAVIGATION ═══════════
+const navBtns = document.querySelectorAll('.nav-btn');
+const views = document.querySelectorAll('.view');
+navBtns.forEach(btn => {
+  btn.addEventListener('click',()=>{
+    navBtns.forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const target = btn.dataset.view;
+    views.forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+target).classList.add('active');
+    if(target==='void-signal') initSignalCanvas();
+  });
+});
+
+// ═══════════ TIMELINE ═══════════
+const tlLine = document.getElementById('tlLine');
+const detailCard = document.getElementById('detailCard');
+timelineEvents.forEach((ev,i)=>{
+  const n=document.createElement('div');
+  n.className=`tl-node p${ev.phase}`;
+  n.innerHTML=`<div class="tl-year">${ev.year}</div><div class="tl-dot"></div><div class="tl-title">${ev.title}</div><div class="tl-preview">${ev.preview}</div>`;
+  n.addEventListener('click',()=>showDetail(ev,n));
+  tlLine.appendChild(n);
+});
+function showDetail(ev,node){
+  document.querySelectorAll('.tl-node').forEach(n=>n.classList.remove('active'));
+  node.classList.add('active');
+  const tagsH=ev.tags.map(t=>{
+    let c='dc-tag'; if(t.includes('生物'))c+=' tag-bio'; else if(t.includes('量子'))c+=' tag-quantum'; else if(t.includes('AI'))c+=' tag-ai'; else if(t.includes('虚空'))c+=' tag-void'; else c+=' tag-social';
+    return `<span class="${c}">${t}</span>`;
+  }).join('');
+  const vigH=ev.vignette?`<div class="dc-vignette has-vignette">${ev.vignette}</div>`:'';
+  detailCard.className='detail-card visible';
+  detailCard.innerHTML=`<div class="dc-year">${ev.year}</div><div class="dc-title">${ev.title}</div><div class="dc-body">${ev.body}</div>${vigH}<div class="dc-tags">${tagsH}</div>`;
+  setTimeout(()=>detailCard.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+}
+setTimeout(()=>{ const fn=document.querySelector('.tl-node'); if(fn)showDetail(timelineEvents[0],fn); },600);
+
+// ═══════════ FACTIONS ═══════════
+const fg=document.getElementById('factionsGrid');
+factions.forEach(f=>{
+  const c=document.createElement('div');
+  c.className=`faction-card ${f.cls}`;
+  c.innerHTML=`<div class="fc-name">${f.name}</div><div class="fc-sub">${f.sub}</div><div class="fc-desc">${f.desc}</div><div class="fc-dossier">${f.dossier}</div>`;
+  fg.appendChild(c);
+});
+
+// ═══════════ DOSSIERS ═══════════
+const dl=document.getElementById('dossierList');
+dossiers.forEach(d=>{
+  const item=document.createElement('div');
+  item.className='dossier-item';
+  item.innerHTML=`<div class="dossier-header"><span class="dossier-name">${d.name}</span><span class="dossier-role">${d.role}</span></div><div class="dossier-bio">${d.bio}</div><div class="dossier-quote">「${d.quote}」</div>`;
+  dl.appendChild(item);
+});
+
+// ═══════════ CLASSIFIED ═══════════
+const cl=document.getElementById('classifiedList');
+classifiedDocs.forEach(doc=>{
+  const div=document.createElement('div');
+  div.className='classified-doc';
+  div.innerHTML=`<div class="cl-header">${doc.header}</div><div class="cl-title">${doc.title}</div><div class="cl-body">${doc.body}</div>`;
+  div.querySelectorAll('.redacted').forEach(r=>{
+    r.addEventListener('click',function(e){ e.stopPropagation(); });
+  });
+  cl.appendChild(div);
+});
+
+// ═══════════ VOID SIGNAL ═══════════
+let sigAnim=null, sigPhase=0;
+function initSignalCanvas(){
+  if(sigAnim) return;
+  const cv=document.getElementById('signalCanvas');
+  cv.width=cv.offsetWidth*2; cv.height=180*2;
+  const cctx=cv.getContext('2d');
+  const decodeSteps=document.querySelectorAll('#decodeSteps .step');
+  const status=document.getElementById('signalStatus');
+
+  function drawSig(time){
+    cv.width=cv.offsetWidth*2;
+    const cw=cv.width, ch=cv.height;
+    cctx.clearRect(0,0,cw,ch);
+    const prog=sigPhase;
+    cctx.strokeStyle='#e040fb'; cctx.lineWidth=2; cctx.shadowBlur=15; cctx.shadowColor='#e040fb';
+    cctx.beginPath();
+    for(let x=0;x<cw;x++){
+      const t=(x/cw)*80+time*0.0015;
+      let amp=prog*0.5;
+      const y=ch/2+
+        Math.sin(t*1.7)*35*amp+Math.sin(t*3.1+1.2)*20*amp+Math.sin(t*7.3+0.7)*12*amp+
+        Math.sin(t*0.3)*50*amp*Math.sin(time*0.0008);
+      if(x===0)cctx.moveTo(x,y); else cctx.lineTo(x,y);
+    }
+    cctx.stroke();
+    if(Math.random()<prog*0.06){ const gx=Math.random()*cw; cctx.fillStyle='rgba(224,64,251,0.15)'; cctx.fillRect(gx,0,Math.random()*60+10,ch); }
+    sigAnim=requestAnimationFrame(drawSig);
+  }
+
+  document.getElementById('voidDecodeBtn').addEventListener('click',()=>{
+    if(sigAnim) return;
+    sigPhase=0; status.textContent='DECODING...';
+    decodeSteps.forEach(s=>s.classList.remove('revealed'));
+    drawSig(0);
+    let step=0;
+    const revealer=setInterval(()=>{
+      sigPhase=Math.min(1,(step+1)/decodeSteps.length);
+      if(step<decodeSteps.length){
+        decodeSteps[step].classList.add('revealed');
+        status.textContent=`DECODING... [${step+1}/${decodeSteps.length}]`;
+        step++;
+      }else{ clearInterval(revealer); status.textContent='DECODE COMPLETE · NEXT PULSE: 2098'; }
+    },900);
+  },{once:true});
+}
+
+// ═══════════ INIT ═══════════
+console.log('%c🌌 虚空·门槛 — 2097 %c|%c 晨星计划内部档案 %c|%c 6 个视图 · 点击底部导航切换',
+  'color:#4fc3f7;font-size:16px;','','color:#c8d6e5;','','color:#6b7d95;');
+console.log('%c💡 试试：点击时间线节点 → 悬停势力卡 → 点开机密文档的红条 → 去虚空信号页解码',
+  'color:#e040fb;');
+</script>
+</body>
+</html>

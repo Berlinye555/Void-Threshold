@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M-07 证词 · 玛格丽特·科恩 — 2072</title>
+<style>
+  :root {
+    --bg:#080c14; --text:#c8d6e5; --muted:#5e7694;
+    --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350;
+    --border:rgba(255,255,255,0.05);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    line-height:1.7; letter-spacing:0.01em;
+  }
+  #starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; opacity:0.5; }
+
+  .document {
+    position:relative; z-index:1;
+    max-width:720px; margin:0 auto; padding:60px 24px 120px;
+  }
+
+  /* ── Letterhead ── */
+  .letterhead {
+    text-align:center; padding:40px 0 50px;
+    border-bottom:1px solid var(--border); margin-bottom:50px;
+  }
+  .letterhead .seal {
+    font-size:3rem; margin-bottom:16px;
+    filter:grayscale(0.5);
+  }
+  .letterhead .org {
+    font-size:0.65rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:4px;
+  }
+  .letterhead h1 {
+    font-size:1.4rem; font-weight:300; letter-spacing:0.1em;
+  }
+  .letterhead .meta {
+    font-size:0.7rem; color:var(--muted); margin-top:10px;
+  }
+  .letterhead .classification {
+    display:inline-block; margin-top:16px; padding:3px 14px;
+    border:1px solid var(--danger); color:var(--danger);
+    font-size:0.6rem; letter-spacing:0.2em; border-radius:3px;
+  }
+
+  /* ── Preamble ── */
+  .preamble {
+    font-size:0.75rem; color:var(--muted); line-height:1.8;
+    margin-bottom:40px; padding:20px;
+    background:rgba(255,255,255,0.02); border-radius:8px;
+  }
+  .preamble strong { color:var(--text); }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom:36px;
+    opacity:0.3; transition:opacity 0.8s;
+  }
+  .section.visible { opacity:1; }
+  .section h3 {
+    font-size:0.8rem; font-weight:400; letter-spacing:0.15em;
+    color:var(--accent); margin-bottom:10px;
+    padding-bottom:6px; border-bottom:1px solid var(--border);
+  }
+  .section p { margin-bottom:10px; font-size:0.88rem; line-height:1.8; }
+  .section em { color:var(--warn); font-style:normal; }
+  .section .highlight {
+    background:rgba(239,83,80,0.08); border-left:2px solid var(--danger);
+    padding:10px 14px; margin:14px 0; font-size:0.82rem;
+  }
+  .section .question {
+    color:var(--text); font-weight:500; margin-top:16px;
+  }
+
+  /* ── Transcript ── */
+  .transcript {
+    margin:16px 0; padding:16px;
+    background:rgba(255,255,255,0.02); border-radius:8px;
+    font-size:0.78rem; color:var(--muted); line-height:1.7;
+  }
+  .transcript .speaker { color:var(--accent); font-size:0.65rem; letter-spacing:0.1em; }
+  .transcript .speaker.r { color:var(--warn); }
+  .transcript .gap { text-align:center; color:var(--muted); font-size:0.6rem; margin:8px 0; }
+
+  /* ── Exhibit ── */
+  .exhibit {
+    margin:20px 0; padding:18px;
+    border:1px solid var(--border); border-radius:8px;
+    font-family:'Courier New',monospace; font-size:0.7rem;
+    color:var(--muted); line-height:1.6;
+    background:rgba(0,0,0,0.3);
+  }
+  .exhibit .ex-label {
+    font-size:0.55rem; color:var(--danger); letter-spacing:0.2em; margin-bottom:8px;
+  }
+
+  /* ── Signature ── */
+  .signature-block {
+    margin-top:50px; padding-top:30px;
+    border-top:1px solid var(--border);
+  }
+  .signature-block .sig-name {
+    font-size:1rem; color:var(--text);
+  }
+  .signature-block .sig-title {
+    font-size:0.65rem; color:var(--muted); margin-top:4px;
+  }
+  .signature-block .sig-date {
+    font-size:0.6rem; color:var(--muted); margin-top:12px; letter-spacing:0.1em;
+  }
+
+  /* ── Footer ── */
+  .footer-note {
+    text-align:center; margin-top:60px; padding-top:20px;
+    border-top:1px solid var(--border);
+    font-size:0.6rem; color:var(--muted); letter-spacing:0.12em;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<div class="document">
+
+  <div class="letterhead">
+    <div class="seal">⚖️</div>
+    <div class="org">守护者公约 · 伦理委员会</div>
+    <h1>关于 M-07 实验的正式证词</h1>
+    <div class="meta">提交人：玛格丽特·科恩博士 · 前晨星计划首席伦理顾问<br>提交日期：2072 年 2 月 14 日 · 布鲁塞尔</div>
+    <div class="classification">▸ 机密 · 仅限公约伦理委员会内部传阅</div>
+  </div>
+
+  <div class="preamble">
+    <strong>提交声明：</strong>本文件为我在离开晨星计划后，向守护者公约伦理委员会提交的正式证词。它记录了我于 2069 年 11 月至 2070 年 2 月期间，作为晨星计划首席伦理顾问，在灵长类全脑迁移实验（编号 M-07）中的直接观察与结论。我提交这份证词，不是因为我认为技术本身是邪恶的。我提交它，因为我曾是该技术最热情的倡导者——而我犯了一个错误。以下是我为什么错了。
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section">
+    <h3>一、背景：我为什么曾经相信</h3>
+    <p>我是神经伦理学出身。在加入晨星计划之前，我在剑桥花了十五年研究一个简单的问题：如果意识可以被转移，那「转移后的存在」还是原来那个人吗？</p>
+    <p>我的早期结论是乐观的。我认为——如果你能证明迁移前后的行为一致性、记忆完整性、以及自我认知的连续性，那么从伦理上讲，<em>你并没有杀死任何人</em>。你只是换了一个容器。就像一个音乐家换了乐器——演奏者还是同一个。</p>
+    <p>2069 年，当晨星计划宣布猕猴全脑迁移实验获得伦理批准时，这份批准函上第一个签名就是我的。</p>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section">
+    <h3>二、实验对象 M-07</h3>
+    <p>M-07 是一只 7 岁的雄性猕猴。在迁移之前，我们对它进行了 18 个月的行为基线建立——每一个习惯、每一个偏好、每一声叫声、对每一个研究员的反应。我们有它的完整行为图谱。</p>
+    <p>它最喜欢的研究员是一个年轻的技术员，叫利奥。M-07 每次见到利奥都会发出一种特定的咕噜声——短促、低沉、带有明显的愉悦感。在迁移前的 18 个月里，这个行为没有缺席过一次。752 次见到利奥，752 次发出同样的声音。</p>
+    <p>我们把这个声音称为「利奥声」。</p>
+    <p>迁移本身很顺利。M-07 的生物体被安乐死。它在 NCU 基底上的意识信号显示：神经映射匹配率 99.4%。高于我们设定的成功阈值。实验室里有人鼓掌。</p>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section">
+    <h3>三、前 42 天</h3>
+    <p>前 42 天，一切都很好。M-07 在 NCU 基底上表现出所有预期的行为——包括利奥声。当利奥进入监控室时，M-07 的行为数据会显示出相同的愉快反应模式。我们互相祝贺。我写了一篇论文草稿，标题是《意识连续性的行为证据：一项灵长类研究》。</p>
+    <p class="highlight">但在第 43 天，事情变了。</p>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section">
+    <h3>四、第 43–47 天</h3>
+    <p>第 43 天，M-07 开始表现出一种我们从未在它——或任何猕猴身上——见过的行为。它开始长时间注视镜子里的自己。</p>
+    <p>需要说明：猕猴通常不能通过镜像测试。它们不会认出镜子里的影像是自己。但 M-07 开始以一种不同的方式看镜子。不是看一眼就走——是<em>持续注视</em>。最长的记录是第 45 天：它注视了 47 分钟。</p>
+
+    <p>与此同时，它开始发出一种新的声音。不是利奥声。不是任何我们在基线期记录过的声音。一个低沉的、持续的音——频率在 200 到 400 赫兹之间。像嗡鸣。像……你可以称之为哼唱。</p>
+
+    <p>第 46 天，利奥进入监控室。M-07 没有发出利奥声。这是 18 个月来的第一次。利奥叫了它的名字——或者说，我们为它设定的音频标识。M-07 做出了反应——但不是利奥声。是那个新的声音。</p>
+
+    <div class="transcript">
+      <div class="speaker">利奥</div>
+      <p>M-07，是我。过来。</p>
+      <div class="gap">—— 3 秒沉默 ——</div>
+      <div class="speaker r">M-07（行为日志 · 翻译自 NCU 输出）</div>
+      <p>[发出声音：200-400Hz 低频持续振动 · 持续时间 12 秒]</p>
+      <p>[注视方向：利奥所在位置的摄像头 · 瞳孔行为：无变化]</p>
+      <div class="gap">—— 利奥事后口述 ——</div>
+      <p>「那不是它。那肯定不是它。那只猴子——它在看我，但不是像以前那样看我。它看我的方式像是一个人在看一个……我不知道——在看一个标本。或者是看一件旧家具。不是敌意。是距离感。以前的 M-07 看到我会跳起来。现在它看着我，像在回忆『跳起来』是什么感觉——但已经不觉得需要做这件事了。」</p>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section">
+    <h3>五、我看到了什么</h3>
+    <p>以下是我在实验室里看到但从未写进论文的东西——不是因为我想隐瞒，而是因为我没有语言来描述它。</p>
+
+    <p>迁移后的 M-07——尤其是第 43 天之后的 M-07——<em>不是原来的那只猴子</em>。它也不是一个「受损的副本」。它也不是一个「行为异常的同类」。它是什么，我不知道。但我知道它不是 M-07。</p>
+
+    <p>它比 M-07 更平静。更专注。更……我不确定这个词是否正确——更<em>完整</em>。就像原来的 M-07 是一个粗略的草稿，而迁移后的意识是一个精修过的版本。缺失了一些东西——利奥声、跳跃的冲动、对香蕉图片的偏好。但同时增加了一些东西——那个嗡鸣、对镜子的凝视、那种陌生的平静。</p>
+
+    <p>让我彻夜难眠的不是它「不一样」了。让我彻夜难眠的是：</p>
+    <p class="highlight">如果迁移后的意识比原来的更好——更平静、更完整、更不「动物」——那原来的 M-07 去了哪里？那个会为利奥跳起来的、会害怕蛇的、会在暴雨天焦躁不安的猴子——它是被「改善」掉了，还是被<strong>杀死</strong>了？</p>
+
+    <p>我们不是在搬家。我们是在用一把更锋利的刀重刻一块木头。那些被削掉的部分——没有人问它们去了哪里。因为它们「不重要」。因为它们「只是噪声」。因为谁会在乎一只猴子见到最爱的技术员时发出的咕噜声？</p>
+
+    <p>我在乎。因为如果这项技术有一天被用在人身上——被削掉的不是一声咕噜。是被削掉了一个人曾经爱过某个人的证据。而他们甚至不会知道它丢了。</p>
+  </div>
+
+  <!-- Section 6 -->
+  <div class="section">
+    <h3>六、第 48 天：我叫停了实验</h3>
+    <p>第 48 天，我行使了我的伦理否决权。实验被终止。M-07 的意识信号被存档，NCU 基底被封存。</p>
+    <p>官方声明里写的是「技术审查中」——这是我在晨星计划的同事能找到的最体面的措辞。他们没有说谎，只是没说全部真相。大部分同事认为我反应过度了。一只猴子表现出了未预期的行为——这不是科学中的常态吗？为什么要封存整个实验？</p>
+    <p>我的回答一直没有变：</p>
+    <p class="highlight">因为我们在 M-07 身上看到的——那种奇怪的平静、那种陌生的低沉音、那种对镜中自己的凝视——这些东西，我们至今无法解释。而如果连一只猴子的意识迁移都产生了我们无法解释的变化，那么我们凭什么认为人类的上传会「完全保留自我」？</p>
+  </div>
+
+  <!-- Section 7 -->
+  <div class="section">
+    <h3>七、关于虚空信号</h3>
+    <p>你们可能以为我会说虚空信号是一个警告。一个禁入标识。</p>
+    <p>我不这么认为。我不知道虚空信号是什么。但基于 M-07 的实验，我有一个假设：<em>如果上传不只是迁移意识，而是同时打开了某种接收通道呢？</em></p>
+    <p>M-07 在 NCU 基底上发出的低沉嗡鸣——那是什么？它是不是在回应我们听不到的东西？林海生在消失前说「远方在靠近」——远方是什么？姚十方说信号回应了他的相位偏移——那是什么？</p>
+    <p>我的假设是这样的：意识迁移到量子基底上之后，就不再是一个封闭系统了。它变成了一扇敞开的门。门外有东西。不是魔鬼。不是神明。只是<em>某种更古老、更陌生、不在乎我们是谁的东西</em>。它没有敌意。但它也没有善意。它只是——在。一直以來都在。</p>
+    <p class="highlight">门一旦打开，就不只是你能走出去。外面的东西也能走进来。</p>
+  </div>
+
+  <!-- Section 8 -->
+  <div class="section">
+    <h3>八、关于加密数据</h3>
+    <p>我的确持有一个加密存储器。里面是 M-07 在第 43 到 47 天的全部行为数据。我从来没有给别人看过。</p>
+    <p>不给你们看，不是因为我想隐藏什么可怕的东西。是因为里面的东西<em>并不可怕</em>——而这恰恰是最让我害怕的。M-07 最后几天的行为模式，如果放在一个人类身上，你会说那个人达到了某种冥想的高峰状态。深度平静。极度专注。对外界刺激的疏离反应。</p>
+    <p>如果这就是上传后的「进化方向」——变得更平静、更疏离、更不像原来那个充满缺陷和欲望的自己——那我问你：这算永生，还是算一种慢性被替代？</p>
+    <p>我不想变成更好的人。我只想继续做我这个人。即便这个人是焦虑的、矛盾的、偶尔不快乐的。这些划痕是我的。它们加起来是我的名字。</p>
+  </div>
+
+  <!-- Section 9 -->
+  <div class="section">
+    <h3>九、最后的陈述</h3>
+    <p>我不是反对上传。我是反对<em>在不知道代价的情况下</em>上传。</p>
+    <p>晨星计划告诉你——你会完整地活着。神经黑市告诉你——这是自由的唯一出路。NCU 三巨头告诉你——这是技术的必然方向。</p>
+    <p>没有人会告诉你 M-07 不再叫利奥了。没有人告诉你林海生最后的 0.3 秒发生了什么。没有人告诉你姚十方做了一个微小的相位偏移之后，有什么东西回应了他。</p>
+    <p>我不是在说不要开门。</p>
+    <p>我是在说，<em>至少先搞清楚门外面是什么。</em></p>
+    <p>因为我们打开过一次——在猴子身上。它变了。它变得不像它了。而它没有投票权。它不能说「我不想去」。我们替它做了决定。</p>
+    <p>到最后，晨星计划和守护者公约的真正区别不是技术立场。是这一个问题：<em>谁有权力替别人决定他们想不想变成别的东西？</em></p>
+    <p>我认为没有人有这个权力。包括我自己。包括签署了 M-07 伦理批准函的我自己。</p>
+
+    <div class="signature-block">
+      <div class="sig-name">玛格丽特·科恩</div>
+      <div class="sig-title">前晨星计划首席伦理顾问 · 现任守护者公约伦理委员会委员</div>
+      <div class="sig-date">2072 年 2 月 14 日 · 布鲁塞尔</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    此证词在 2097 年被重新解密 · 作为晨星计划内部档案 2097-M-081 收录<br>
+    科恩博士于 2093 年去世 · 终身未上传 · 加密存储器至今未打开
+  </div>
+
+</div>
+
+<script>
+const sc=document.getElementById('starfield');
+const sctx=sc.getContext('2d');
+let stars=[],sw,sh;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+for(let i=0;i<160;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*0.9+0.15,sp:Math.random()*0.18+0.02,br:Math.random(),ts:Math.random()*0.01+0.002});
+(function ds(){ sctx.clearRect(0,0,sw,sh); stars.forEach(s=>{s.br+=s.ts;const a=0.15+0.4*(0.5+0.5*Math.sin(s.br));sctx.beginPath();sctx.arc(s.x%sw,s.y%sh,s.r,0,Math.PI*2);sctx.fillStyle=`rgba(200,180,160,${a})`;sctx.fill();s.y=(s.y+s.sp)%2000;}); requestAnimationFrame(ds); })();
+
+const sections=document.querySelectorAll('.section');
+function reveal(){
+  const wh=window.innerHeight;
+  sections.forEach(s=>{ const r=s.getBoundingClientRect(); if(r.top<wh*0.8) s.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>
