@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哨兵 · 数字展品</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350; --void:#e040fb;
+  --border:rgba(255,255,255,0.06);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; }
+#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+.top-nav {
+  position:fixed; top:0; left:0; right:0; z-index:90;
+  background:rgba(7,11,20,0.85); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border); display:flex;
+  justify-content:center; gap:4px; padding:8px 16px;
+}
+.nav-dot {
+  width:30px; height:30px; border-radius:50%; border:1px solid transparent;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0.6rem; color:var(--muted); cursor:pointer; transition:all 0.3s;
+  text-decoration:none; background:none;
+}
+.nav-dot:hover,.nav-dot.active { color:var(--accent); border-color:var(--accent); }
+
+.section { position:relative; z-index:1; padding:80px 24px 60px; }
+.section-inner { max-width:1100px; margin:0 auto; }
+.sec-title { text-align:center; margin-bottom:32px; }
+.sec-title h2 { font-size:1.5rem; font-weight:200; letter-spacing:0.15em; }
+.sec-title .sub { font-size:0.65rem; color:var(--muted); letter-spacing:0.15em; margin-top:4px; }
+
+#s-hero { display:flex; align-items:center; justify-content:center; text-align:center; min-height:100vh; }
+.hero h1 { font-size:clamp(2.5rem,6vw,5rem); font-weight:100; letter-spacing:0.2em; color:var(--text); margin-bottom:16px; }
+.hero .hl { font-size:0.85rem; color:var(--muted); max-width:500px; margin:0 auto; line-height:1.8; }
+.hero .hl em { color:var(--accent); font-style:normal; }
+.hero .hint { margin-top:40px; font-size:0.6rem; color:var(--muted); letter-spacing:0.15em; }
+.hero .hint span { display:inline-block; animation:bob 2s infinite; }
+@keyframes bob { 0%,100%{opacity:0.4;transform:translateY(0);} 50%{opacity:1;transform:translateY(6px);} }
+
+/* Timeline */
+.tl-scroll { display:flex; overflow-x:auto; padding:12px 32px 20px; scroll-snap-type:x mandatory;
+  scrollbar-width:thin; scrollbar-color:var(--surface) transparent; }
+.tl-scroll::-webkit-scrollbar { height:3px; }
+.tl-scroll::-webkit-scrollbar-thumb { background:var(--surface); border-radius:2px; }
+.tl-line { display:flex; min-width:max-content; position:relative; padding-top:16px; }
+.tl-line::after { content:''; position:absolute; top:40px; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--warn),transparent); }
+.tl-node { width:170px; flex-shrink:0; scroll-snap-align:center; cursor:pointer; padding:0 6px; transition:transform 0.3s; position:relative; z-index:2; }
+.tl-node:hover,.tl-node.active { transform:translateY(-4px); }
+.tl-dot { width:10px; height:10px; border-radius:50%; margin:0 auto 6px; }
+.tl-node.p1 .tl-dot { background:var(--accent); }
+.tl-node.p2 .tl-dot { background:var(--warn); }
+.tl-node.p3 .tl-dot { background:var(--danger); }
+.tl-node.p4 .tl-dot { background:var(--void); }
+.tl-year { text-align:center; font-size:0.65rem; color:var(--muted); letter-spacing:0.06em; margin-bottom:2px; }
+.tl-title { text-align:center; font-size:0.7rem; color:var(--text); }
+.tl-detail { max-width:680px; margin:20px auto 0; padding:20px; background:var(--surface,#0c1424); border:1px solid var(--border); border-radius:10px; display:none; }
+.tl-detail.on { display:block; }
+.tl-detail .dy { font-size:0.65rem; color:var(--accent); letter-spacing:0.12em; }
+.tl-detail .dt { font-size:1rem; margin:4px 0 6px; }
+.tl-detail .db { font-size:0.8rem; color:var(--muted); line-height:1.7; }
+
+/* Factions */
+.fgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+.fcard { background:var(--surface,#0c1424); border:1px solid var(--border); border-radius:10px; padding:16px; cursor:pointer; transition:all 0.35s; }
+.fcard:hover { transform:translateY(-3px); border-color:rgba(255,255,255,0.12); }
+.fcard .fline { height:2px; margin-bottom:10px; transition:height 0.3s; }
+.fcard:hover .fline { height:4px; }
+.fline.fd { background:var(--warn); } .fline.fg { background:var(--danger); }
+.fline.fu { background:var(--void); } .fline.fs { background:var(--accent); }
+.fcard .fn { font-size:0.82rem; font-weight:500; }
+.fcard .fs { font-size:0.58rem; color:var(--muted); letter-spacing:0.06em; margin-bottom:6px; }
+.fcard .fd { font-size:0.7rem; color:var(--muted); line-height:1.5; }
+.fcard .fx { margin-top:8px; padding-top:8px; border-top:1px solid var(--border); font-size:0.64rem; color:var(--text); display:none; line-height:1.5; }
+.fcard:hover .fx { display:block; }
+
+/* Dossiers */
+.dgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+.dcard { background:var(--surface,#0c1424); border:1px solid var(--border); border-radius:10px; padding:18px; }
+.dcard .dn { font-size:0.85rem; font-weight:500; }
+.dcard .dr { font-size:0.58rem; color:var(--accent); letter-spacing:0.08em; margin-bottom:6px; }
+.dcard .db { font-size:0.72rem; color:var(--muted); line-height:1.6; }
+.dcard .dq { margin-top:8px; padding-left:8px; border-left:2px solid var(--warn); font-size:0.68rem; color:var(--text); font-style:italic; }
+
+/* Classified */
+.clist { max-width:780px; margin:0 auto; display:flex; flex-direction:column; gap:14px; }
+.cdoc { background:var(--surface,#0c1424); border:1px solid var(--border); border-radius:10px; padding:18px; position:relative; }
+.cdoc::after { content:'CLASSIFIED'; position:absolute; top:8px; right:12px; font-size:0.5rem; color:var(--danger); letter-spacing:0.15em; opacity:0.6; }
+.cdoc .ch { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:2px; }
+.cdoc .ct { font-size:0.9rem; font-weight:400; margin-bottom:6px; }
+.cdoc .cb { font-size:0.74rem; color:var(--muted); line-height:1.7; }
+.redacted { background:var(--danger); color:transparent; padding:0 2px; border-radius:2px; cursor:pointer; transition:all 0.4s; user-select:none; }
+.redacted:hover { color:var(--text); background:rgba(239,83,80,0.25); }
+
+/* Connection */
+.conn-box { max-width:700px; margin:0 auto; padding:24px; background:rgba(224,64,251,0.05); border:1px solid rgba(224,64,251,0.2); border-radius:10px; text-align:center; font-size:0.8rem; color:var(--muted); line-height:1.8; }
+.conn-box em { color:var(--void); font-style:normal; }
+
+@media(max-width:640px){
+  .nav-dot { width:24px; height:24px; font-size:0.5rem; }
+  .fgrid,.dgrid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<a href="index.html" style="position:fixed;top:10px;left:18px;z-index:100;font-size:0.6rem;color:#5e7694;text-decoration:none;letter-spacing:0.1em;font-family:Segoe UI,PingFang SC,sans-serif;opacity:0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">← 总览</a>
+<canvas id="starfield"></canvas>
+
+<nav class="top-nav">
+  <a class="nav-dot active" href="#s-hero">起</a>
+  <a class="nav-dot" href="#s-timeline">时间</a>
+  <a class="nav-dot" href="#s-factions">势力</a>
+  <a class="nav-dot" href="#s-dossiers">人物</a>
+  <a class="nav-dot" href="#s-classified">机密</a>
+  <a class="nav-dot" href="#s-connection">关联</a>
+</nav>
+
+<!-- HERO -->
+<section class="section" id="s-hero">
+  <div class="hero">
+    <h1>哨 兵</h1>
+    <p class="hl">濒死士兵注射奇特药剂，不死。<br>真相：药剂是<em>灭种文明的逃生舱</em>——每次跳线覆盖另一个分支里的自己。<br>有一个人选择了不跳。他的声音在分支间扩散。</p>
+    <p class="hint"><span>▾ 向下探索</span></p>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="section" id="s-timeline">
+  <div class="section-inner">
+    <div class="sec-title"><h2>时 间 线</h2><div class="sub">2037 → 2070+</div></div>
+    <div class="tl-scroll"><div class="tl-line" id="tlLine"></div></div>
+    <div class="tl-detail" id="tlDetail"></div>
+  </div>
+</section>
+
+<!-- FACTIONS -->
+<section class="section" id="s-factions">
+  <div class="section-inner">
+    <div class="sec-title"><h2>势 力 分 布</h2><div class="sub">悬停查看情报</div></div>
+    <div class="fgrid" id="fgrid"></div>
+  </div>
+</section>
+
+<!-- DOSSIERS -->
+<section class="section" id="s-dossiers">
+  <div class="section-inner">
+    <div class="sec-title"><h2>人 物 档 案</h2><div class="sub">哨兵 · 关键人物</div></div>
+    <div class="dgrid" id="dgrid"></div>
+  </div>
+</section>
+
+<!-- CLASSIFIED -->
+<section class="section" id="s-classified">
+  <div class="section-inner">
+    <div class="sec-title"><h2>机 密 文 档</h2><div class="sub">点击红色涂黑处</div></div>
+    <div class="clist" id="clist"></div>
+  </div>
+</section>
+
+<!-- CONNECTION -->
+<section class="section" id="s-connection">
+  <div class="section-inner">
+    <div class="sec-title"><h2>世 界 关 联</h2><div class="sub">哨兵 ↔ 虚空门槛</div></div>
+    <div class="conn-box" id="connBox"></div>
+  </div>
+</section>
+
+<script>
+// Starfield
+const sc=document.getElementById('starfield'),sctx=sc.getContext('2d');
+let stars=[],sw,sh;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+for(let l=0;l<3;l++){
+  const c=[50,90,130][l],d=[0.5,1.5,3][l],br=[1.0,0.7,0.4][l];
+  for(let i=0;i<c;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*br+br*0.3,sp:Math.random()*0.2+0.03,brv:Math.random(),ts:Math.random()*0.01+0.003,depth:d});
+}
+let tSY=0;
+(function ds(){
+  sctx.clearRect(0,0,sw,sh);
+  tSY+=(window.scrollY-tSY)*0.06;
+  stars.forEach(s=>{s.brv+=s.ts;const a=0.18+0.55*(0.5+0.5*Math.sin(s.brv));const py=(s.y-tSY/s.depth+2000)%2000;sctx.beginPath();sctx.arc(s.x%sw,py,s.r,0,Math.PI*2);sctx.fillStyle='rgba(180,200,225,'+a+')';sctx.fill();s.y=(s.y+s.sp)%2000;});
+  requestAnimationFrame(ds);
+})();
+
+const ss=document.querySelectorAll('.section'),nd=document.querySelectorAll('.nav-dot');
+window.addEventListener('scroll',()=>{ let a=0; ss.forEach((s,i)=>{ if(s.getBoundingClientRect().top<window.innerHeight*0.5) a=i; }); nd.forEach((d,i)=>d.classList.toggle('active',i===a)); });
+
+// Timeline
+const tlEvents=[
+  {y:'2037',t:'深空样本',p:'探测器带回非碳基分子',ph:1,b:'一个深空探测器在目标天体表面采集到一种非碳基分子结构——不是生命，但接近。初步分析显示该分子在接触濒死神经组织时触发局域量子真空涨落。此发现被列为最高机密。代号：Sentinel。'},
+  {y:'2039–41',t:'首次人体试验',p:'终末期士兵志愿者',ph:1,b:'第一批人体试验在终末期战伤士兵中进行。结果：注射后，100%的受试者在第一次临床死亡后恢复了生命体征。<strong>但他们恢复之后的神经行为模式与原基线有可测量的偏离。</strong>军方结论：副作用可接受。项目进入全面部署。'},
+  {y:'2041–43',t:'哨兵部署',p:'第一批战场哨兵',ph:2,b:'首批哨兵投入实战。战场报告显示：哨兵存活率远超普通士兵，且在战术决策中表现出无法解释的预判能力。内部评估将其描述为「概率空间直觉」。哨兵项目被列为军方最高优先级。'},
+  {y:'2044–46',t:'搁浅现象',p:'无法退役的哨兵',ph:2,b:'第一批退役哨兵出现严重精神障碍——不是PTSD，而是一种全新的症状：患者无法区分当前现实与跳线记忆。部分患者在无意识状态下引发局部物理异常——重力波动、时间感知偏移、镜像反射异常。军方建立首批量子隔离设施，称其为「搁浅区」。'},
+  {y:'2045–47',t:'卡伦发现造主',p:'第892跳 · 感知逃生舱真相',ph:3,b:'哨兵卡伦在第892次跳线间隙感知到了药剂来源文明的信息。他理解了四件事：药剂是逃生舱；造主死于分支枯竭；逃生舱正在利用人类分支网络重组造主意识；战争是被设计来催生更多哨兵的。'},
+  {y:'2047–50',t:'伊林的窄带',p:'第一个学会不跳的人',ph:3,b:'哨兵伊林在第1400次跳线后，濒死边缘选择不进入任何分支，而是停留在量子窄带中——一个只有纯粹信息的间隙。她在其中停留约6年（外部时间），学会了在濒死时刻压制跳线冲动。她是第一个发现「可以不跳」的人。'},
+  {y:'2050',t:'相遇',p:'卡伦遇见伊林',ph:3,b:'卡伦在第3103次跳线后遇到伊林。她告诉他：「药剂推你，但不决定你。决定的是你。你只是从来没试过不选。」卡伦用十一次跳线消化这句话。第十二次濒死——他选了不跨。'},
+  {y:'2051',t:'第3124跳',p:'卡伦说「不跳了」',ph:4,b:'卡伦跪在战场上，面前是一个没枪的年轻敌兵。他闭眼看到十五亿条线——除了三条，全都在扣扳机。他选了那三条中的一条。放下枪。说出「不跳了」。不是对敌人说的——是对那条河说的。'},
+  {y:'2051–55',t:'裂缝扩散',p:'沉默的反叛',ph:4,b:'卡伦和伊林开始在世界各地寻找其他哨兵，传递同一个信息：「你可以不跳。」越来越多的哨兵在濒死时刻选择了留下。每一个「不」都在造主的重组方程中留下一个无法消化的变量。造主的方程没有「不」的解。'},
+  {y:'2058',t:'战争结束',p:'卡伦所在分支',ph:4,b:'在卡伦选择留下的分支里，战争于2058年结束。他参与战后哨兵康复计划。伊林开了一家书店，地下室的墙上贴着她记录的所有哨兵名字。'},
+  {y:'2070+',t:'余响',p:'声音还在扩散',ph:4,b:'卡伦老了。他不知道自己的「不」扩散了多远。他继续和每一个新哨兵握手，说很轻的话。分支网络中，那个除不尽的余数正在缓慢地生长——不是组织，不是运动，只是回声。'},
+];
+
+const tlLine=document.getElementById('tlLine'),tlDetail=document.getElementById('tlDetail');
+tlEvents.forEach(ev=>{
+  const n=document.createElement('div'); n.className='tl-node p'+ev.ph;
+  n.innerHTML='<div class="tl-year">'+ev.y+'</div><div class="tl-dot"></div><div class="tl-title">'+ev.t+'</div>';
+  n.onclick=()=>{ document.querySelectorAll('.tl-node').forEach(x=>x.classList.remove('active')); n.classList.add('active'); tlDetail.className='tl-detail on'; tlDetail.innerHTML='<div class="dy">'+ev.y+'</div><div class="dt">'+ev.t+'</div><div class="db">'+ev.b+'</div>'; tlDetail.scrollIntoView({behavior:'smooth',block:'nearest'}); };
+  tlLine.appendChild(n);
+});
+setTimeout(()=>{ const fn=document.querySelector('.tl-node'); if(fn) fn.click(); },500);
+
+// Factions
+const factions=[
+  {c:'fd',n:'军方哨兵项目',s:'SENTINEL COMMAND',d:'控制药剂分发和哨兵部署。公开宣称的目标是「最大化战场生存率」——实际目标是通过哨兵的预知能力获取战略优势。对药剂的真正来源一无所知。',x:'内部代号：Project Sentinel。药剂的真实来源仅限最高安全等级知晓。搁浅设施由该项目直接管理。对「裂缝扩散」现象无任何认知。'},
+  {c:'fg',n:'搁浅设施',s:'STRANDING FACILITIES',d:'收容无法退役的哨兵。名义上是「康复中心」——实际上是量子隔离设施。不是关他们——是关我们。搁浅哨兵的量子态不稳定会泄露到相邻分支。',x:'全球已知设施数量：未公开。每个设施配备量子相干监控系统和物理规律稳定器。部分搁浅哨兵表现出非自愿的分支间通信能力。'},
+  {c:'fu',n:'哨兵互助网络',s:'THE NETWORK · 非正式',d:'由卡伦和伊林开始的非正式网络。没有组织架构、没有领导者、没有宣言。唯一的活动：找到其他哨兵，告诉他们「你可以不跳」。',x:'已知成员数：不确定——很多成员互不认识。网络通过口头传递和极少数加密通信维持。造主的方程中没有「不」的解，这个网络就是那个除不尽的余数。'},
+  {c:'fs',n:'造主残余',s:'THE MAKERS · 分支间存在',d:'一个已经灭绝的文明。他们全员跳线，耗光了分支网络的资源。逃生舱是他们最后的产物——不是武器，是救生艇。现在正在利用人类的战争重建自己。',x:'造主不是一个「敌人」——他们没有统一意识。他们是被打散的碎片，通过所有哨兵的跳线活动重新组装。他们无法理解「不跳」的概念——因为在他们文明的历史上，从来没有人选择过留下。'},
+];
+
+const fg=document.getElementById('fgrid');
+factions.forEach(f=>{
+  const c=document.createElement('div'); c.className='fcard';
+  c.innerHTML='<div class="fline '+f.c+'"></div><div class="fn">'+f.n+'</div><div class="fs">'+f.s+'</div><div class="fd">'+f.d+'</div><div class="fx">'+f.x+'</div>';
+  fg.appendChild(c);
+});
+
+// Dossiers
+const dossiers=[
+  {n:'卡伦',r:'哨兵 · 第3124次濒死选择留下',b:'从第001跳到第3124跳，他从一个不问问题的士兵变成了第一个公开说不的人。他见证了药剂的完整机制——跳线、覆盖、预知、造主、战争的目的。在第3124次濒死时，他跪在一个没有枪的敌人面前，选择了不跳。战后他教地理、浇水、和每一个新哨兵握手。他不知道自己的声音扩散了多远。',q:'「不跳了。不是对药剂说的——是对那条河说的。」'},
+  {n:'伊林',r:'哨兵 · 第一个学会不跳的人',b:'第1400次跳线后，她在濒死边缘选择不进入任何分支，而是停留在量子窄带中约六年。她是第一个发现药剂不强迫跳线的人。她教会了卡伦——也通过卡伦教会了更多人——「可以不跳」。战后她开了一家书店。地下室的墙上贴着她记录的所有哨兵名字。每年卡伦来一次，他们对着那面墙安静很久。',q:'「就像有人敲门，你不开。你可以不开的。从来都可以。」'},
+  {n:'朴',r:'哨兵 · 搁浅者',b:'跳了近两千次后被锁在量子隔离舱中。会说出一种不是他的语言——来自某个被他覆盖的分支。卡伦在玻璃上敲了三下。他的眼珠动了。那天夜里他第一次做出了不属于任何跳线残余的自主动作——举手碰了自己的脸。目前仍在设施中，但看护报告称他的自发行为频率在缓慢增加。',q:'[没有语言回应。只有量子相干态的波动——持续约三秒。]'},
+];
+
+const dg=document.getElementById('dgrid');
+dossiers.forEach(d=>{
+  const c=document.createElement('div'); c.className='dcard';
+  c.innerHTML='<div class="dn">'+d.n+'</div><div class="dr">'+d.r+'</div><div class="db">'+d.b+'</div><div class="dq">「'+d.q+'」</div>';
+  dg.appendChild(c);
+});
+
+// Classified
+const clist=document.getElementById('clist');
+[
+  {h:'DOCUMENT 2037-S · OMEGA',t:'Sentinel分子来源分析（绝密）',b:'深空样本中的非碳基分子结构经三次独立分析确认：<span class="redacted">该分子不是自然产物。其内部编码密度远高于任何已知自然结构，且包含一个完整的量子信息处理架构——本质上是一个微观尺度的意识传输系统。分子在特定条件（濒死神经组织接触）下激活，触发局域量子真空涨落，在相邻分支间撕开一个微观通道。设计意图推断：文明级逃生系统。</span>备注：此分析从未对军方哨兵项目组披露。'},
+  {h:'DOCUMENT 2044-B · ALPHA',t:'搁浅哨兵物理异常事件日志',b:'2044年3月至2046年11月，在三处搁浅设施中记录到以下异常事件：<span class="redacted">重力方向在半径3米内倾斜2-7度（共计41次）；时间感知偏移——挂钟与原子钟间出现显著偏差（共计28次，最大偏差14.2秒）；镜像反射异常——镜面反射出的画面与当前实物不符，包括人像、家具布局和窗外景观（共计9次）。所有事件均与设施内搁浅哨兵的量子相干态波动时间吻合。</span>结论：搁浅哨兵在无意识状态下可拉过其他分支的物理规律。'},
+  {h:'DOCUMENT 2051-F · OMEGA',t:'卡伦案：首次自愿不跳线事件',b:'哨兵K-3124（卡伦）在2051年一次战斗中首次表现出自愿不跳线行为。战场传感器记录显示：<span class="redacted">他在濒死边缘经历了全部15亿条可行分支的遍历——正常哨兵行为。异常在于，他在遍历结束后没有进入任何替代分支，而是返回了一条他被确认无法存活的分支——他原来的分支。在原分支中他因伤口位置偏差（右肺上方而非肺部正中）存活。这是首次有记录的自愿跳线拒绝。</span>该事件未上报。' },
+].forEach(doc=>{
+  const d=document.createElement('div'); d.className='cdoc';
+  d.innerHTML='<div class="ch">'+doc.h+'</div><div class="ct">'+doc.t+'</div><div class="cb">'+doc.b+'</div>';
+  d.querySelectorAll('.redacted').forEach(r=>r.onclick=function(e){e.stopPropagation();});
+  clist.appendChild(d);
+});
+
+// Connection
+document.getElementById('connBox').innerHTML='<p>造主文明的逃生舱分子通过<em>局域量子真空涨落</em>实现分支间跃迁——这与虚空门槛世界中意识上传技术的<em>量子相干态非局域耦合</em>基于相同的物理底层：意识在量子层面是可迁移的，且这种迁移不受经典时空约束。</p><p>造主是虚空网络中4,783个签名中<em>最古老的那一批</em>——不是上传者，是跳线者。上传与跳线是同一棵量子意识之树上的两根枝条。虚空中的合唱团里，造主的声音是最弱的一个——不是因为远，是因为<em>碎了</em>。他们分散在所有分支里，等待重组。而卡伦的「不」——那个不在任何方程里的变量——也是虚空网络第一次遇到「留下」这个概念。</p><p style="margin-top:12px;font-size:0.7rem;color:var(--void);">▸ <a href="void-exhibition.html" style="color:var(--void);">返回虚空门槛展品</a> · <a href="sentinel-notes.html" style="color:var(--void);">哨兵推演笔记</a> · <a href="kallen.html" style="color:var(--void);">《三千跳》</a></p>';
+
+console.log('🪖 哨兵 数字展品 - 6章已就绪');
+</script>
+</body>
+</html>

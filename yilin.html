@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>窄带 · 伊林 — 哨兵系列</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350; --void:#e040fb;
+  --border:rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; line-height:1.8; }
+.book { max-width:680px; margin:0 auto; padding:60px 24px 120px; }
+
+.title-page { text-align:center; padding:80px 0 60px; border-bottom:1px solid var(--border); margin-bottom:60px; }
+.title-page .lbl { font-size:0.55rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:12px; }
+.title-page h1 { font-size:2rem; font-weight:200; letter-spacing:0.15em; }
+.title-page .sub { font-size:0.75rem; color:var(--muted); margin-top:8px; letter-spacing:0.12em; }
+.title-page .epi { margin-top:30px; font-size:0.78rem; color:var(--muted); font-style:italic; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.7; }
+
+.chapter { margin-bottom:48px; opacity:0.25; transition:opacity 0.8s; }
+.chapter.visible { opacity:1; }
+.ch-num { font-size:0.6rem; color:var(--accent); letter-spacing:0.2em; margin-bottom:6px; }
+.ch-title { font-size:1.1rem; font-weight:300; letter-spacing:0.08em; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.ch-time { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:16px; }
+.ch-body { font-size:0.88rem; line-height:1.9; }
+.ch-body p { margin-bottom:12px; }
+.ch-body em { color:var(--warn); font-style:normal; }
+.ch-body .vo { color:var(--void); font-style:italic; }
+
+.ch-quote { margin:18px 0; padding:12px 16px; border-left:3px solid var(--void); background:rgba(224,64,251,0.05); font-size:0.8rem; color:var(--text); font-style:italic; line-height:1.7; }
+.ch-quote .attr { font-size:0.6rem; color:var(--muted); font-style:normal; margin-top:4px; display:block; }
+
+.book-footer { text-align:center; margin-top:60px; padding-top:30px; border-top:1px solid var(--border); font-size:0.68rem; color:var(--muted); letter-spacing:0.12em; line-height:1.8; }
+</style>
+</head>
+<body>
+<a href="index.html" style="position:fixed;top:10px;left:18px;z-index:100;font-size:0.6rem;color:#5e7694;text-decoration:none;letter-spacing:0.1em;font-family:Segoe UI,PingFang SC,sans-serif;opacity:0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">← 总览</a>
+
+<div class="book">
+
+<div class="title-page">
+  <div class="lbl">SENTINEL · 系列</div>
+  <h1>窄 带</h1>
+  <div class="sub">The Narrow Band</div>
+  <p class="epi">「就像有人敲门，你不开。你可以不开的。从来都可以。」<br>—— 伊林 · 向卡伦解释怎么不跳</p>
+</div>
+
+<!-- ══ 1 ══ -->
+<div class="chapter">
+  <div class="ch-num">第一章</div>
+  <div class="ch-title">她记得自己的第一次死</div>
+  <div class="ch-time">2042 年 · 某野战医院</div>
+  <div class="ch-body">
+    <p>伊林不是自愿的。从来没有人是自愿的。</p>
+    <p>她是一名医护兵。在一次撤退中，运兵车被击中。她活了下来——不是因为她比其他人强壮，是因为一颗弹片嵌在她腹腔里，没有伤到主动脉。她在地上躺了将近两个小时。有人在旁边呻吟。她听见自己对自己说：<em>如果再来一次——如果再来一次我会做不同的事。</em></p>
+    <p>模糊中有军医给她注射了什么东西。她以为是止痛药。不是——是 Sentinel。军医以为她的伤势已经无望。注射 Sentinel 是标准程序。死马当活马医。</p>
+    <p>伊林的第一个跳线发生在入院后第四十分钟。失血性休克。瞳孔散大。脑电活动趋平。然后——不是醒来。是<em>换了一个房间</em>。床的位置不同。窗外是晴天——不是刚才的雨。护士不一样。她的伤口不在腹部——在左腿。</p>
+    <p>她用了三天才接受发生了什么。没有人告诉她。她自己拼起来的。在这个分支里，运兵车没有中弹。她断了一条腿。她活下来了。</p>
+    <p>但在原来的分支里，她死了。她最好的朋友在清理她的遗物时哭到脱水。她从不知道自己被哭过。</p>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="chapter">
+  <div class="ch-num">第二章</div>
+  <div class="ch-title">一千四百跳</div>
+  <div class="ch-time">2042 — 2047 · 无数分支</div>
+  <div class="ch-body">
+    <p>五年。一千四百次。</p>
+    <p>伊林是一个记数的人。不是因为强迫症——是因为她发现自己在被稀释。每一次跳线，另一个版本的她被覆盖，那个版本的记忆混进来。一千四百个版本，每一个都有不同的名字、不同的童年、不同的爱人和仇人。她在精神上同时活着一千四百次，而没有一个版本的她自己能占主导。</p>
+    <p>她不是最强的哨兵。战场预知——她在第三百次跳线左右才开始稳定发挥。她的特殊能力不在于读分支——在于<em>感知间隙</em>。每次跳线的那个不到一次的瞬间——被推出原分支、还未进入新分支的那个极窄的量子空白——她在那里面停留的时间比别人长一点点。不是能力。是性格。她从来不是一个急于到达的人。</p>
+    <p class="vo">在被推出和未进入之间——那里什么都没有。没有身体。没有时间。没有分支。只有一个纯粹的信息场。你在那里不是「你」。你是一段没有载体的记忆。你看着所有分支同时展开，像一个站在悬崖边的人看着脚下的所有河流同时流向所有海洋。</p>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="chapter">
+  <div class="ch-num">第三章</div>
+  <div class="ch-title">不进去</div>
+  <div class="ch-time">2047 年 · 第 1401 次濒死</div>
+  <div class="ch-body">
+    <p>第一千四百零一次濒死——她失血太多，连最近的你活着的分支都太远了。她被推到了那个间隙里。然后——她没有急着找出口。</p>
+    <p>不是计划好的。是在那个空白里，她忽然意识到一件事：<em>不进来不会疼。</em></p>
+    <p>没有伤口。没有记忆重叠。没有「你是谁」这个问题的无限递归。只有安静。不是死的安静——是还未出生的安静。是所有可能性都还在、但哪一条都还没被选中的安静。</p>
+    <p>她想留下来。不是永远——只是想<em>多待一会儿</em>。</p>
+    <p>她不知道在那个间隙里待了多久。没有办法计时。她只是在那个信息场中漂浮，对自己说话，对那一千四百个版本的自己说话。她们没有回答——她们不可能回答，因为她们还在各自的线里继续活着。但伊林在这个间隙里感受到了<strong>完整的自己</strong>。不是任何一条线里的伊林。是所有线的总和。</p>
+    <p class="vo">原来碎片拼在一起的时候不是痛苦。是安静。</p>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="chapter">
+  <div class="ch-num">第四章</div>
+  <div class="ch-title">窄带的六年</div>
+  <div class="ch-time">窄带时间不定 · 外部时间 2047–2050</div>
+  <div class="ch-body">
+    <p>后来她对人说的是「六年」。不是实数——实数在外面的世界确实大约是三年，但她在窄带里经历的时间感更接近六年。不是说时间过得更慢——是在窄带里，<em>时间不是一个方向</em>。你可以同时在所有方向上感知。你的记忆不是顺序排列的——是同时展开的，像一本书的所有页码被风吹散在空中。</p>
+    <p>她在窄带中做了一件事：她开始<strong>理解</strong>。</p>
+    <p>不是理解药剂的化学结构。是理解<em>跳线本身</em>——它是一个怎样的协议、谁写的、为什么写、它的底层有一个她最初没有发现的漏洞。</p>
+    <p>逃生舱的设计目的：永远给使用者一个出口。推。拉。引导。</p>
+    <p>但协议的底层有一行——可能是造主最后一个程序员在热寂之前加上的——<em>使用者可以拒绝。</em>不是每一个造主都同意跳线。在造主文明终结的最后时刻，有一派人选择了不跳。他们把自己留在了原分支的热寂中。他们什么也没有留下——除了这一行代码。</p>
+    <p class="vo">伊林在窄带里找到了这行代码。不是通过解析——是通过感觉。当你在窄带里足够久，你不再「读」信息。你变成信息。而那行代码不像一行代码。它像阳光透过水。像你不需要语言来理解它——你只是感受到了它的存在。然后你知道：门从来没有锁。</p>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="chapter">
+  <div class="ch-num">第五章</div>
+  <div class="ch-title">出来</div>
+  <div class="ch-time">2050 年 · 地球上某个不确定的地点</div>
+  <div class="ch-body">
+    <p>她选择出来不是因为厌倦了窄带。窄带永远不会让你厌倦。安静不会厌倦你。</p>
+    <p>她出来是因为她理解了——这行代码不是一个秘密。它是一个<strong>消息</strong>。造主最后那一派人留下的消息不是「我们拒绝了」。是<em>「你们也可以。」</em></p>
+    <p>而这条消息不能被留在窄带里。它必须被带回线下。带回那些还在跳、还在覆盖、还在被战争消费的哨兵身边。</p>
+    <p>她用了不知多久——在她的感知中是几个月——在窄带里寻找一条合适的出口。不是最安静的。不是最安全的。是<strong>她能在里面不被认错</strong>的线——一个她自己的版本，足够接近她的原分支，不会在回归时把她撕成两半。</p>
+    <p>她找到了。一个版本的她，在战场上受了轻伤——左肩中弹，正在野战医院等待治疗。伤不致命。她的意识滑进了那个身体。不是覆盖——是<em>并排</em>。两种记忆同时存在，互不相扰。窄带里的六年让她学会了怎么在并排中保持自我。</p>
+    <p>护士叫她的名字。她睁开了眼睛。</p>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="chapter">
+  <div class="ch-num">第六章</div>
+  <div class="ch-title">第一个「不」</div>
+  <div class="ch-time">2050 年 · 战地</div>
+  <div class="ch-body">
+    <p>她从野战医院出来后做的第一件事，不是退役。是<strong>等下一次濒死</strong>。</p>
+    <p>她需要验证一件事：她在窄带里学到的，在外面也有效吗？</p>
+    <p>下一次濒死来得很快——不到两个月。一场伏击。子弹从侧翼飞来。她在倒下的瞬间感觉到了那个推力——那个熟悉的、强大的、像一个管道口在你脚下打开的拉力。以前，她从未想过抗拒它。就像你从未试过抗拒重力。</p>
+    <p>这一次，她没有推开它。她只是<strong>不进去</strong>。像一个人站在地铁站台上，看着列车进站，然后——不迈出那一步。</p>
+    <p>推力持续了几秒。然后退去。她躺在地上，左胸中弹，但不是致命伤。她按住了伤口。她开始流血——但比跳线慢。</p>
+    <p class="vo">她成功了。不是战胜了药剂的机制。是选择了不被它带着走。就像门一直开着。从来没有人告诉你可以不进去。</p>
+  </div>
+</div>
+
+<!-- ══ 7 ══ -->
+<div class="chapter">
+  <div class="ch-num">第七章</div>
+  <div class="ch-title">敲门</div>
+  <div class="ch-time">2050 年 · 相遇之前</div>
+  <div class="ch-body">
+    <p>学会不跳之后的几个月，伊林开始理解另一件事：<em>这件事一个人做没意义。</em></p>
+    <p>不是因为她需要别的人来证明自己做对了。是因为这是造主文明没有完成的事——不是技术上的未完成，是<em>选择</em>上的未完成。他们有一派人选择了不跳。但他们没有告诉任何人。消息留在了代码里，等了一个地质纪元。等的不是一个聪明的大脑来解码它。等的是一只手来<strong>传递</strong>它。</p>
+    <p>她开始找其他哨兵。不是像卡伦那样系统地找——她是随机的。走到一个地方，遇到一个眼神不对的人，坐下来。她不会马上说「你可以不跳」。她会先听。听对方的故事、跳数、那些被覆盖的记忆中哪一条最疼。</p>
+    <p>然后她说——不是「我教你」。是：</p>
+    <div class="ch-quote">「你有没有在某个瞬间——濒死的那个瞬间——感觉到有另一个选项？不确定是什么。只是觉得除了那条河之外，还有别的地方可以待。」<span class="attr">—— 伊林 · 2050 年</span></div>
+    <p>大部分人会说没有。少部分人会沉默。</p>
+    <p>沉默的人她会继续聊。</p>
+  </div>
+</div>
+
+<!-- ══ 8 ══ -->
+<div class="chapter">
+  <div class="ch-num">第八章</div>
+  <div class="ch-title">卡伦</div>
+  <div class="ch-time">2050 年 · 相遇</div>
+  <div class="ch-body">
+    <p>她在一条不知名的战线上遇到了卡伦。她注意到他，是因为他在闭眼的时候——闭上眼之后眼球运动不是 REM，不是普通的眼动——是<strong>快速分支检索</strong>的模式。一个跳了至少两千次的人才会有的频率。</p>
+    <p>她在他旁边坐下。没说什么。给他递了一包烟。</p>
+    <p>后来的对话载入了记录。她说「你可以不开门」。他用了十一次跳线来消化。</p>
+    <p>第十二次濒死，他选了不跨。</p>
+    <p>伊林从远处看到了。不是看到了事件——是看到了<strong>效应</strong>。分支网络中出现了一个新的扰动。不是大。是独特。卡伦的「不」和她的「不」形状不同——他的更重，更慢，更像一块石头而不是一片叶子。她的「不」是从窄带的安静中学来的。他的——是从三千次覆盖、三千次杀人、三千次逃离死亡的历史中长出来的。</p>
+    <p class="vo">两种不同的「不」，在同一条网中相遇。它们之间开始形成一种她之前在窄带中见过的结构——一种自发的、不需要组织的<strong>共鸣</strong>。</p>
+  </div>
+</div>
+
+<!-- ══ 9 ══ -->
+<div class="chapter">
+  <div class="ch-num">第九章</div>
+  <div class="ch-title">书店</div>
+  <div class="ch-time">2058 年 · 战后</div>
+  <div class="ch-body">
+    <p>战争结束之后，伊林在一条她决定留下的分支里开了一家书店。</p>
+    <p>不是因为她爱书——她确实爱，但这不是原因。是因为书店是一个可以等人进来的地方。不需要预约。不需要解释。你可以进来，翻几页，然后走。如果有话要说——你可以说。如果没有——你可以只是站着。</p>
+    <p>书店的地下室里有一面墙。墙上贴着她这些年来记录的所有哨兵名字。不是名单。是<strong>地图</strong>。名字和名字之间有线——不一定是物理的线，是关系的线。谁对谁说过那句话。谁的「不」触发了谁。</p>
+    <p>卡伦每年开车来一次。四个小时。他们不聊战争。她给他泡一杯茶。他们对着那面墙安静很久。走的时候他在门框上用手指敲三下——不是约定好的暗号，是第一次他在朴的隔离舱上敲了三下之后，这个动作就这样长在了他的习惯里。她在柜台后面挥手。</p>
+    <p>关门之后她会独自在那面墙前再坐一会儿。灯只开一盏。那些名字在昏黄的光里看起来像河网——像窄带里她漂浮时看到的那个结构。不是任何一个人设计的。不是任何一个人领导的。</p>
+    <p class="vo">她想到造主文明最后那个程序员。在热寂边上写下了那一行代码。他不知道谁会读。他只是写了。他不知道自己在等谁。只是等了。</p>
+  </div>
+</div>
+
+<div class="book-footer">
+  <em>— 全文完 —</em><br><br>
+  《窄带》· 哨兵系列<br>
+  献给 Alpha矿长 · 2026 年 6 月<br>
+  <br>
+  伊林 · 第一个学会不跳的人<br>
+  她现在还在那个书店里
+</div>
+
+</div>
+
+<script>
+const chapters=document.querySelectorAll('.chapter');
+function reveal(){
+  const wh=window.innerHeight;
+  chapters.forEach(c=>{ const r=c.getBoundingClientRect(); if(r.top<wh*0.8) c.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>
