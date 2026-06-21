@@ -333,6 +333,7 @@ tlEvents.forEach(ev=>{
   const n=document.createElement('div'); n.className='tl-node p'+ev.ph;
   n.innerHTML='<div class="tl-year">'+ev.y+'</div><div class="tl-dot"></div><div class="tl-title">'+ev.t+'</div><div class="tl-preview">'+ev.p+'</div>';
   n.onclick=()=>{
+    clickSound();
     document.querySelectorAll('.tl-node').forEach(x=>x.classList.remove('active'));
     n.classList.add('active');
     const tmap={b:'tb',q:'tq',a:'ta',v:'tv',s:'ts'};
@@ -457,7 +458,127 @@ const plog=document.getElementById('plog');
   else plog.innerHTML+='<div class="pfrag"><div class="pt" style="color:var(--accent)">'+ev.t+'</div><div class="ps" style="color:var(--muted)">'+ev.s+'</div><div style="margin-top:4px">'+ev.b+'</div></div>';
 });
 
-console.log('🌌 虚空·门槛 数字展品 - 7章已就绪');
+// ═══════════ AUDIO ═══════════
+let audioCtx=null, droneOn=false, pulseOn=false, pulseGain=null;
+
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+
+  // Master limiter
+  const master=audioCtx.createGain();
+  master.gain.value=0.12;
+  master.connect(audioCtx.destination);
+
+  // ── Ambient drone: two detuned low oscillators through LPF ──
+  const lpf=audioCtx.createBiquadFilter();
+  lpf.type='lowpass'; lpf.frequency.value=180; lpf.Q.value=1;
+
+  const osc1=audioCtx.createOscillator();
+  osc1.type='sine'; osc1.frequency.value=55; // A1
+
+  const osc2=audioCtx.createOscillator();
+  osc2.type='sine'; osc2.frequency.value=55.5; // slight detune → beat frequency ~0.5Hz
+
+  const droneGain=audioCtx.createGain();
+  droneGain.gain.value=0.35;
+
+  osc1.connect(droneGain); osc2.connect(droneGain);
+  droneGain.connect(lpf); lpf.connect(master);
+  osc1.start(); osc2.start();
+  droneOn=true;
+
+  // ── Void signal pulse generator ──
+  pulseGain=audioCtx.createGain();
+  pulseGain.gain.value=0; // starts silent
+  pulseGain.connect(master);
+
+  // Fade drone in
+  droneGain.gain.setValueAtTime(0,audioCtx.currentTime);
+  droneGain.gain.linearRampToValueAtTime(0.35,audioCtx.currentTime+3);
+
+  console.log('🔊 音频已激活 · 环境底噪 + 虚空脉冲就绪');
+}
+
+// Activate audio on any user interaction
+['click','touchstart','keydown'].forEach(evt=>{
+  document.addEventListener(evt,()=>{ if(!audioCtx) initAudio(); },{once:true});
+});
+
+// Void signal pulse - triggered when pulse section is near viewport
+const pulseSection=document.getElementById('s-pulse');
+let pulseInterval=null;
+
+function startPulse(){
+  if(!audioCtx||pulseOn) return;
+  pulseOn=true;
+  pulseGain.gain.setValueAtTime(0,audioCtx.currentTime);
+  pulseGain.gain.linearRampToValueAtTime(0.6,audioCtx.currentTime+2);
+
+  let beat=0;
+  pulseInterval=setInterval(()=>{
+    if(!audioCtx){ clearInterval(pulseInterval); return; }
+    const t=audioCtx.currentTime;
+    const osc=audioCtx.createOscillator();
+    osc.type='sine'; osc.frequency.value=60;
+    const env=audioCtx.createGain();
+    env.gain.setValueAtTime(0,t);
+    env.gain.linearRampToValueAtTime(0.5,t+0.08);
+    env.gain.exponentialRampToValueAtTime(0.001,t+0.7);
+    osc.connect(env); env.connect(pulseGain);
+    osc.start(t); osc.stop(t+0.8);
+
+    // Every 4th beat, add a deeper sub-pulse
+    if(beat%4===0){
+      const sub=audioCtx.createOscillator();
+      sub.type='sine'; sub.frequency.value=28;
+      const subEnv=audioCtx.createGain();
+      subEnv.gain.setValueAtTime(0,t);
+      subEnv.gain.linearRampToValueAtTime(0.7,t+0.05);
+      subEnv.gain.exponentialRampToValueAtTime(0.001,t+1.2);
+      sub.connect(subEnv); subEnv.connect(pulseGain);
+      sub.start(t); sub.stop(t+1.3);
+    }
+    beat++;
+  },700); // ~1.43 Hz → close to 1.42 GHz hydrogen line in concept
+}
+
+function stopPulse(){
+  if(!audioCtx||!pulseOn) return;
+  pulseOn=false;
+  if(pulseInterval) clearInterval(pulseInterval);
+  pulseGain.gain.linearRampToValueAtTime(0,audioCtx.currentTime+1.5);
+}
+
+// Watch pulse section proximity
+let pulseWatcher=null;
+function watchPulse(){
+  const r=pulseSection.getBoundingClientRect();
+  const distToTop=r.top;
+  const wh=window.innerHeight;
+  // Start pulse when section is within 60% of viewport from top
+  if(distToTop<wh*0.6&&distToTop>-r.height*0.5){
+    if(!pulseOn) startPulse();
+  }else{
+    if(pulseOn) stopPulse();
+  }
+}
+window.addEventListener('scroll',watchPulse);
+
+// ── Timeline click sound ──
+function clickSound(){
+  if(!audioCtx) return;
+  const t=audioCtx.currentTime;
+  const osc=audioCtx.createOscillator();
+  osc.type='sine'; osc.frequency.value=880;
+  const env=audioCtx.createGain();
+  env.gain.setValueAtTime(0.08,t);
+  env.gain.exponentialRampToValueAtTime(0.001,t+0.15);
+  osc.connect(env); env.connect(audioCtx.destination);
+  osc.start(t); osc.stop(t+0.2);
+}
+
+console.log('🌌 虚空·门槛 数字展品 - 7章已就绪 · 点击任意处激活音频');
 </script>
 </body>
 </html>
