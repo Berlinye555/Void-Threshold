@@ -474,26 +474,32 @@ async function initAudio(){
 
   // Master volume
   const master=audioCtx.createGain();
-  master.gain.value=0.35;
+  master.gain.value=0.18; // subtle
   master.connect(audioCtx.destination);
 
-  // ── Ambient drone ──
-  // Two detuned oscillators at 110Hz (hearable on laptop speakers)
-  // Add slight sawtooth for harmonic presence
+  // ── Ambient drone: distant, breathing ──
   const lpf=audioCtx.createBiquadFilter();
-  lpf.type='lowpass'; lpf.frequency.value=300; lpf.Q.value=0.7;
+  lpf.type='lowpass'; lpf.frequency.value=200; lpf.Q.value=0.5;
+
+  // Slow LFO to make drone breathe (gain oscillates gently)
+  const lfo=audioCtx.createOscillator();
+  lfo.type='sine'; lfo.frequency.value=0.08; // very slow ~12 sec cycle
+  const lfoGain=audioCtx.createGain();
+  lfoGain.gain.value=0.08; // subtle amplitude modulation
+  lfo.connect(lfoGain);
 
   const osc1=audioCtx.createOscillator();
-  osc1.type='triangle'; osc1.frequency.value=110;
+  osc1.type='sine'; osc1.frequency.value=98; // G2 - warm low note
   const osc2=audioCtx.createOscillator();
-  osc2.type='triangle'; osc2.frequency.value=110.7; // beat ~0.7 Hz
+  osc2.type='sine'; osc2.frequency.value=98.6; // slight detune
 
   droneGain=audioCtx.createGain();
   droneGain.gain.value=0;
+  lfoGain.connect(droneGain.gain); // LFO modulates drone volume
 
   osc1.connect(droneGain); osc2.connect(droneGain);
   droneGain.connect(lpf); lpf.connect(master);
-  osc1.start(); osc2.start();
+  osc1.start(); osc2.start(); lfo.start();
   droneOn=true;
 
   // ── Void signal pulse bus ──
@@ -501,9 +507,9 @@ async function initAudio(){
   pulseGain.gain.value=0;
   pulseGain.connect(master);
 
-  // Fade drone in over 2 seconds
+  // Fade drone in slowly
   droneGain.gain.setValueAtTime(0,audioCtx.currentTime);
-  droneGain.gain.linearRampToValueAtTime(0.5,audioCtx.currentTime+2);
+  droneGain.gain.linearRampToValueAtTime(0.22,audioCtx.currentTime+3);
 
   console.log('🔊 音频已激活 · 底噪 110Hz + 虚空脉冲待命');
   console.log('💡 如果听不到：检查音量合成器、扬声器是否支持低频、浏览器是否静音');
@@ -522,7 +528,7 @@ function startPulse(){
   if(!audioCtx||pulseOn) return;
   pulseOn=true;
   pulseGain.gain.setValueAtTime(0,audioCtx.currentTime);
-  pulseGain.gain.linearRampToValueAtTime(0.8,audioCtx.currentTime+2);
+  pulseGain.gain.linearRampToValueAtTime(0.4,audioCtx.currentTime+2);
 
   let beat=0;
   pulseInterval=setInterval(()=>{
@@ -534,7 +540,7 @@ function startPulse(){
     osc.type='triangle'; osc.frequency.value=80;
     const env=audioCtx.createGain();
     env.gain.setValueAtTime(0,t);
-    env.gain.linearRampToValueAtTime(0.6,t+0.06);
+    env.gain.linearRampToValueAtTime(0.3,t+0.06);
     env.gain.exponentialRampToValueAtTime(0.001,t+0.6);
     osc.connect(env); env.connect(pulseGain);
     osc.start(t); osc.stop(t+0.7);
@@ -545,7 +551,7 @@ function startPulse(){
       sub.type='sine'; sub.frequency.value=55;
       const subEnv=audioCtx.createGain();
       subEnv.gain.setValueAtTime(0,t);
-      subEnv.gain.linearRampToValueAtTime(0.8,t+0.04);
+      subEnv.gain.linearRampToValueAtTime(0.4,t+0.04);
       subEnv.gain.exponentialRampToValueAtTime(0.001,t+1.0);
       sub.connect(subEnv); subEnv.connect(pulseGain);
       sub.start(t); sub.stop(t+1.1);
