@@ -345,7 +345,10 @@ tlEvents.forEach(ev=>{
   };
   tlLine.appendChild(n);
 });
-setTimeout(()=>{ const fn=document.querySelector('.tl-node'); if(fn) fn.click(); },500);
+setTimeout(()=>{
+  const fn=document.querySelector('.tl-node');
+  if(fn){ fn.classList.add('active'); showTlDetail(tlEvents[6],fn); }
+},500);
 
 // Render factions
 const factions=[
@@ -461,11 +464,13 @@ const plog=document.getElementById('plog');
 // ═══════════ AUDIO ═══════════
 let audioCtx=null, droneOn=false, pulseOn=false, pulseGain=null, droneGain=null;
 
-function initAudio(){
-  if(audioCtx) return;
-  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
-  // Chrome requires explicit resume after user gesture
-  if(audioCtx.state==='suspended') audioCtx.resume();
+async function initAudio(){
+  if(!audioCtx){
+    audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  }
+  // Resume if suspended (happens when context was created outside user gesture)
+  if(audioCtx.state==='suspended') await audioCtx.resume();
+  if(droneOn) return; // already initialized
 
   // Master volume
   const master=audioCtx.createGain();
