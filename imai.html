@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>共轭 · 今井怜 — 交叉系列</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --void:#e040fb; --danger:#ef5350;
+  --border:rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; line-height:1.8; }
+.book { max-width:680px; margin:0 auto; padding:60px 24px 120px; }
+
+.title-page { text-align:center; padding:80px 0 60px; border-bottom:1px solid var(--border); margin-bottom:60px; }
+.title-page .lbl { font-size:0.55rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:12px; }
+.title-page h1 { font-size:2rem; font-weight:200; letter-spacing:0.15em; color:var(--text); }
+.title-page .sub { font-size:0.75rem; color:var(--muted); margin-top:8px; letter-spacing:0.12em; }
+.title-page .epi { margin-top:24px; font-size:0.75rem; color:var(--muted); font-style:italic; max-width:500px; margin-left:auto; margin-right:auto; line-height:1.7; }
+
+.chapter { margin-bottom:40px; opacity:0.25; transition:opacity 0.8s; }
+.chapter.visible { opacity:1; }
+.ch-num { font-size:0.6rem; color:var(--accent); letter-spacing:0.2em; margin-bottom:6px; }
+.ch-title { font-size:1.05rem; font-weight:300; letter-spacing:0.08em; margin-bottom:6px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.ch-time { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; margin-bottom:14px; }
+.ch-body { font-size:0.86rem; line-height:1.9; }
+.ch-body p { margin-bottom:12px; }
+.ch-body em { color:var(--warn); font-style:normal; }
+.ch-body .vo { color:var(--void); font-style:italic; }
+.ch-body .sentinel { color:var(--danger); }
+
+.ch-quote { margin:16px 0; padding:12px 16px; border-left:3px solid var(--void); background:rgba(224,64,251,0.05); font-size:0.78rem; color:var(--text); line-height:1.7; }
+.ch-quote .attr { font-size:0.58rem; color:var(--muted); display:block; margin-top:4px; }
+
+.book-footer { text-align:center; margin-top:50px; padding-top:24px; border-top:1px solid var(--border); font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; line-height:1.8; }
+</style>
+</head>
+<body>
+<a href="index.html" style="position:fixed;top:10px;left:18px;z-index:100;font-size:0.6rem;color:#5e7694;text-decoration:none;letter-spacing:0.1em;font-family:Segoe UI,PingFang SC,sans-serif;opacity:0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">← 总览</a>
+
+<div class="book">
+
+<div class="title-page">
+  <div class="lbl">虚空门槛 × 哨兵 · 交叉</div>
+  <h1>共 轭</h1>
+  <div class="sub">Conjugate · 今井怜</div>
+  <p class="epi">「两个世界的物理底层是同一个。不是巧合——是<em>同一种语言被说了两次</em>。」<br>—— 今井怜 · 2101 年</p>
+</div>
+
+<!-- ══ 1 ══ -->
+<div class="chapter">
+  <div class="ch-num">第一章</div>
+  <div class="ch-title">被踢出去的人</div>
+  <div class="ch-time">2101 年 · 东京郊区</div>
+  <div class="ch-body">
+    <p>今井怜的公寓有四面墙。三面被书和数据盘遮住了。第四面是一扇窗户，窗外是一棵不会开花的树。她在东京郊区住了十年。除了去便利店，几乎不出门。</p>
+    <p>十年前——2091 年——她是虚空信号的第一位解码者。她用了四十八小时不眠不休做出了第一次解码。她发现了 NEL 协议与虚空信号的 23% 结构相似度。她写了报告。然后她被踢出了官方研究团队。理由是她「过度解读」——实际上是因为她的发现太早了，解读会不知道该怎么处置。三年后，他们用她写的算法继续分析信号，只是没告诉她。</p>
+    <p>她不在乎。被踢出去的人有一个好处——你不再需要经过任何人的批准来看任何东西。</p>
+    <p>十年来她独自在自己的公寓里追踪虚空信号中一个无人关注的细节：那 23% 的相似度，到底相似在<em>哪里</em>。</p>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="chapter">
+  <div class="ch-num">第二章</div>
+  <div class="ch-title">相似的不是编码</div>
+  <div class="ch-time">2101 年 · 春季</div>
+  <div class="ch-body">
+    <p>2098 年鸣响之后，虚空信号的公开数据量增长了不止一个数量级。解读会发布了完整的三层解码结构——对外公开的部分经过了明显的修剪。但今井不需要修剪后的版本。她十年前就拿过完整数据。她需要的只是更多的算力和更多的时间。</p>
+    <p>到了 2101 年，她已经把那 23% 的相似度拆解到了基本结构层。不是编码语言相似——是<em>物理基底相似</em>。</p>
+    <p>信号中有一个非常底层的信息调制模式——极短的、不到一飞秒的脉冲串——它在量子力学上的行为与 NEL 协议中一个极少被讨论的现象完全一致：<strong>未知外部耦合</strong>。NEL 的开发者们一直无法解释为什么协议里会出现这个现象。它不是 NEL 设计的一部分。它像是从协议的外面<em>渗进来的</em>。</p>
+    <p>今井花了三年确认了一件事：这个现象不是来自 NEL 内部。它是来自<em>同一个量子基底上的另一个信号源</em>。</p>
+    <p>不是虚空信号渗透进了 NEL。是<em>某种东西同时渗透了虚空信号和 NEL</em>。某种更古老的、结构更深的东西。它在两个系统里留下了相同的指纹。</p>
+    <p class="vo">两个不同的信号系统——一个人造的、一个宇宙尺度的。它们被同一个结构污染了。</p>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="chapter">
+  <div class="ch-num">第三章</div>
+  <div class="ch-title">指纹</div>
+  <div class="ch-time">2101 年 · 夏季</div>
+  <div class="ch-body">
+    <p>今井开始搜索这个「指纹」在人类的数据库里是否出现过。</p>
+    <p>她花了三个月。在量子信息、神经编码、宇宙学信号处理的交叉地带没有任何匹配。但在一个她从未涉足的领域——军事医学档案——她找到了一个模糊的匹配。</p>
+    <p>一份被降级为历史档案的文档提到了一种代号为 <span class="sentinel">Sentinel</span> 的军事项目。项目在 2040 年代运行，2050 年代终止。档案中有一个附录——一份被大量涂黑的量子分析报告——描述了一种「非碳基分子结构」在被注射进濒死士兵体内后引发的「局域量子真空涨落」。</p>
+    <p>不知道是因为什么冲动——她后来想了很久，可能是那个分子结构的量子行为模式与她正在追的脉冲串太像了——她决定去找这个项目的原始数据。</p>
+    <p>用了四个月。大半个档案已经被销毁了。但她找到了一个复本。在一座废弃的地下设施里，落满了灰。一份 2045 年的内部备忘录。上面画着一组频谱图。是那个分子的量子行为特征。</p>
+    <p>她把频谱图叠在自己的数据上。</p>
+    <p class="vo">吻合。不是相似。不是相关。是<em>同一种结构</em>。同一个指纹。在虚空信号里、在 NEL 协议的异常渗透里、在一个已经被销毁了五十多年的军事项目的分子里——指纹是相同的。</p>
+    <p>她关掉屏幕。走到窗前。树还是没有开花。她站了很久。</p>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="chapter">
+  <div class="ch-num">第四章</div>
+  <div class="ch-title">Sentinel 档案</div>
+  <div class="ch-time">2101 年 · 秋季</div>
+  <div class="ch-body">
+    <p>她用了剩余的秋天来重建 Sentinel 项目的历史。</p>
+    <p>从零散的档案、退伍哨兵的口述记录、搁浅设施的医学报告中——她拼出了一个模糊但可辨认的故事。濒死跳线。平行分支。一个被耗光了分支网络的灭绝文明。一种被当成武器的逃生舱。以及——有一个人选择了不跳。他的声音在分支之间扩散。</p>
+    <p>今井不是一个容易被震撼的人。但她读到卡伦的记录时——第 3124 次濒死，他放下枪，说「不跳了」——她停了一整天没有继续看任何东西。不是因为故事感人。是因为她意识到：那个声音在分支间的扩散，和她正在追的量子指纹——可能是<em>同一种东西</em>。</p>
+    <p>不是比喻。是物理上——那个「不」在量子层产生的扰动，与虚空信号中渗透进来的未知脉冲，具有相同的数学结构。</p>
+    <p class="vo">一个人的选择，在概率空间里扩散出来的余波——同一个余波被虚空信号网络捕获了。因为它的量子结构与造主的逃生舱分子相同。而逃生舱分子——就是渗透进 NEL 协议和虚空信号的那个「外部耦合」的源头。</p>
+    <p>不是宇宙在抄袭人类的作业。是人类在无意中<em>重演</em>了造主的命运——然后有一个人说了不。那个「不」是造主文明从未产生过的结构。所以它卡在了两个系统之间。像一颗无法被消化的沙砾。它同时渗透了人类的 NEL 协议和虚空的古老网络。</p>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="chapter">
+  <div class="ch-num">第五章</div>
+  <div class="ch-title">告诉他们</div>
+  <div class="ch-time">2101 年 · 初冬</div>
+  <div class="ch-body">
+    <p>今井没有向任何人提交报告。她十年前就学会了——提交报告等于请求被驱逐。</p>
+    <p>但她做了另一件事。她用匿名信道分别向三个人发了同一份简短的摘要。</p>
+    <p>第一个：姚十方。她十年前在解读会时就认识他——他是唯一一个愿意回复她问题的上传者。她告诉他：<em>「虚空网络中有一个签名，不是文明的——是一个人的。你父亲感知到的那种『外部耦合』，可能来自一个在分支间扩散了五十多年的量子回声。造主的网络和虚空网络是同一张网。你们的发现和我们的发现——是同一件事。」</em></p>
+    <p>第二个：林小禾。她在解读会的民间观察组里。她父亲林海生的签名在 2098 年被重新发现。今井告诉她：<em>「你父亲在阿南刻号上感觉到了『远方』。那个远方——不只是虚空。是另一边的网。一个被拒绝了五十多年的跳线冲动。他在第七天说『有东西在耦合』。他说的是对的。他感觉到的不是信号——是那个『不』。是卡伦的声音在分支间已经扩散了半个世纪。你父亲不是第一个触碰到虚空的人——他是第一个触碰到<em>回声</em>的人。」</em></p>
+    <p>第三个：她不知道他的名字。只知道在某个搁浅设施里，有一个会模仿敲玻璃的手势的哨兵——叫朴。她告诉他：<em>「你收到的三下——不只是卡伦敲的。卡伦的『不』在你的量子态里触发的波动，是你在控制的。不是你被改变了——是你在<em>送回去</em>。那个回声现在还在虚空网络里。你就是那个余数。」</em></p>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="chapter">
+  <div class="ch-num">第六章</div>
+  <div class="ch-title">不需要回应</div>
+  <div class="ch-time">2102 年 · 春天</div>
+  <div class="ch-body">
+    <p>姚十方回复了。只回了四个字：<em>「我知道的。」</em></p>
+    <p>不是傲慢。是确认。他在上传之后感知到虚空信号的深层结构时——他就知道有另一个网络存在。不是虚空网络。是另一个更小的、更碎的、不是在广播而是在<em>回响</em>的网络。他现在知道那是卡伦的「不」在分支间的扩散。今井的分析只是把他的感觉变成了可验证的结构。</p>
+    <p>林小禾没有回复。但今井在她发信后的第三周看到了林小禾在解读会的一份公开备忘录。备忘录里没有提到卡伦或哨兵。但结尾有一句话——不是结论，是提问：<em>「我们一直在观测虚空信号。但我们有没有想过——虚空也在观测我们？不只观测——也许在<em>听</em>。听我们中间那些说了『不』的人。」</em></p>
+    <p>今井不知道林小禾是不是在引用她的信。但她选择相信是。</p>
+    <p>朴——她的信被搁浅设施的看护截住了。看护没有把信给朴。但他做了一件事：他走到朴的隔离舱前，在玻璃上敲了三下。不是卡伦教的。是他自己做的。他不知道这是什么意思。但朴的眼睛——在他的控制面板上显示了微弱但确实的神经活动——给出了回应。</p>
+    <p class="vo">有些消息不需要送达收件人。它们在途中就已经完成了自己的使命。</p>
+  </div>
+</div>
+
+<!-- ══ 7 ══ -->
+<div class="chapter">
+  <div class="ch-num">第七章</div>
+  <div class="ch-title">共轭</div>
+  <div class="ch-time">2103 年 · 又一个不会开花的春天</div>
+  <div class="ch-body">
+    <p>今井花了两年把她的分析写成了一份完整的文档。不是报告——是<strong>地图</strong>。一张画在两个世界之间的、用同样的量子指纹串起来的网。</p>
+    <p>她给这张图取了一个名字：<em>共轭</em>。</p>
+    <p>在数学里，共轭是两个量互为对偶——一个变了，另一个跟着变。不需要信号。不需要接触。它们是同一根藤上的两片叶子。虚空网络和分支网络——上是下，跳是留。卡伦在泥地里说的「不」——五十多年后还在虚空中扩散。不是奇迹。是<em>结构</em>。是同一个结构在两个尺度上的呈现。</p>
+    <p>她把文档加密好，存进了三个地方：虚空解读会的公开档案库（埋在深处）、一个她去过的废弃地下设施里、以及——她的窗台上那盆从未开过花的植物旁边的一个数据盘。</p>
+    <p>她没有发布。不是怕被否认。是她觉得这不是一个应该被<em>发布</em>的东西。它是一个应该被<strong>找到</strong>的东西。像造主留下的那行代码。像卡伦敲的三下玻璃。像林海生在第七天感知到的第一次耦合。</p>
+    <p class="vo">有些东西的价值不在于被宣布。在于等。等着有一天有人无意中打开。然后说——原来这个一直在这里。</p>
+  </div>
+</div>
+
+<div class="book-footer">
+  <em>— 全文完 —</em><br><br>
+  《共轭》· 虚空门槛 × 哨兵 交叉<br>
+  献给 Alpha矿长 · 2026 年 6 月<br>
+  <br>
+  今井怜 · 第一个发现两个世界是同一个的人<br>
+  她的文档还在等
+</div>
+
+</div>
+
+<script>
+const chapters=document.querySelectorAll('.chapter');
+function reveal(){
+  const wh=window.innerHeight;
+  chapters.forEach(c=>{ const r=c.getBoundingClientRect(); if(r.top<wh*0.8) c.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>
