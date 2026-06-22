@@ -35,7 +35,7 @@ body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang
 .sec-title .sub { font-size:0.65rem; color:var(--muted); letter-spacing:0.15em; margin-top:4px; }
 
 #s-hero { display:flex; align-items:center; justify-content:center; text-align:center; min-height:100vh; }
-.hero h1 { font-size:clamp(2.5rem,6vw,5rem); font-weight:100; letter-spacing:0.2em; color:var(--text); margin-bottom:16px; }
+.hero h1 { font-size:clamp(2.5rem,6vw,5rem); font-weight:100; letter-spacing:0.2em; background:linear-gradient(135deg,var(--warn) 20%,var(--danger) 80%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:16px; }
 .hero .hl { font-size:0.85rem; color:var(--muted); max-width:500px; margin:0 auto; line-height:1.8; }
 .hero .hl em { color:var(--accent); font-style:normal; }
 .hero .hint { margin-top:40px; font-size:0.6rem; color:var(--muted); letter-spacing:0.15em; }
@@ -104,6 +104,9 @@ body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang
 @media(max-width:640px){
   .nav-dot { width:24px; height:24px; font-size:0.5rem; }
   .fgrid,.dgrid { grid-template-columns:1fr; }
+  .section { padding:60px 16px 40px; }
+  .tl-node { width:140px; }
+  .tl-title { font-size:0.65rem; }
 }
 </style>
 </head>

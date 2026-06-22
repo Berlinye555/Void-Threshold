@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三下 · 朴 — 哨兵系列</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --void:#e040fb;
+  --border:rgba(255,255,255,0.04);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; line-height:1.8; }
+.book { max-width:650px; margin:0 auto; padding:60px 24px 120px; }
+
+.title-page { text-align:center; padding:80px 0 60px; border-bottom:1px solid var(--border); margin-bottom:50px; }
+.title-page .lbl { font-size:0.55rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:12px; }
+.title-page h1 { font-size:1.8rem; font-weight:200; letter-spacing:0.2em; color:var(--text); }
+.title-page .sub { font-size:0.7rem; color:var(--muted); margin-top:8px; letter-spacing:0.12em; }
+.title-page .epi { margin-top:24px; font-size:0.72rem; color:var(--muted); font-style:italic; max-width:480px; margin-left:auto; margin-right:auto; line-height:1.7; }
+
+.chapter { margin-bottom:36px; opacity:0.25; transition:opacity 0.8s; }
+.chapter.visible { opacity:1; }
+.ch-num { font-size:0.6rem; color:var(--accent); letter-spacing:0.2em; margin-bottom:6px; }
+.ch-title { font-size:1rem; font-weight:300; letter-spacing:0.08em; margin-bottom:12px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+.ch-body { font-size:0.85rem; line-height:1.9; }
+.ch-body p { margin-bottom:12px; }
+.ch-body em { color:var(--warn); font-style:normal; }
+.ch-body .vo { color:var(--void); font-style:italic; }
+
+.ch-quote { margin:18px 0; padding:12px 16px; border-left:3px solid var(--accent); background:rgba(79,195,247,0.05); font-size:0.78rem; color:var(--text); font-style:italic; line-height:1.7; }
+.ch-quote .attr { font-size:0.6rem; color:var(--muted); font-style:normal; margin-top:4px; display:block; }
+
+.book-footer { text-align:center; margin-top:40px; padding-top:24px; border-top:1px solid var(--border); font-size:0.65rem; color:var(--muted); letter-spacing:0.1em; line-height:1.8; }
+</style>
+</head>
+<body>
+<a href="index.html" style="position:fixed;top:10px;left:18px;z-index:100;font-size:0.6rem;color:#5e7694;text-decoration:none;letter-spacing:0.1em;font-family:Segoe UI,PingFang SC,sans-serif;opacity:0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">← 总览</a>
+
+<div class="book">
+
+<div class="title-page">
+  <div class="lbl">SENTINEL · 系列</div>
+  <h1>三 下</h1>
+  <div class="sub">Three Taps</div>
+  <p class="epi">朴跳了近两千次。被锁在量子隔离舱里。<br>然后有个人在玻璃上敲了三下。<br>那天夜里他举起右手，碰了碰自己的脸。</p>
+</div>
+
+<!-- ══ 1 ══ -->
+<div class="chapter">
+  <div class="ch-num">第一章</div>
+  <div class="ch-title">他说话不是自己的语言</div>
+  <div class="ch-time">时间不确定 · 量子隔离舱内</div>
+  <div class="ch-body">
+    <p>朴不知道今天是几号。没有人告诉隔离舱里的人今天是几号。也许不是「今天」——也许在这个舱里，<em>今天</em>这个词没有意义。他试过问看护。看护说：「你先告诉我你叫什么名字，我就告诉你日期。」朴张了张嘴。三个名字同时涌到了舌头上。他选了其中一个。看护摇头。他换了第二个。看护又摇头。第三个——朴不确定那个名字是不是自己的。但他已经忘了前两个是什么。</p>
+    <p>他被锁在这里的原因是「语言混乱」。他会在说母语的时候突然插入一段另一种语言的句子——语法正确、语音流畅，但他从未学过那种语言。看护告诉他，那种语言属于一个他从未去过的国家。那个国家在另一个分支里。在那个分支里他在那个国家活了二十二年。然后他跳了。那个版本的朴被覆盖了。只有语言剩下来。</p>
+    <p>看护每天在他的舱外经过三次。早上一次，中午一次，晚上一次。看护的脚步很轻——胶底鞋踩在隔离舱的复合地板上几乎没有声音。但朴能听见——不是用耳朵。是<em>感觉到了那个人的存在</em>在分支间的微小扰动。两千次跳线给他的不只是混乱的记忆。还有一层敏感的薄膜，介于意识与概率之间。</p>
+  </div>
+</div>
+
+<!-- ══ 2 ══ -->
+<div class="chapter">
+  <div class="ch-num">第二章</div>
+  <div class="ch-title">玻璃</div>
+  <div class="ch-time">某个下午</div>
+  <div class="ch-body">
+    <p>隔离舱的玻璃不是普通玻璃。是量子阻尼层——一种半透明的材料，能吸收从舱内泄露到舱外的量子相干波动。也就是说：<em>它能挡住朴无意识中拉过来的其他分支的物理规律。</em>从外面看进来，玻璃有一种微弱的蓝色荧光。从里面看出去——是灰色的。一切都被滤掉了一层饱和度。看护的脸。走廊的灯。他自己倒映在玻璃上的眼睛。</p>
+    <p>他大部分时间都在看那个倒影。不是自恋——是确认。他在看自己还在不在。两千次跳线之后，他不再信任自己的存在感。镜子里的自己可能是某个分支的残余。玻璃上的倒影至少是被滤过的——被滤过的也许更接近真实。</p>
+    <p>那天下午——他后来知道是下午，因为看护中午刚走——玻璃上的倒影出现了一个变化。不是他自己的。是<em>玻璃外面多了一个轮廓</em>。一个他没有见过的人。不是看护的步伐。不是医生。这个人站在玻璃前，动作很慢，像是在观察什么——不是观察他的数据面板，是观察<em>他</em>。</p>
+    <p>对方没有穿白大褂。头上有一道疤，从左眉骨拉到耳后。头发遮住了一部分。他的眼睛很安静——不是空的安静，是<em>见过的安静</em>。</p>
+  </div>
+</div>
+
+<!-- ══ 3 ══ -->
+<div class="chapter">
+  <div class="ch-num">第三章</div>
+  <div class="ch-title">三下</div>
+  <div class="ch-time">同一个下午 · 14:23（看护日志记载）</div>
+  <div class="ch-body">
+    <p>那个人站了很久。没有说话。没有示意看护打开舱门。没有看任何监控面板。</p>
+    <p>然后——他抬起右手，在玻璃上<em>敲了三下</em>。</p>
+    <p>不是随机的。不是测试玻璃的硬度。是有意地、清晰地、间隔完全一样的三下——像某种信号。像摩斯码。像你不需要任何解密训练就能理解的一种最简单的信息：<em>我在这里。你也在。</em></p>
+    <p>朴的眼睛——在他的控制面板上显示为一股微弱的神经电位波动——动了。幅度不到正常值的十分之一。在大多数诊断标准下不算「反应」。但如果有任何一个曾经跳线的人在看那个读数，他会说那是一种<strong>回应</strong>。</p>
+    <p>看护没有注意到。那个敲玻璃的人退了一步。他的嘴唇几乎没有动——但朴听到了。不是通过耳朵。是在隔离舱里的量子背景波动上，那个人的声音像石子投进水面一样扩散开来。他说的是——</p>
+    <div class="ch-quote">「你可以不跳。从来都可以。现在也可以——从你所在的那个间隙里出来。选一条线。选一条你想留下的。然后不走了。」<span class="attr">—— 那个敲玻璃的人</span></div>
+  </div>
+</div>
+
+<!-- ══ 4 ══ -->
+<div class="chapter">
+  <div class="ch-num">第四章</div>
+  <div class="ch-title">他很久没有主动动过了</div>
+  <div class="ch-time">当天夜间 · 03:41</div>
+  <div class="ch-body">
+    <p>什么是主动。对于朴来说，这个词几乎失去了意义。</p>
+    <p>跳线是被动的——药剂推，你被推。两千次跳线里他没有一次是主动选择的。覆盖是侵入的——另一个分支的朴不会跟你商量。隔离舱是别人把他塞进来的。看护什么时候来、什么时候走，不由他决定。他的身体在被锁进舱里之后的所有行为——眨眼、呼吸、偶尔无意识发出的那些不属于他的语言——都不属于<em>主动</em>。</p>
+    <p>主动是你自己选的。他不记得最后一次选择是什么了。</p>
+    <p>在那三下之后——他不知道那个声音是真实说的还是在隔离舱的量子背景里被传递的——他开始想一件事。不是用语言想。是用一种更旧的方式——在跳线之前、在药剂之前、在被锁进这个舱之前的那种方式。他想：我的手在那里。如果我让它动——它会不会动？</p>
+    <p>他的右手放在身体一侧的床垫上。他感觉不到床垫的质地。两千次跳线削弱了触觉的精确性——他的神经系统已经习惯了不同分支里不同床垫的不同触感，不能再单独识别其中任何一种。但他知道手在哪里——不是通过触觉。是通过<strong>概率</strong>。在所有分支里，他的右手都在那个位置附近的某个点上。平均位置：床垫边缘偏上 4.3 厘米。</p>
+    <p>他看着那个平均值。他想：动一下。</p>
+  </div>
+</div>
+
+<!-- ══ 5 ══ -->
+<div class="chapter">
+  <div class="ch-num">第五章</div>
+  <div class="ch-title">脸</div>
+  <div class="ch-time">03:42 · 同一夜</div>
+  <div class="ch-body">
+    <p>他的右手抬起来了。</p>
+    <p>很慢。手指是僵硬的——不是生理上的僵硬，是<em>决策上的僵硬</em>。大脑太久没有发布过主动的肢体指令，信号在路上犹豫了很久。先是食指，然后是中指、无名指、小指——依次离开床垫。手腕——一个曾经在任何分支都不曾犹豫的关节——现在用了将近两秒才完全抬起。然后是整只手向上移动。</p>
+    <p>他看不见自己的手——舱里是暗的，只有蓝色荧光的量子阻尼层发出微弱的辉光。但他能<em>感觉到</em>它的轨迹——在概率空间里，他的右手在所有分支里同时做了一个向上的弧线。那些分支里有的他已经不在舱里了。有一个分支里他已经死了。有一个分支里他还在跳。但在<strong>这个</strong>分支里——这个被锁在蓝色玻璃后面的分支里——他的右手在移动。主动地。</p>
+    <p>手指碰到了脸。</p>
+    <p>他不记得脸是什么触感。两千次跳线没有给他留下任何一条线的脸部触觉记忆——因为没有人会去摸一个不确定是不是自己的脸。但这一次——他的食指和中指的指尖——碰到了下巴。然后是整个手掌——贴住了左脸颊。</p>
+    <p>他在那一个瞬间感觉到了<strong>温度</strong>。不是冷热。是<em>存在</em>。这个温度证明了一件事：在这条线下，他还在。</p>
+    <p class="vo">他没有哭。两千次跳线削弱了泪腺对情绪的响应速度——也可能只是他的泪腺已经忘了怎么哭。但他的手停在那里。掌心贴着左脸。在那个位置停留了很长一段时间。然后慢慢放下来。</p>
+  </div>
+</div>
+
+<!-- ══ 6 ══ -->
+<div class="chapter">
+  <div class="ch-num">第六章</div>
+  <div class="ch-title">之后</div>
+  <div class="ch-time">之后很多年</div>
+  <div class="ch-body">
+    <p>看护没有注意到那天夜里的变化——监控面板上只是一次微弱的肢体活动，在大多数标准下不算「行为恢复」。但此后，朴的自主神经电位在缓慢增长。不是恢复到了跳前的水平——是<em>重新建立了一条新的路径</em>。</p>
+    <p>一个月后，他开始对看护的提问做出有意识的回应——不是说话，是眨眼。一次是「是」，两次是「否」。</p>
+    <p>三个月后，他能说出自己的名字。只说了第一个——不是那三个混在一起的名字中的一个，是<em>更早之前</em>的。在他参军之前，在他被注射哨兵药剂之前，在所有的跳线和覆盖和战争之前的那个名字。朴。</p>
+    <p>六个月后，他问了一个问题：<em>「那个敲玻璃的人——他叫什么。」</em></p>
+    <p>看护查了访客记录。那天下午只有一个非授权进入。记录里没有名字。备注栏写着：<em>前哨兵。身份未核实。未进入舱内。在玻璃前停留约四分钟。</em></p>
+    <p>朴没有追问。他只是在下一周的同一个下午——他记住了那天的日历——用右手又在空中做了那三个动作。不是敲。是<strong>模仿</strong>。食指、中指、无名指依次弯曲。像在回应。像在说——我收到了。</p>
+    <p class="vo">卡伦不知道这件事。但那天夜里——在另一个镇子的另一间公寓里——他正在给窗台上的植物浇水。他的手没有任何理由地顿了一下。像某个很远的钟声传到了他所在的线里。他没有想太多。他把水壶放下。对着窗外的夜安静了一会儿。然后继续浇水。</p>
+  </div>
+</div>
+
+<div class="book-footer">
+  <em>— 全文完 —</em><br><br>
+  《三下》· 哨兵系列<br>
+  献给 Alpha矿长 · 2026 年 6 月<br>
+  <br>
+  朴 · 搁浅哨兵 · 仍在恢复中<br>
+  他收到的声音在送回去
+</div>
+
+</div>
+
+<script>
+const chapters=document.querySelectorAll('.chapter');
+function reveal(){
+  const wh=window.innerHeight;
+  chapters.forEach(c=>{ const r=c.getBoundingClientRect(); if(r.top<wh*0.8) c.classList.add('visible'); });
+}
+window.addEventListener('scroll',reveal);
+reveal();
+</script>
+</body>
+</html>

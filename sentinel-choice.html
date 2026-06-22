@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哨兵 · 选择 — 互动叙事</title>
+<style>
+:root {
+  --bg:#070b14; --text:#c8d6e5; --muted:#5e7694;
+  --accent:#4fc3f7; --warn:#f0c040; --danger:#ef5350; --void:#e040fb;
+  --border:rgba(255,255,255,0.05);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif; overflow-x:hidden; }
+#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+.story {
+  max-width:640px; margin:0 auto; padding:40px 24px 100px;
+  position:relative; z-index:1;
+}
+
+.title-page { text-align:center; padding:60px 0 40px; border-bottom:1px solid var(--border); margin-bottom:40px; }
+.title-page .lbl { font-size:0.55rem; color:var(--muted); letter-spacing:0.3em; margin-bottom:8px; }
+.title-page h1 { font-size:1.6rem; font-weight:200; letter-spacing:0.15em; }
+.title-page .sub { font-size:0.7rem; color:var(--muted); margin-top:6px; letter-spacing:0.1em; }
+
+.scene { margin-bottom:32px; animation:fadeIn 0.6s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+.scene-text { font-size:0.88rem; line-height:1.9; }
+.scene-text p { margin-bottom:12px; }
+.scene-text em { color:var(--warn); font-style:normal; }
+.scene-text .vo { color:var(--void); font-style:italic; }
+
+.choices { margin-top:16px; display:flex; flex-direction:column; gap:8px; }
+.choice-btn {
+  background:var(--surface,#0c1424); border:1px solid var(--border);
+  color:var(--text); padding:14px 18px; border-radius:8px;
+  font-size:0.82rem; cursor:pointer; transition:all 0.3s;
+  text-align:left; font-family:inherit; line-height:1.5;
+}
+.choice-btn:hover { border-color:var(--accent); background:rgba(79,195,247,0.06); transform:translateX(4px); }
+.choice-btn.chosen { border-color:var(--accent); pointer-events:none; opacity:0.6; }
+
+.ending { padding:24px; background:rgba(224,64,251,0.05); border:1px solid rgba(224,64,251,0.2); border-radius:10px; margin-top:24px; }
+.ending h3 { font-size:1rem; font-weight:300; margin-bottom:10px; color:var(--void); }
+.ending p { font-size:0.8rem; color:var(--muted); line-height:1.7; }
+
+.progress { text-align:center; margin-top:40px; padding-top:20px; border-top:1px solid var(--border); }
+.progress .dots { display:flex; justify-content:center; gap:6px; }
+.progress .dot { width:6px; height:6px; border-radius:50%; background:var(--border); }
+.progress .dot.done { background:var(--accent); }
+
+.reset-btn { display:block; margin:30px auto 0; background:none; border:1px solid var(--border); color:var(--muted); padding:8px 20px; border-radius:16px; font-size:0.7rem; cursor:pointer; font-family:inherit; letter-spacing:0.1em; transition:all 0.3s; }
+.reset-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+.jump-counter { text-align:center; margin:10px 0; font-size:0.6rem; color:var(--muted); letter-spacing:0.12em; }
+
+.back-link { display:block; text-align:center; margin-top:16px; font-size:0.6rem; color:var(--muted); text-decoration:none; letter-spacing:0.1em; opacity:0.5; }
+.back-link:hover { opacity:1; }
+</style>
+</head>
+<body>
+<a href="index.html" style="position:fixed;top:10px;left:18px;z-index:100;font-size:0.6rem;color:#5e7694;text-decoration:none;letter-spacing:0.1em;font-family:Segoe UI,PingFang SC,sans-serif;opacity:0.5;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.5">← 总览</a>
+<canvas id="starfield"></canvas>
+
+<div class="story">
+
+<div class="title-page" id="titlePage">
+  <div class="lbl">SENTINEL · 互动叙事</div>
+  <h1>你 是 哨 兵</h1>
+  <div class="sub">2043 年 · 你刚刚被注射了 Sentinel</div>
+</div>
+
+<div id="sceneContainer"></div>
+
+<div class="progress" id="progressBar"></div>
+<button class="reset-btn" id="resetBtn" style="display:none;" onclick="resetStory()">重新开始</button>
+<a href="index.html" class="back-link">← 总览</a>
+
+</div>
+
+<script>
+// Starfield
+const sc=document.getElementById('starfield'),sctx=sc.getContext('2d');
+let stars=[],sw,sh;
+function rs(){ sw=sc.width=window.innerWidth; sh=sc.height=window.innerHeight; }
+rs();window.addEventListener('resize',rs);
+for(let i=0;i<160;i++) stars.push({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*0.7+0.2,sp:Math.random()*0.18+0.02,br:Math.random(),ts:Math.random()*0.008+0.002});
+(function ds(){ sctx.clearRect(0,0,sw,sh); stars.forEach(s=>{s.br+=s.ts;const a=0.12+0.35*(0.5+0.5*Math.sin(s.br));sctx.beginPath();sctx.arc(s.x%sw,s.y%sh,s.r,0,Math.PI*2);sctx.fillStyle='rgba(180,195,220,'+a+')';sctx.fill();s.y=(s.y+s.sp)%2000;}); requestAnimationFrame(ds); })();
+
+// Story state
+let state={jumps:0,stayed:false,metFinder:false,sparedEnemy:false,path:[]};
+let currentScene=null;
+
+function renderScene(scene){
+  currentScene=scene;
+  const c=document.getElementById('sceneContainer');
+  let html='';
+  scene.messages.forEach(m=>{
+    if(m.type==='sys') html+='<div class="scene" style="text-align:center;font-family:Courier New,monospace;font-size:0.65rem;color:var(--muted);margin:16px 0;">'+m.text+'</div>';
+    else if(m.type==='counter') html+='<div class="jump-counter">跳数: '+state.jumps+'</div>';
+    else html+='<div class="scene"><div class="scene-text">'+m.text+'</div></div>';
+  });
+  if(scene.choices&&scene.choices.length>0){
+    html+='<div class="choices">';
+    scene.choices.forEach((ch,i)=>{
+      html+='<button class="choice-btn" onclick="choose('+scene.id+','+i+')">'+ch.label+'</button>';
+    });
+    html+='</div>';
+  }
+  if(scene.ending){
+    html+='<div class="ending"><h3>'+scene.ending.title+'</h3><p>'+scene.ending.text+'</p></div>';
+  }
+  c.innerHTML=html;
+  c.scrollIntoView({behavior:'smooth',block:'start'});
+
+  // Progress dots
+  const pb=document.getElementById('progressBar');
+  let dots='<div class="dots">';
+  for(let i=0;i<=state.path.length;i++){
+    const done=i<state.path.length||(scene.ending?true:false);
+    dots+='<div class="dot'+(done?' done':'')+'"></div>';
+  }
+  dots+='</div>';
+  if(scene.ending) dots+='<div style="font-size:0.55rem;color:var(--muted);margin-top:6px;letter-spacing:0.1em;">'+(state.jumps>0?'跳了 '+state.jumps+' 次':'没有跳')+'</div>';
+  pb.innerHTML=dots;
+
+  if(scene.ending) document.getElementById('resetBtn').style.display='block';
+}
+
+function choose(sceneId,choiceIdx){
+  const scene=scenes[sceneId];
+  const choice=scene.choices[choiceIdx];
+  state.path.push(sceneId+':'+choiceIdx);
+  if(choice.jump) state.jumps++;
+  if(choice.stay) state.stayed=true;
+  if(choice.spare) state.sparedEnemy=true;
+  if(choice.meet) state.metFinder=true;
+  const next=choice.next||'end';
+  renderScene(scenes[next]);
+}
+
+// Scene definitions
+const scenes={
+  start:{
+    id:'start',messages:[
+      {text:'<p>你不知道自己在哪里。</p><p>不是医院。不是营地。不是任何你认识的地方。你躺在一个看起来像野战帐篷的角落里，但床单的颜色不对。窗户外面——你记得之前在下雨。现在是晴天。</p><p>你低头看胸口。没有伤口。但你能<em>感觉到</em>伤口——在你的肺里，在你的骨头里——那种疼不是记忆的疼，是<em>刚刚发生的疼</em>。</p><p>你想起来了：子弹。从右侧飞过来。打穿了肺。你记得血的味道。你记得视野从边缘往中间缩。然后空白。</p><p>现在你在这里。护士在门口探头看了你一眼：「醒了？你运气真好。子弹偏了半寸。」</p><p class="vo">子弹没有偏。你死了。这是另一个你活着的世界。而你的意识——不知道是怎么做到的——从一个死掉的你，跳到了一个活着的你身上。那个活着的你刚才还在擦枪。现在他不在了。你取代了他。</p>'}
+    ],choices:[
+      {label:'接受现实 · 你活下来了。不管怎么活下来的——你还在呼吸。继续战斗',next:'battle'},
+      {label:'拒绝 · 这不是你。这不是你的身体。这不是你的世界。你要找回去的路',next:'resist_first'}
+    ]
+  },
+  resist_first:{
+    id:'resist_first',messages:[
+      {text:'<p>你想回去。但你不知道怎么回去。你甚至不确定「回去」是回到哪里——如果你已经死了，那回去就是回到一个没有你的世界。你躺在陌生的床上，手发抖——不是受伤的发抖，是<em>不属于这里</em>的发抖。</p><p>你闭上眼。不是黑暗。是像河一样的东西。你看到了一条极其微弱的线——它连接着你现在所在的地方，和一个很远很远的、几乎看不见的点。那个点可能是你的原分支。你可能永远回不去了。但你看到了它。</p><p>这是你第一次<em>主动感知到分支</em>。不是药剂推你——是你自己在看。</p>'}
+    ],choices:[
+      {label:'继续看那条河 · 你不知道这是什么，但你知道它很重要',next:'see_river',stay:true},
+      {label:'关上眼睛 · 太可怕了。你不想看到这些。回到战场上，做你该做的事',next:'battle'}
+    ]
+  },
+  see_river:{
+    id:'see_river',messages:[
+      {text:'<p>你没有关上眼睛。你继续看。那些河——不是真的河。是<em>线</em>。成千上万条线。每一条都是一个版本的未来。你看到了自己——不是现在的自己，是<em>所有可能的自己</em>。有的在开枪。有的在逃跑。有的已经躺下了。有的还在出生。</p><p>这是不应该被看到的东西。没有一种训练能让你准备好——看一辈子的总和。但你没有移开眼睛。</p><p class="vo">你的战友不知道你刚才做了什么。他们只知道你从那之后，在战场上几乎没有错过。每一次。你只是在做选择之前先闭一会儿眼。</p>'}
+    ],choices:[
+      {label:'继续 · 你成为了一个真正的哨兵。用这个能力在战场上活下去',next:'battle'}
+    ]
+  },
+  battle:{
+    id:'battle',messages:[
+      {text:'<p>六个月后。另一条战线。你靠着一面半塌的墙，左肩中弹但不算致命。你的枪口对准前方——不到三米，敌人。一个年轻的士兵。枪在刚才的爆炸中飞了。他靠在对面的墙上，眼睛睁得很大。嘴唇在动。可能是在祈祷。可能是在叫妈妈。</p><p>你的手指在扳机上。训练了三万个小时的肌肉说：扣。</p><p>你闭眼。不是因为他。是因为你每次做决定之前都闭眼。分支展开。成千上万条线。每一条线里你的手指都在扣。每一条线里他都在倒下。<em>除了少数几条。</em></p><p class="vo">那少数几条里——你放下了枪。你没有杀他。</p>'}
+    ],choices:[
+      {label:'扣下扳机 · 这是战争。他是敌人。你只是在做你被训练做的事',next:'shoot',jump:true},
+      {label:'放下枪 · 你在那少数几条线里看到了什么。你不知道——但你想试试',next:'spare',spare:true,stay:true}
+    ]
+  },
+  shoot:{
+    id:'shoot',messages:[
+      {text:'<p>你扣了。他倒下。你看着他的眼睛——在失去焦点之前只停留了一瞬。然后没有人了。只是一具身体。你走过去——不是检查。不知道为什么。他的口袋里有一张照片。一个老妇人。可能是他妈妈。</p><p>你把照片放回他的口袋。站起来。你的手是稳的。你在心里数了一下——这是你第几次杀人了。记不清了。不是因为你不在乎。是因为<em>在不同的分支里你杀了不同的人</em>。数字叠加。不收敛。</p>',type:'counter'}
+    ],choices:[
+      {label:'继续 · 战争还很长',next:'meet_finder'}
+    ]
+  },
+  spare:{
+    id:'spare',messages:[
+      {text:'<p>你放下了枪。</p><p>不是英雄主义。不是道德胜利。你只是在那少数几条你没有扣的线里看到了一个不同的自己——一个不再需要用扣扳机来证明自己还活着的人。你不知道那个人是不是真的。但你想试试。</p><p>那个男孩看着你放下枪。他不相信。他以为你在准备换弹。过了很久——不确定多久——他慢慢松开了握着碎石的手。那不是武器。他只是在害怕的时候抓了任何能抓的东西。</p><p>你没有杀他。后来你也没有再开过枪。</p>',type:'counter'}
+    ],choices:[
+      {label:'继续 · 你变了。你不知道变成了什么——但不再是原来的你',next:'meet_finder'}
+    ]
+  },
+  meet_finder:{
+    id:'meet_finder',messages:[
+      {text:'<p>一年后。某个临时营地。你坐在角落里擦枪——尽管你可能不会再用了。一个人在你旁边坐下来。女的。头发很短。眼神和别人完全不一样——不是战场上的那种不一样，是<em>见过太多条线</em>的那种不一样。</p><p>她不认识你。你没见过她。但你们对看了一眼——不需要介绍。在哨兵之间，有些东西不用语言。</p><p>她递给你一包烟。你接过来。她说：</p><p>「你有没有在某个瞬间——濒死的那个瞬间——感觉到有另一个选项？」</p><p class="vo">「不确定是什么。只是觉得除了那条河之外，还有别的地方可以待。」</p>'}
+    ],choices:[
+      {label:'沉默 · 你确实感觉到过。在第几次濒死——你记不清。但你知道她说的是什么',next:'trust_finder',meet:true},
+      {label:'摇头 · 你不想谈这个。这不是一个可以跟陌生人聊的话题',next:'reject_finder'}
+    ]
+  },
+  trust_finder:{
+    id:'trust_finder',messages:[
+      {text:'<p>她看了你一眼——不是审视。是确认。像在说：<em>我知道你知道。</em></p><p>「就像有人敲门，你不开。你可以不开的。从来都可以。」她站起来，没有告别。走之前她把整包烟塞进了你手里。</p><p>你看着她的背影。你不知道她叫什么。但你知道她去过哪里——去过那个间隙。那个在濒死和跳线之间的极窄的空白。她在那里面待过。</p><p class="vo">那天晚上你没有跳线。不是因为不需要。是因为她的话一直在你脑子里。像有人敲了门。你没有开。</p>'}
+    ],choices:[
+      {label:'继续 · 战后，去找其他哨兵',next:'postwar_finder'}
+    ]
+  },
+  reject_finder:{
+    id:'reject_finder',messages:[
+      {text:'<p>她看了你一眼——不是失望。是等。像在说：<em>时间还长。</em>她站起来，没有告别。走之前她把整包烟塞进了你手里。</p><p>你为什么没有跟她多说两句？你后来想了很多次。不是因为你不相信她。是因为你真相信——但相信的代价是承认你自己的每一次跳线都不只是逃生，也是在覆盖别人。你不确定自己准备好面对这个了。</p>'}
+    ],choices:[
+      {label:'继续作战 · 战争还没结束。你把那句话压在心底',next:'postwar_soldier'}
+    ]
+  },
+  postwar_finder:{
+    id:'postwar_finder',messages:[
+      {text:'<p>战争结束之后——在这条分支里，战争在 2058 年结束了——你没有退役。你开始<em>找人</em>。</p><p>退役名单上。搁浅设施里。战场上那些和别人不一样的眼神。你一个一个找。不需要跳线。你只需要走到他们面前，不说话，看着他们的眼睛。然后用手——在墙上、在玻璃上、在空气里——<em>敲三下</em>。</p><p>大多数人不会回应。但每十几个沉默的人里，有一个的眼睛会动。你就停下来。坐下。告诉他那个故事——关于一条河、一扇门、和一个可以不开的选择。</p><p class="vo">你不知道你的声音在分支间扩散了多远。你不需要知道。你只是继续走。</p>'}
+    ],choices:[
+      {label:'终章',next:'ending_finder'}
+    ]
+  },
+  postwar_soldier:{
+    id:'postwar_soldier',messages:[
+      {text:'<p>战争结束。你退伍了。没有加入任何组织。没有告诉任何人你曾是哨兵。你在内陆找了一份安静的工作。你给花园浇水。你学会了辨认植物。</p><p>有些晚上——在你快要睡着的时候——你闭眼，看到了那条河。不是被拉进去。是你自己去看。像去看一个老朋友。你知道你可以不跳。你从来都知道。</p><p class="vo">你没有去救任何人。你只是选择了留下。在这个分支里。在这个不属于你的身体里。在这个你每天浇水、看日落、和邻居打招呼的安静余生里。</p>'}
+    ],choices:[
+      {label:'终章',next:'ending_quiet'}
+    ]
+  },
+  ending_finder:{
+    id:'ending_finder',ending:{title:'结局：传递者',text:'你成为了那张网的一部分——不是造主的网，是另一张。一张用「不」织成的、没有组织、没有领袖的网。你找到了多少人？不需要数。每多一个人——那张网的重量就多一分。造主方程里的余数就除不尽一分。<br><br>有一天你在某个搁浅设施里遇到了一个老人，他头上有一道疤，从左眉骨拉到耳后。他看了你一眼——不需要介绍。你们在走廊上擦肩的时候，他在空中用手指敲了三下。你回了两下。不需要说话。<br><br>你们都在同一张网里。那张网没有名字。但每一个被找到的人，都是它的一部分。'}
+  },
+  ending_quiet:{
+    id:'ending_quiet',ending:{title:'结局：留下的人',text:'你留下了。不是所有人都需要去救别人。有些人只是需要<em>在</em>——在同一条分支里，在同一个黄昏里，在同一盆植物的浇水声里。你不欠任何人一个解释。<br><br>五十岁那年，你在镇上遇到了一个年轻人。他的眼神和别人不一样。他没有问你任何问题。但你在他的沉默里认出了某些东西——那些还没说出口的话，那些还没被敲响的门。你看了他一眼。然后把花洒递给他。<br><br>「你可以不给花园浇水，」你说。「但你可以。从来都可以。」<br><br>他接过花洒。你走了。第二天早上你的窗台上多了一盆新的植物。没有署名。'}
+  }
+};
+
+// Init
+renderScene(scenes.start);
+
+function resetStory(){
+  state={jumps:0,stayed:false,metFinder:false,sparedEnemy:false,path:[]};
+  document.getElementById('resetBtn').style.display='none';
+  renderScene(scenes.start);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
