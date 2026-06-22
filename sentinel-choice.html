@@ -104,7 +104,7 @@ function renderScene(scene){
   if(scene.choices&&scene.choices.length>0){
     html+='<div class="choices">';
     scene.choices.forEach((ch,i)=>{
-      html+='<button class="choice-btn" onclick="choose('+scene.id+','+i+')">'+ch.label+'</button>';
+      html+='<button class="choice-btn" onclick="choose(\''+scene.id+'\','+i+')">'+ch.label+'</button>';
     });
     html+='</div>';
   }
